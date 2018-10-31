@@ -1,7 +1,7 @@
 class my_component extends uvm_component;
 `uvm_component_utils(my_component);
 
-virtual dut_if dur_if_h;
+virtual dut_if dut_if_h;
 
  my_sequencer my_sequencer_h;
  my_driver    my_driver_h;
