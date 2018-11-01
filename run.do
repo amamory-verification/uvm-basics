@@ -11,11 +11,13 @@ vlib work
 # SystemVerilog DUT
 # vlog ../misc/tinyalu.sv
 
+vlog dut.v
+
 vlog -f tb.f
 #vopt top -o top_optimized  +acc +cover=sbfec+dut(rtl).
 
 #vsim top_optimized -coverage +UVM_TESTNAME=my_test
-vsim top -coverage +UVM_TESTNAME=my_test
+vsim top -coverage +UVM_TESTNAME=test1
 set NoQuitOnFinish 1
 onbreak {resume}
 log /* -r

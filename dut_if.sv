@@ -1,8 +1,9 @@
 interface dut_if;
 
-	logic clock, reset;
+	logic clk, rst;
     logic cmd;
-    logic  [3:0] addr;
-    logic  [3:0] data;
+    logic  [7:0] addr;
+    logic  [7:0] data;
+    logic  [7:0] dout;
 
 endinterface : dut_if

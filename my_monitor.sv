@@ -20,10 +20,12 @@ task run_phase(uvm_phase phase);
     my_transaction tx;
     @(posedge dut_vi.clock);
     tx = my_transaction::type_id::create("tx");
-    tx.cmd = dut_vi.cmd;
+    $cast(tx.cmd, dut_vi.cmd);
     tx.addr = dut_vi.addr;
     tx.data = dut_vi.data;
     
     aport.write(tx);
   end
 endtask: run_phase
+
+endclass : my_monitor

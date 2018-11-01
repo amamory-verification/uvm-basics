@@ -9,7 +9,7 @@ function new(string name, uvm_component parent);
 endfunction: new
 
 function void build_phase(uvm_phase phase);
-  aport = new("aport", this); 
+  //aport = new("aport", this); 
   my_agent_h = my_agent::type_id::create("my_agent", this);
   my_subscriber_h = my_subscriber::type_id::create("my_subscriber", this);
 endfunction: build_phase

@@ -1,7 +1,7 @@
 class my_subscriber extends uvm_subscriber #(my_transaction);
 `uvm_component_utils(my_subscriber);
 
-bit cmd;
+cmd_t cmd;
 int addr;
 int data;
 
@@ -11,7 +11,7 @@ covergroup cover_bus;
   coverpoint data { bins d[16] = {[0:255]};}
 endgroup: cover_bus
  
-function write(my_transaction t);
+function void write(my_transaction t);
   cmd = t.cmd;
   addr = t.addr;
   data = t.data;

@@ -1,6 +1,5 @@
 package my_sequences;
 
-import uvm_pkg::*;
 
 class seq_of_commands extends uvm_sequence #(my_transaction);
 

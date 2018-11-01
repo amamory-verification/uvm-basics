@@ -13,7 +13,6 @@ typedef enum bit {READ  = 1'b0, WRITE = 1'b1} cmd_t;
 `include "commands_sequence.sv"
 
 
-//`include "dut_if.sv"
 `include "my_subscriber.sv"
 `include "my_driver.sv"
 `include "my_monitor.sv"
