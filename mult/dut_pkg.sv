@@ -16,10 +16,12 @@ package dut_pkg;
 `include "mult_driver.sv"
 `include "mult_monitor.sv"
 `include "mult_coverage.sv"
+`include "mult_scoreboard.sv"
 `include "mult_agent.sv"
-//`include "mult_env.sv"
+`include "mult_env.sv"
 
 // ##### tests #####
+`include "smoke_test.sv"
 //`include "test1.sv"
 //`include "test2.sv"
 
