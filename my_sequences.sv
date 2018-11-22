@@ -1,4 +1,4 @@
-package my_seqeunces;
+package my_sequences;
 
 import uvm_pkg::*;
 

@@ -1,17 +1,19 @@
-class my_driver extends uvm_driver;
+class my_driver extends uvm_driver #(my_transaction);
 `uvm_component_utils(my_driver);
 
 virtual dut_if dut_vi;
 
 function new(string name, uvm_component parent);
+  super.new(name, parent);
+endfunction : new
 
 function void build_phase(uvm_phase phase);
-	dut_config_0 = new();
+	//dut_config_0 = new();
 	
-	if (!uvm_config_db #(virtual dut_if)::get (this,"", "dut_vi", dut_config_0.dut_vi) )
-		`uvm_fatal("MY_TEST", "No DUR_IF");
+	if (!uvm_config_db #(virtual dut_if)::get (this,"", "dut_vi", dut_vi) )
+		`uvm_fatal("MY_TEST", "No DUT_IF");
 	// other DUT configuration
-	uvm_config_db# (my_dut_config)::set(this,"*", "dut_config", dut_config_0);
+	//uvm_config_db# (my_dut_config)::set(this,"*", "dut_config", dut_config_0);
 
 endfunction : build_phase
 

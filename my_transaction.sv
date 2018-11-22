@@ -1,9 +1,9 @@
-class my_transaction extends uvm_seqeunce_item;
+class my_transaction extends uvm_sequence_item;
 `uvm_object_utils(my_transaction)
 
-rand bit cmd;
-rand int addr;
-rand int data;
+rand cmd_t cmd;
+rand int   addr;
+rand int   data;
 
 constraint c_addr { addr >=0 ; addr < 256; }
 constraint c_data { data >=0 ; data < 256; }
@@ -14,5 +14,5 @@ endfunction: new
 
 endclass: my_transaction
 
-typedef uvm_seqeuncer #(my_transaction) my_sequencer;
+typedef uvm_sequencer #(my_transaction) my_sequencer;
 

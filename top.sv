@@ -1,4 +1,6 @@
-module top; 
+module top;
+	import uvm_pkg::*;
+	import dut_pkg::*;
 
 dut_if dut_if1();
 

@@ -1,4 +1,4 @@
-class my_subscriber extends uvm_subscriber;
+class my_subscriber extends uvm_subscriber #(my_transaction);
 `uvm_component_utils(my_subscriber);
 
 bit cmd;
@@ -9,7 +9,7 @@ covergroup cover_bus;
   coverpoint cmd;
   coverpoint addr { bins a[16] = {[0:255]};}
   coverpoint data { bins d[16] = {[0:255]};}
-endcovergroup: cover_bus
+endgroup: cover_bus
  
 function write(my_transaction t);
   cmd = t.cmd;
@@ -21,7 +21,7 @@ function write(my_transaction t);
   // UVM_FULL - usualyy filtered out
   // +UVM_VERBOSITY=UVM_LOW
   cover_bus.sample();
-endfunction: new 
+endfunction: write 
 
 function new(string name, uvm_component parent);
   super.new(name,parent);

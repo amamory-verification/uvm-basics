@@ -19,7 +19,7 @@ task body;
     d = tx.data;
     ++d;
     assert(tx.randomize() 
-       with {cmd = WRITE; addr == a; data == d; });
+       with {cmd == WRITE; addr == a; data == d; });
     finish_item(tx);
   end
 endtask: body

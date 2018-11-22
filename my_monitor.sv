@@ -26,4 +26,4 @@ task run_phase(uvm_phase phase);
     
     aport.write(tx);
   end
-endfunction: run_phase
+endtask: run_phase
