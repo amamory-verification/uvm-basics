@@ -8,13 +8,11 @@ function new(string name, uvm_component parent);
 endfunction : new
 
 function void build_phase(uvm_phase phase);
-	//dut_config_0 = new();
+	`uvm_info("msg", "Building DRIVER", UVM_NONE)
 	
-	if (!uvm_config_db #(virtual dut_if)::get (this,"", "dut_vi", dut_vi) )
-		`uvm_fatal("MY_TEST", "No DUT_IF");
-	// other DUT configuration
-	//uvm_config_db# (my_dut_config)::set(this,"*", "dut_config", dut_config_0);
-
+	if (!uvm_config_db #(virtual dut_if)::get (null,"*", "dut_vi", dut_vi) )
+		`uvm_fatal("my_driver", "No DUT_IF");
+	`uvm_info("msg", "DRIVER Done!!!", UVM_NONE)
 endfunction : build_phase
 
 task run_phase(uvm_phase phase);
@@ -26,12 +24,16 @@ task run_phase(uvm_phase phase);
 	forever
 	begin
 	  my_transaction tx;
+	  `uvm_info("msg", "New transaction", UVM_NONE)  /// <=== parou aqui
 	  @(posedge dut_vi.clk);
 	  seq_item_port.get_next_item(tx);
+	  `uvm_info("msg", "Got new transaction", UVM_NONE)
 	  dut_vi.cmd = tx.cmd;
 	  dut_vi.addr = tx.addr;
 	  dut_vi.data = tx.data;
+	  `uvm_info("msg", "waiting transaction done", UVM_NONE)
 	  @(posedge dut_vi.clk) seq_item_port.item_done();
+	  `uvm_info("msg", "transaction done !", UVM_NONE)
 	  
 	end
 endtask: run_phase
