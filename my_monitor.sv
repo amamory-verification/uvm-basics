@@ -18,7 +18,7 @@ task run_phase(uvm_phase phase);
   forever
   begin
     my_transaction tx;
-    @(posedge dut_vi.clock);
+    @(posedge dut_vi.clk);
     tx = my_transaction::type_id::create("tx");
     $cast(tx.cmd, dut_vi.cmd);
     tx.addr = dut_vi.addr;

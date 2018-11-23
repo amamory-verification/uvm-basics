@@ -15,7 +15,7 @@ function void build_phase(uvm_phase phase);
 endfunction: build_phase
 
 function void connect_phase(uvm_phase phase);
-  my_agent_h.aport.connect(my_subscriber_h.analisis_export);
+  my_agent_h.aport.connect(my_subscriber_h.analysis_export);
 endfunction: connect_phase
 
 endclass: my_env

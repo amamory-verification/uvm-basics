@@ -26,12 +26,12 @@ task run_phase(uvm_phase phase);
 	forever
 	begin
 	  my_transaction tx;
-	  @(posedge dut_vi.clock);
+	  @(posedge dut_vi.clk);
 	  seq_item_port.get_next_item(tx);
 	  dut_vi.cmd = tx.cmd;
 	  dut_vi.addr = tx.addr;
 	  dut_vi.data = tx.data;
-	  @(posedge dut_vi.clock) seq_item_port.item_done();
+	  @(posedge dut_vi.clk) seq_item_port.item_done();
 	  
 	end
 endtask: run_phase
