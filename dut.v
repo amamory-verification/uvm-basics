@@ -5,22 +5,20 @@ module dut(
 	input [7:0] data, addr,
 	output [7:0] dout
 	);
-  reg [7:0] sig;
+  reg [7:0] count;
 
-  always @(posedge clk)
+  always @(posedge clk or negedge rst)
     if (!rst) begin
-     sig <= 0;
+ 		count <= 0;
     end else begin
-    	if (cmd == 0) 
-      		sig <= data + 1;
-      	else
-      		sig <= data - 1;
+		if (cmd == 1'b0) begin 
+			count <= data;
+		end else begin
+			count <= count + 1;
+		end
+		$display("DUT count is %0d, %0d, %0d",count, data, cmd);
     end
 
-  assign dout = sig;
-	//$display("data is %0d",_if.data);
-	//$display("addr is %0d",_if.addr);
-	//$display("cmd is %0b",_if.cmd);
-	//#7;
+  assign dout = count;
 	
 endmodule

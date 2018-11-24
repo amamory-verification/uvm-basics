@@ -24,16 +24,13 @@ task run_phase(uvm_phase phase);
 	forever
 	begin
 	  my_transaction tx;
-	  `uvm_info("msg", "New transaction", UVM_NONE)  /// <=== parou aqui
 	  @(posedge dut_vi.clk);
 	  seq_item_port.get_next_item(tx);
-	  `uvm_info("msg", "Got new transaction", UVM_NONE)
 	  dut_vi.cmd = tx.cmd;
 	  dut_vi.addr = tx.addr;
 	  dut_vi.data = tx.data;
-	  `uvm_info("msg", "waiting transaction done", UVM_NONE)
 	  @(posedge dut_vi.clk) seq_item_port.item_done();
-	  `uvm_info("msg", "transaction done !", UVM_NONE)
+	  `uvm_info("msg", "transaction done !", UVM_HIGH)
 	  
 	end
 endtask: run_phase

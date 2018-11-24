@@ -27,6 +27,7 @@ task run_phase(uvm_phase phase);
     tx.data = dut_vi.data;
     
     aport.write(tx);
+    `uvm_info("msg", "New transaction", UVM_HIGH)
   end
 endtask: run_phase
 

@@ -15,7 +15,7 @@ function void write(my_transaction t);
   cmd = t.cmd;
   addr = t.addr;
   data = t.data;
-  `uvm_info("msg", "Transaction Received", UVM_NONE)
+  `uvm_info("msg", "Transaction Received", UVM_HIGH)
   // UVM_NONE - msg always apper
   // UVM_LOW, UVM_MEDIUM, UVM_HIGH
   // UVM_FULL - usualyy filtered out

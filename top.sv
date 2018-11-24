@@ -3,6 +3,8 @@ module top;
 	import dut_pkg::*;
 
 dut_if dut_if1();
+dut    dut1(.clk(dut_if1.clk), .rst(dut_if1.rst), .cmd(dut_if1.cmd), .data(dut_if1.data), .addr(dut_if1.addr));
+// mind that the 'dout' port is not connected 
 
 initial
 begin: blk

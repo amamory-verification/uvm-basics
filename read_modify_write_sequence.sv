@@ -6,28 +6,27 @@ function new(string name = "");
 endfunction: new
 
 task body;
-  forever
+  
   begin
     my_transaction tx;
     int a,d;
-    `uvm_info("msg", "transaction read_modify_write", UVM_NONE)
     tx = my_transaction::type_id::create("tx");
-    `uvm_info("msg", "transaction read_modify_write created", UVM_NONE)   /// <=== parou aqui
     start_item(tx);
-    `uvm_info("msg", "transaction read_modify_write started", UVM_NONE)
+    `uvm_info("msg", "read transaction started", UVM_LOW)
     assert(tx.randomize());
     tx.cmd = READ;
     finish_item(tx);
-    `uvm_info("msg", "transaction read_modify_write finished", UVM_NONE)
     a = tx.addr;
     d = tx.data;
     ++d;
 
     tx = my_transaction::type_id::create("tx");
     start_item(tx);    
+    `uvm_info("msg", "write transaction started", UVM_LOW)
     assert(tx.randomize() 
        with {cmd == WRITE; addr == a; data == d; });
     finish_item(tx);
+    `uvm_info("msg", "sequence read_modify_write finished", UVM_LOW)
   end
 endtask: body
 

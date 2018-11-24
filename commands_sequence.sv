@@ -11,11 +11,14 @@ function new(string name = "");
 endfunction: new
 
 task body();
+  int count = 0;
   repeat(n)
   begin
     read_modify_write seq;
-    seq = read_modify_write::type_id::create("seq");
+    seq = read_modify_write::type_id::create("rmw_seq");
+    `uvm_info("msg", $sformatf("starting sequence - %0d", count), UVM_NONE)
     seq.start(m_sequencer, this);
+    count++;
   end
 endtask: body
 
