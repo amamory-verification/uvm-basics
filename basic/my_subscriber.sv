@@ -25,6 +25,7 @@ endfunction: write
 
 function new(string name, uvm_component parent);
   super.new(name,parent);
+  cover_bus = new();
 endfunction: new
 
 
