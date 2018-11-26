@@ -30,9 +30,10 @@ interface dut_if;
 		B = iB;
 		@(posedge clock);
 		start = 1'b0;
-		A = 0;
-		B = 0;
-		@(posedge done) result = dout;
+		//A = 0;  // the inputs are not registered, so they must keep the initial values during the entire transaction
+		//B = 0;
+		@(posedge done);
+		@(negedge clock); result = dout;
 	endtask : do_mult
 
 endinterface : dut_if

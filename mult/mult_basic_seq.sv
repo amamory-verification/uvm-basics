@@ -6,7 +6,7 @@ function new(string name = "");
 endfunction: new
 
 task body;
-  forever
+  repeat(5)
   begin
     mult_input_t tx;
     tx = mult_input_t::type_id::create("tx");
@@ -14,6 +14,7 @@ task body;
     assert(tx.randomize());
     finish_item(tx);
   end
+  //#200 // wait a little bit to check the last stimuli in the scoreboard
 endtask: body
 
 endclass: mult_basic_seq

@@ -10,7 +10,7 @@ function void write(mult_input_t t);
   string data_str;
   expected_output = t.A * t.B;
 
-  data_str = $sprintf("%d x % d = %d (actual); %d (expected)",t.A, t.B, t.dout, expected_output);
+  data_str = $psprintf("%0d x %0d = %0d (actual); %0d (expected)",t.A, t.B, t.dout, expected_output);
 
   if (expected_output != t.dout)
     `uvm_error("SELF CHECKER", {"FAIL: ",data_str})
