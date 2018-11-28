@@ -14,12 +14,17 @@ endfunction: build_phase
 
 task run_phase(uvm_phase phase);
   mult_zero_seq seq;
-  `uvm_info("msg", "Running TEST1", UVM_LOW)
+  mult_one_seq seq1;
+  
   seq = mult_zero_seq::type_id::create("seq");
   phase.raise_objection(this);
-  `uvm_info("msg", "Starting  SEQ", UVM_LOW)
   seq.start(env_h.agent_h.sequencer_h);
-  `uvm_info("msg", "SEQ STARTED!!!", UVM_LOW)
+  phase.drop_objection(this);
+
+  
+  seq1 = mult_one_seq::type_id::create("seq1");
+  phase.raise_objection(this);
+  seq1.start(env_h.agent_h.sequencer_h);
   phase.drop_objection(this);
 endtask
 

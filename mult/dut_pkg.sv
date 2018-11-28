@@ -10,6 +10,8 @@ package dut_pkg;
 // #### sequences #####
 `include "mult_basic_seq.sv"
 `include "mult_zero_seq.sv"
+`include "mult_one_seq.sv"
+`include "mult_neg_seq.sv"
 
 
 // ##### tb modules #####
@@ -22,7 +24,9 @@ package dut_pkg;
 
 // ##### tests #####
 `include "smoke_test.sv"
-`include "zeros_test.sv"
+`include "zeros_ones_test.sv"
+`include "neg_test.sv"
+
 //`include "test1.sv"
 //`include "test2.sv"
 

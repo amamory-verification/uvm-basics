@@ -5,8 +5,8 @@ rand shortint   A;
 rand shortint   B;
 int dout;
 
-constraint c_a { A >=1 ; A < 256; }
-constraint c_b { B >=1 ; B < 256; }
+constraint c_a { soft A >=1 ; soft A < 256; }
+constraint c_b { soft B >=1 ; soft B < 256; }
 
 function new(string name = "");
   super.new(name);
