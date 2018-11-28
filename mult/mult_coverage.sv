@@ -6,15 +6,15 @@ int result;
 
   covergroup range_value;
     a_leg: coverpoint A { 
-        bins neg    = {[$:-2]}; // negative values
-        bins minus1 = {-1};     // zero
+        //bins neg    = {[$:-2]}; // negative values
+        //bins minus1 = {-1};     // zero
         bins zero   = {0};      // zero
         bins plus1  = {1};      // zero
         bins pos    = {[2:$]};  // positive values
     }
     b_leg: coverpoint B { 
-        bins neg    = {[$:-2]}; // negative values
-        bins minus1 = {-1};     // zero
+        //bins neg    = {[$:-2]}; // negative values
+        //bins minus1 = {-1};     // zero
         bins zero   = {0};      // zero
         bins plus1  = {1};      // zero
         bins pos    = {[2:$]};  // positive values

@@ -31,13 +31,5 @@ run -all
 coverage attribute -name TESTNAME -value zeros_test
 coverage save zeros_test.ucdb
 
-vsim top -coverage +UVM_VERBOSITY=UVM_FULL +UVM_TESTNAME=neg_test
-set NoQuitOnFinish 1
-onbreak {resume}
-log /* -r
-run -all
-coverage attribute -name TESTNAME -value neg_test
-coverage save neg_test.ucdb
-
-vcover merge  smoke_test.ucdb zeros_test.ucdb neg_test.ucdb
+vcover merge  smoke_test.ucdb zeros_test.ucdb 
 vcover report smoke_test.ucdb -cvg -details
