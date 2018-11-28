@@ -1,6 +1,10 @@
 package dut_pkg;
    import uvm_pkg::*;
 `include "uvm_macros.svh"
+
+// ##### packages #####
+`include "dut_if_pkg.sv"
+
    
 // ##### transactions #####
 `include "mult_input_t.sv"

@@ -1,14 +1,19 @@
 module top;
 import uvm_pkg::*;
 import dut_pkg::*;
+//import dut_if_pkg::*;
 
-dut_if       dut_if1();
-mult_serial  dut1(.clock(dut_if1.clock), .reset(dut_if1.reset), .start(dut_if1.start), .A(dut_if1.A), .B(dut_if1.B), 
-	.done(dut_if1.done), .dout(dut_if1.dout));
+bit clock;
+always #10 clock = ~clock; // clock generator
+
+dut_if  #(.WIDTH(16))   unsigned_dut_if(clock);
+mult_serial  dut1(.clock(clock), .reset(unsigned_dut_if.reset), 
+	.start(unsigned_dut_if.start), .A(unsigned_dut_if.A), .B(unsigned_dut_if.B), 
+	.done(unsigned_dut_if.done), .dout(unsigned_dut_if.dout));
 
 initial
 begin: blk
-	uvm_config_db#(virtual dut_if)::set(null, "*", "dut_vi", dut_if1);
+	uvm_config_db#(virtual dut_if)::set(null, "*", "dut_vi", unsigned_dut_if.get_concrete_bfm());
 
 	run_test(); // vsim +UVM_TESTNAME=my_test
 end // blk
