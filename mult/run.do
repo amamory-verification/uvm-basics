@@ -20,3 +20,8 @@ set NoQuitOnFinish 1
 onbreak {resume}
 log /* -r
 run -all
+coverage attribute -name TESTNAME -value smoke_test
+coverage save smoke_test.ucdb
+
+#vcover merge  tinyalu.ucdb fibonacci_test.ucdb parallel_test.ucdb full_test.ucdb
+vcover report smoke_test.ucdb -cvg -details
