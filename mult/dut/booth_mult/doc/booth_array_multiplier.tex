@@ -1,0 +1,86 @@
+\documentclass[a4paper,BCOR7mm,12pt,pointlessnumbers,bibtotoc]{scrartcl}
+
+\usepackage{amsmath,epsfig}
+\usepackage{amssymb,amsfonts}
+\usepackage{color}
+\usepackage{array,booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[hypcap=true,labelformat=simple]{subcaption}
+\renewcommand{\thesubfigure}{(\alph{subfigure})}
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}} % centering column type with fixed width
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}} % right aligned column type with fixed width
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}} % left aligned column type with fixed width
+
+\newcommand{\ceil}[1]{\left\lceil #1 \right\rceil} %\left\lceil #1 \right\rceil
+
+\begin{document}
+%\maketitle
+\begin{center}
+\Large Efficient Booth Array Multiplier for Xilinx FPGAs\\[0.4cm]
+\large Martin Kumm \\[0.5cm]
+\large \today \\[0.5cm]
+\end{center}
+
+\section{Introduction}
+
+This IP core provides a resource efficient implementation of a Booth Array Multiplier for Xilinx FPGAs. For details about the architecture see \cite{kaz15}.
+
+\section{Interface}
+
+The top level entity is found in \verb|mult_booth_array.vhd|. The generics as well as the portare described in Table~\ref{tab:generics} and Table~\ref{tab:port}, respectively.
+
+\begin{table}[!h]
+	\renewcommand{\arraystretch}{1.1}
+	\caption{Description of the generics}
+	\label{tab:generics}
+	\centering
+	\begin{tabular}{lccL{7cm}}
+	  \toprule
+	  Generic & Type & Default & Description\\
+    \cmidrule(rl){1-1} \cmidrule(rl){2-2} \cmidrule(rl){3-3} \cmidrule(rl){4-4}
+    \verb|word_size_a|    & integer & 8     & Input word size operand $A$\\
+    \verb|word_size_b|    & integer & 8     & Input word size operand $B$\\
+    \verb|sync_in_out|    & boolean & false & If true, registers are placed at inputs and outputs (for timing results)\\
+    \verb|use_pipelining| & boolean & true  & If true, the multiplier is internally pipelined (highly recommented)\\
+    \bottomrule
+   \end{tabular}
+\end{table}
+
+\begin{table}[!h]
+	\renewcommand{\arraystretch}{1.1}
+	\caption{Description of the port}
+	\label{tab:port}
+	\centering
+	\begin{tabular}{lcccL{5cm}}
+	  \toprule
+	  Generic & Direction & Type & Word Size & Description\\
+    \cmidrule(rl){1-1} \cmidrule(rl){2-2} \cmidrule(rl){3-3} \cmidrule(rl){4-4} \cmidrule(rl){5-5}
+    \verb|clk_i| & in  & \verb|sl|    & 1                              & Clock input (used when \verb|use_pipelining=true| or \verb|sync_in_out=true|)\\
+    \verb|rst_i| & in  & \verb|sl|    & 1                              & Reset input (used when \verb|use_pipelining=true| or \verb|sync_in_out=true|)\\
+    \verb|ce_i|  & in  & \verb|sl|    & 1                              & Clock enable input (used when \verb|use_pipelining=true| or \verb|sync_in_out=true|)\\
+    \verb|a_i|   & in  & \verb|slv|   & \verb|word_size_a|             & Input operand $A$\\
+    \verb|b_i|   & in  & \verb|slv|   & \verb|word_size_b|             & Input operand $B$\\
+    \verb|p_o|   & out & \verb|slv|   & \verb|word_size_a+word_size_b| & Product output $P=A \times B$\\
+    \bottomrule
+   \end{tabular}
+\end{table}
+
+
+\section{Simulation \& Test}
+
+For simulation and test, the testbench (\verb|tb_mult_booth_array.vhd|) was created which uses a random number generator together with assert statements to verify the designs (against a naive VHDL multiplication). 
+
+\bibliographystyle{alpha}
+\bibliography{booth_array_multiplier}
+
+\end{document}
+
+
+ 

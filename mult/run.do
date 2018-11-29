@@ -6,7 +6,7 @@
 # There can be only one!
 
 #VHDL DUT
-vcom mult.vhd
+vcom dut/unsigned_multi/mult.vhd
 
 # SystemVerilog DUT
 # vlog ../misc/tinyalu.sv

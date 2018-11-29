@@ -6,9 +6,10 @@ Inspired on the 'UVM basics' course by Mentor
 It is a simple counter. This is a basic UVM TB structure follwing the steps presented in 
 https://www.youtube.com/playlist?list=PL589BOiAVX7ZuFi6omNpuSd3WGGFmcu-Q
 
-## Serial mutiplier 
+## Serial unsigned mutiplier and a Booth signed multiplier
 
 A serial multiplier with its UVM testbench.
+The Booth signed multiplier comes from https://opencores.org/projects/mult_booth_array.
 
 ## UART interface
 
