@@ -18,6 +18,7 @@ endfunction : build_phase
 task run_phase(uvm_phase phase);
 	mult_input_t tx;
 	int result;
+	dut_vi.do_nothing();
 	dut_vi.reset_dut();
 
 	forever

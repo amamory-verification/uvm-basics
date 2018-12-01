@@ -1,7 +1,6 @@
 module top;
 import uvm_pkg::*;
 import dut_pkg::*;
-//import dut_if_pkg::*;
 
 bit clock;
 always #10 clock = ~clock; // clock generator
@@ -13,7 +12,7 @@ mult_serial  dut1(.clock(clock), .reset(unsigned_dut_if.reset),
 
 initial
 begin: blk
-	uvm_config_db#(virtual dut_if)::set(null, "*", "dut_vi", unsigned_dut_if.get_concrete_bfm());
+	uvm_config_db#(virtual dut_if_base)::set(null, "*", "dut_vi", unsigned_dut_if.get_concrete_bfm());
 
 	run_test(); // vsim +UVM_TESTNAME=my_test
 end // blk

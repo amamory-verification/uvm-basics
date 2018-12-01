@@ -13,25 +13,21 @@ interface dut_if #(parameter WIDTH = 16) (input bit clock);
 
     //import dut_if_pkg::*;
     class concrete_dut_if extends dut_if_base;
+		//`uvm_object_utils(concrete_dut_if)
+
+		function new(string name = "");
+		  super.new(name);
+		endfunction: new
+
 		task reset_dut();
 		  reset = 1'b1;
 		  @(negedge clock);
 		  @(negedge clock);
 		  reset = 1'b0;
 		endtask : reset_dut
-		   /*
-		initial begin
-		  clock = 0;
-		  fork
-		     forever begin
-		        #10;
-		        clock = ~clock;
-		     end
-		  join_none
-		end
-		*/
 
-		task do_mult(input int iA, input int iB, output int result);
+
+		task do_mult(input int iA, input int iB, output int oRes);
 			@(posedge clock);
 			start = 1'b1;
 			A = iA;
@@ -39,14 +35,27 @@ interface dut_if #(parameter WIDTH = 16) (input bit clock);
 			@(posedge clock);
 			start = 1'b0;
 			@(posedge done);
-			@(negedge clock); result = dout;
+			@(negedge clock); oRes = dout;
 		endtask : do_mult
+
+		task get_mult(ref shortint oA, ref shortint oB, ref int oRes);
+		    @(posedge start);
+		    @(negedge clock);
+		    oA = A;
+		    oB = B;
+		    @(posedge done);
+		    @(negedge clock);
+		    oRes = dout;
+		endtask : get_mult	
+		task do_nothing();
+			@(negedge clock);
+		endtask : do_nothing	
     endclass : concrete_dut_if
 
     concrete_dut_if concrete_inst;
 
     function dut_if_base get_concrete_bfm();
-    	concrete_inst = new;
+    	concrete_inst = new("if");
     	return concrete_inst;
     endfunction : get_concrete_bfm
 

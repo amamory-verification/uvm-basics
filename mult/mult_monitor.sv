@@ -20,7 +20,14 @@ task run_phase(uvm_phase phase);
   forever
   begin
     mult_input_t tx;
+    shortint A,B;
     tx = mult_input_t::type_id::create("tx");
+    //dut_vi.reset_dut();
+    //dut_vi.do_nothing();
+    //dut_vi.get_mult(A, B, tx.dout);
+    tx.A = A;
+    tx.B = B;
+    /*
     @(posedge dut_vi.start);
     @(negedge dut_vi.clock);
     tx.A = dut_vi.A;
@@ -28,6 +35,7 @@ task run_phase(uvm_phase phase);
     @(posedge dut_vi.done);
     @(negedge dut_vi.clock);
     tx.dout = dut_vi.dout;
+    */
     aport.write(tx);
     `uvm_info("msg", "New transaction", UVM_HIGH)
   end

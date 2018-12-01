@@ -3,7 +3,7 @@ package dut_pkg;
 `include "uvm_macros.svh"
 
 // ##### packages #####
-`include "dut_if_pkg.sv"
+`include "dut_if_base.sv"
 
    
 // ##### transactions #####
