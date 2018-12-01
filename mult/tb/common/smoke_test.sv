@@ -2,6 +2,7 @@ class smoke_test extends uvm_test;
 `uvm_component_utils(smoke_test)
 
 mult_env env_h;
+//unsigned width;
 
 function new (string name, uvm_component parent);
   super.new(name,parent);
@@ -9,11 +10,14 @@ endfunction : new
 
 function void build_phase(uvm_phase phase);
   env_h = mult_env::type_id::create("env", this);
+  //if (!uvm_config_db #(unsigned)::get (null,"*", "width", width) )
+  //  `uvm_fatal("smoke_test", "No WIDTH");  
   `uvm_info("msg", "Building Environment DONE!", UVM_LOW)
 endfunction: build_phase
 
 task run_phase(uvm_phase phase);
-  mult_basic_seq seq;
+  //mult_basic_seq #(width) seq;
+  mult_basic_seq  seq;
   `uvm_info("msg", "Running TEST1", UVM_LOW)
   seq = mult_basic_seq::type_id::create("seq");
   phase.raise_objection(this);

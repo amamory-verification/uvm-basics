@@ -2,10 +2,12 @@ package dut_pkg;
    import uvm_pkg::*;
 `include "uvm_macros.svh"
 
+// multiplier width
+parameter byte unsigned width = 32;
+   
 // ##### packages #####
 //`include "dut_if_base.sv"
 
-   
 // ##### transactions #####
 `include "mult_input_t.sv"
 //`include "output_transaction.sv"

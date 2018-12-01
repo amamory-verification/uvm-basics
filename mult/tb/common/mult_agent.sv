@@ -1,7 +1,7 @@
 class mult_agent extends uvm_agent;
 `uvm_component_utils(mult_agent);
 
- uvm_analysis_port #(mult_input_t) aport;
+ uvm_analysis_port #(mult_input_t #(width)) aport;
 
  mult_sequencer sequencer_h;
  mult_driver    driver_h;

@@ -1,8 +1,8 @@
-class mult_coverage extends uvm_subscriber #(mult_input_t);
+class mult_coverage extends uvm_subscriber #(mult_input_t #(width));
 `uvm_component_utils(mult_coverage);
 
-shortint A,B;
-int result;
+logic  [width-1:0] A,B;
+logic [2*width-1:0] result;
 
   covergroup range_value;
     a_leg: coverpoint A { 
@@ -20,7 +20,7 @@ int result;
   endgroup: range_value
 
  
-function void write(mult_input_t t);
+function void write(mult_input_t #(width) t);
   result = t.dout;
   A = t.A;
   B = t.B;
