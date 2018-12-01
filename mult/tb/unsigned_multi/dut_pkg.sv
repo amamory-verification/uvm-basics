@@ -3,7 +3,7 @@ package dut_pkg;
 `include "uvm_macros.svh"
 
 // ##### packages #####
-`include "dut_if_base.sv"
+//`include "dut_if_base.sv"
 
    
 // ##### transactions #####
@@ -15,13 +15,13 @@ package dut_pkg;
 `include "mult_basic_seq.sv"
 `include "mult_zero_seq.sv"
 `include "mult_one_seq.sv"
-`include "mult_neg_seq.sv"
+//`include "mult_neg_seq.sv"
 
 
 // ##### tb modules #####
 `include "mult_driver.sv"
 `include "mult_monitor.sv"
-`include "mult_coverage.sv"
+`include "mult_coverage_unsigned.sv"
 `include "mult_scoreboard.sv"
 `include "mult_agent.sv"
 `include "mult_env.sv"
@@ -29,7 +29,7 @@ package dut_pkg;
 // ##### tests #####
 `include "smoke_test.sv"
 `include "zeros_ones_test.sv"
-`include "neg_test.sv"
+//`include "neg_test.sv"
 
 //`include "test1.sv"
 //`include "test2.sv"

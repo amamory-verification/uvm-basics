@@ -1,5 +1,5 @@
-class zeros_test extends uvm_test;
-`uvm_component_utils(zeros_test)
+class zeros_ones_test extends uvm_test;
+`uvm_component_utils(zeros_ones_test)
 
 mult_env env_h;
 //int a;
@@ -41,4 +41,4 @@ task run_phase(uvm_phase phase);
   phase.drop_objection(this);
 endtask
 
-endclass: zeros_test
+endclass: zeros_ones_test
