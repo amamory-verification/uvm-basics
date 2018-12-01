@@ -30,13 +30,11 @@ function void write(mult_input_t t);
   B = t.B;
   `uvm_info("msg", "Transaction Received", UVM_HIGH)
   range_value.sample();
-  //zeros_or_ones_or_neg.sample();
 endfunction: write 
 
 function new(string name, uvm_component parent);
   super.new(name,parent);
   range_value = new();
-  //zeros_or_ones_or_neg = new();
 endfunction: new
 
 
