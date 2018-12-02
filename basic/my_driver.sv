@@ -16,22 +16,14 @@ function void build_phase(uvm_phase phase);
 endfunction : build_phase
 
 task run_phase(uvm_phase phase);
-	phase.raise_objection(this);
-	#10 dut_vi.data = 0;
-	#10 dut_vi.data = 1;
-	#10 phase.drop_objection(this);
-	
+	my_transaction tx;
+	dut_vi.reset_dut();
 	forever
 	begin
-	  my_transaction tx;
-	  @(posedge dut_vi.clk);
 	  seq_item_port.get_next_item(tx);
-	  dut_vi.cmd = tx.cmd;
-	  dut_vi.addr = tx.addr;
-	  dut_vi.data = tx.data;
-	  @(posedge dut_vi.clk) seq_item_port.item_done();
+	  dut_vi.do_dut(tx.cmd,tx.data,tx.addr,tx.dout);
+	  seq_item_port.item_done();
 	  `uvm_info("msg", "transaction done !", UVM_HIGH)
-	  
 	end
 endtask: run_phase
 
