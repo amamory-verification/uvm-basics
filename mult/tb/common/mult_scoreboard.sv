@@ -6,7 +6,7 @@ function new(string name, uvm_component parent);
 endfunction: new
 
 function void write(mult_input_t t);
-  int expected_output; 
+  logic  [2*dut_pkg::DATA_WIDTH-1:0] expected_output; 
   string data_str;
   expected_output = t.A * t.B;
 
