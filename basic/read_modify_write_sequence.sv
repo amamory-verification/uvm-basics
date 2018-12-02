@@ -9,24 +9,23 @@ task body;
   
   begin
     my_transaction tx;
-    int a,d;
+    int d;
     tx = my_transaction::type_id::create("tx");
     start_item(tx);
-    `uvm_info("msg", "read transaction started", UVM_LOW)
+    //`uvm_info("msg", "read transaction started", UVM_LOW)
     assert(tx.randomize());
     tx.cmd = READ;
     finish_item(tx);
-    a = tx.addr;
     d = tx.data;
     ++d;
 
     tx = my_transaction::type_id::create("tx");
     start_item(tx);    
-    `uvm_info("msg", "write transaction started", UVM_LOW)
+    //`uvm_info("msg", "write transaction started", UVM_LOW)
     assert(tx.randomize() 
-       with {cmd == WRITE; addr == a; data == d; });
+       with {cmd == WRITE; data == d; });
     finish_item(tx);
-    `uvm_info("msg", "sequence read_modify_write finished", UVM_LOW)
+    //`uvm_info("msg", "sequence read_modify_write finished", UVM_LOW)
   end
 endtask: body
 

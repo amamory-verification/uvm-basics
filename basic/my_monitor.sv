@@ -17,17 +17,15 @@ function void build_phase(uvm_phase phase);
 endfunction: build_phase
 
 task run_phase(uvm_phase phase);
+  my_transaction tx;
   forever
   begin
-    my_transaction tx;
     @(posedge dut_vi.clk);
     tx = my_transaction::type_id::create("tx");
     $cast(tx.cmd, dut_vi.cmd);
-    tx.addr = dut_vi.addr;
     tx.data = dut_vi.data;
-    
     aport.write(tx);
-    `uvm_info("msg", "New transaction", UVM_HIGH)
+    //`uvm_info("msg", "New transaction", UVM_HIGH)
   end
 endtask: run_phase
 
