@@ -5,10 +5,10 @@ import dut_pkg::*;
 bit clock;
 always #10 clock = ~clock; // clock generator
 
-dut_if  #(.WIDTH(16))   dut_if(clock);
+dut_if   dut_if(clock);
 boothmult #(.N(16)) dut1(.clk(clock), .reset(dut_if.reset), 
-	.start(dut_if.start), .multiplier(dut_if.A), .multiplicand(dut_if.B), 
-	.done(dut_if.done), .product(dut_if.dout));
+	.start(dut_if.start), .multiplier(dut_if.A[15:0]), .multiplicand(dut_if.B[15:0]), 
+	.done(dut_if.done), .product(dut_if.dout[31:0]));
 
 initial
 begin: blk
