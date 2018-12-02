@@ -17,13 +17,15 @@ endfunction : build_phase
 
 task run_phase(uvm_phase phase);
 	my_transaction tx;
+	string data_str;
 	dut_vi.reset_dut();
 	forever
-	begin
-	  seq_item_port.get_next_item(tx);
-	  dut_vi.do_dut(tx.cmd,tx.data,tx.addr,tx.dout);
-	  seq_item_port.item_done();
-	  `uvm_info("msg", "transaction done !", UVM_HIGH)
+		begin
+		seq_item_port.get_next_item(tx);
+		dut_vi.do_dut(tx.cmd,tx.data,tx.dout);
+		data_str = $psprintf("data = %0d, dout = %0d", tx.data, tx.dout);
+		`uvm_info ("DRIVER", {"PASS: ", data_str}, UVM_HIGH)	
+		seq_item_port.item_done();
 	end
 endtask: run_phase
 
