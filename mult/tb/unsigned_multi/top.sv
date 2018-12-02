@@ -5,7 +5,7 @@ import dut_pkg::*;
 bit clock;
 always #10 clock = ~clock; // clock generator
 
-dut_if  #(.WIDTH(16))   unsigned_dut_if(clock);
+dut_if   unsigned_dut_if(clock);
 mult_serial  dut1(.clock(clock), .reset(unsigned_dut_if.reset), 
 	.start(unsigned_dut_if.start), .A(unsigned_dut_if.A), .B(unsigned_dut_if.B), 
 	.done(unsigned_dut_if.done), .dout(unsigned_dut_if.dout));

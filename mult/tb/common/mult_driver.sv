@@ -19,17 +19,14 @@ endfunction : build_phase
 
 task run_phase(uvm_phase phase);
 	mult_input_t tx;
-	int result;
-	//dut_vi.do_nothing();
 	dut_vi.reset_dut();
 
 	forever
 	begin
 	  seq_item_port.get_next_item(tx);
-	  dut_vi.do_mult(tx.A, tx.B, result);
-	  tx.dout = result;
+	  dut_vi.do_mult(tx.A, tx.B, tx.dout);
 	  seq_item_port.item_done();
-	  `uvm_info("msg", "transaction done !", UVM_HIGH)
+	  //`uvm_info("msg", "transaction done !", UVM_HIGH)
 	end
 endtask: run_phase
 

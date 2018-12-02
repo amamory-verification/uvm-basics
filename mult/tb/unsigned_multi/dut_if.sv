@@ -2,12 +2,12 @@
 //class Register #(parameter type T = int);
 //  T data;
 
-interface dut_if #(parameter WIDTH = 16) (input bit clock);
+interface dut_if (input bit clock);
 	import dut_pkg::*;
 
     bit    reset, start;
-    logic  [WIDTH-1:0] A,B;
-    logic  [2*WIDTH-1:0] dout;
+    logic  [dut_pkg::DATA_WIDTH-1:0] A,B;
+    logic  [2*dut_pkg::DATA_WIDTH-1:0] dout;
     bit    done;
 
 /*
@@ -27,7 +27,7 @@ interface dut_if #(parameter WIDTH = 16) (input bit clock);
 		endtask : reset_dut
 
 
-		task do_mult(input int iA, input int iB, output int oRes);
+		task do_mult(input logic  [dut_pkg::DATA_WIDTH-1:0] iA, input logic  [dut_pkg::DATA_WIDTH-1:0] iB, output logic  [2*dut_pkg::DATA_WIDTH-1:0] oRes);
 			@(posedge clock);
 			start = 1'b1;
 			A = iA;
@@ -38,7 +38,7 @@ interface dut_if #(parameter WIDTH = 16) (input bit clock);
 			@(negedge clock); oRes = dout;
 		endtask : do_mult
 
-		task get_mult(output shortint oA, output shortint oB, output int oRes);
+		task get_mult(output logic  [dut_pkg::DATA_WIDTH-1:0] oA, output logic  [dut_pkg::DATA_WIDTH-1:0] oB, output logic  [2*dut_pkg::DATA_WIDTH-1:0] oRes);
 		    @(posedge start);
 		    @(negedge clock);
 		    oA = A;

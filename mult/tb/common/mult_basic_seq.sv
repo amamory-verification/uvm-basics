@@ -6,9 +6,9 @@ function new(string name = "");
 endfunction: new
 
 task body;
+  mult_input_t tx;
   repeat(5)
   begin
-    mult_input_t tx;
     tx = mult_input_t::type_id::create("tx");
     start_item(tx);
     assert(tx.randomize());

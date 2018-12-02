@@ -4,6 +4,11 @@ package dut_pkg;
 
 // ##### packages #####
 //`include "dut_if_base.sv"
+parameter DATA_WIDTH = 16;
+// max val for unsigned mults
+parameter MAX_RAND_VAL = 2**DATA_WIDTH-1;
+// max val for signed mults
+//parameter MAX_RAND_VAL = 2**(DATA_WIDTH-1)-1
 
    
 // ##### transactions #####
