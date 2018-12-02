@@ -19,3 +19,9 @@ set NoQuitOnFinish 1
 onbreak {resume}
 log /* -r
 run -all
+
+coverage attribute -name TESTNAME -value test2
+coverage save test2.ucdb
+
+#vcover merge  smoke_test.ucdb zeros_test.ucdb neg_test.ucdb
+vcover report test2.ucdb -cvg -details
