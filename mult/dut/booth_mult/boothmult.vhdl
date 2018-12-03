@@ -76,10 +76,11 @@ begin
    
 end process;
 
-   --product <= std_logic_vector(s(2*N downto 1));
-   
-    product((2*N)-1) <= multiplier(N-1) xor multiplicand(N-1);
-    product((2*N-2) downto 0) <= std_logic_vector(pp((2*N-2) downto 0));
+--product <= std_logic_vector(s(2*N downto 1));
+
+--product((2*N)-1) <= multiplier(N-1) xor multiplicand(N-1);
+--product((2*N-2) downto 0) <= std_logic_vector(pp((2*N-2) downto 0));
+product <= std_logic_vector(pp);
 
 end boothmultarch;
 
