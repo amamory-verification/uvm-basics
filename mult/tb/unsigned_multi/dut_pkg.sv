@@ -6,9 +6,12 @@ package dut_pkg;
 //`include "dut_if_base.sv"
 parameter DATA_WIDTH = 16;
 // max val for unsigned mults
-parameter MAX_RAND_VAL = 2**DATA_WIDTH-1;
+// check if it is a signed multiplier. used by the scoreboard and i tried to use it in the seq_item, with no success
+parameter SIGNED_MULT = 1'b1;
+
+//parameter MAX_RAND_VAL = 2**DATA_WIDTH-1;
 // max val for signed mults
-//parameter MAX_RAND_VAL = 2**(DATA_WIDTH-1)-1
+//parameter MAX_RAND_VAL = 2**(DATA_WIDTH-1)-1;
 
    
 // ##### transactions #####

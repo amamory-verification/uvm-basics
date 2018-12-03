@@ -1,10 +1,9 @@
-
 interface dut_if (input bit clock);
 	import dut_pkg::*;
 
     bit    reset, start;
-    logic  [31:0] A,B;
-    logic  [63:0] dout;
+    logic  [dut_pkg::DATA_WIDTH-1:0] A,B;
+    logic  [2*dut_pkg::DATA_WIDTH-1:0] dout;
     bit    done;
 
 /*
@@ -24,18 +23,18 @@ interface dut_if (input bit clock);
 		endtask : reset_dut
 
 
-		task do_mult(input logic [31:0] iA, input logic [31:0] iB, output logic [63:0] oRes);
+		task do_mult(input logic   [dut_pkg::DATA_WIDTH-1:0] iA, input logic   [dut_pkg::DATA_WIDTH-1:0] iB, output logic    [2*dut_pkg::DATA_WIDTH-1:0] oRes);
 			@(posedge clock);
 			start = 1'b1;
-			A = iA;
-			B = iB;
+			A =  iA;
+			B =  iB;
 			@(posedge clock);
 			start = 1'b0;
 			@(posedge done);
 			@(negedge clock); oRes = dout;
 		endtask : do_mult
 
-		task get_mult(output logic [31:0] oA, output logic [31:0] oB, output logic [63:0] oRes);
+		task get_mult(output logic   [dut_pkg::DATA_WIDTH-1:0] oA, output logic   [dut_pkg::DATA_WIDTH-1:0] oB, output logic   [2*dut_pkg::DATA_WIDTH-1:0] oRes);
 		    @(posedge start);
 		    @(negedge clock);
 		    oA = A;

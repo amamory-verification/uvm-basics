@@ -8,12 +8,12 @@ logic  [2*dut_pkg::DATA_WIDTH-1:0] result;
     a_leg: coverpoint A { 
         bins zero   = {0};      // zero
         bins plus1  = {1};      // 1
-        bins pos    = {[2:dut_pkg::MAX_RAND_VAL]};  // positive values
+        bins pos    = {[2:$]};  // positive values
     }
     b_leg: coverpoint B { 
         bins zero   = {0};      // zero
         bins plus1  = {1};      // 1
-        bins pos    = {[2:dut_pkg::MAX_RAND_VAL]};  // positive values
+        bins pos    = {[2:$]};  // positive values
     }
 
     a_b:  cross a_leg, b_leg;

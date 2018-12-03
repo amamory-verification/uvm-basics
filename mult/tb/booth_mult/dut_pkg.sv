@@ -5,7 +5,27 @@ package dut_pkg;
 // ##### packages #####
 //`include "dut_if_base.sv"
 
-   
+// multiplier data width
+parameter DATA_WIDTH = 32;
+// check if it is a signed multiplier. used by the scoreboard and i tried to use it in the seq_item, with no success
+parameter SIGNED_MULT = 1'b1;
+/*
+// max val for signed mults
+parameter MAX_RAND_VAL = 2**(DATA_WIDTH-1)-1;
+// max val for unsigned mults
+parameter MAX_RAND_VAL = 2**DATA_WIDTH-1;
+*/
+//parameter MAX_RAND_VAL = (SIGNED_MULT == 1'b1)? 2**(DATA_WIDTH-1)-1 : 2**DATA_WIDTH-1;
+
+// TODO mult_input_t nao aceitou mult_type. funcionou como unsigned
+/*
+`ifdef SIGNED_MULT == 1'b1
+	typedef logic signed mult_type;
+`else
+	typedef logic unsigned mult_type;
+`endif
+*/
+ 
 // ##### transactions #####
 `include "mult_input_t.sv"
 //`include "output_transaction.sv"
