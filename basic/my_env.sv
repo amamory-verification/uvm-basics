@@ -1,15 +1,21 @@
 class my_env extends uvm_env;
 `uvm_component_utils(my_env);
 
- my_agent       my_agent_h;
- my_subscriber  my_subscriber_h;
+ my_agent           my_agent_h;
+ my_subscriber      my_subscriber_h;
+ my_param_container my_param_h;
  
 function new(string name, uvm_component parent);
   super.new(name,parent);
 endfunction: new
 
+
 function void build_phase(uvm_phase phase);
   `uvm_info("msg", "Building ENV", UVM_NONE)
+
+  my_param_h = my_param_container::type_id::create("my_param");
+  uvm_config_db#(my_param_container)::set(null, "*", "my_param", my_param_h);
+
   my_agent_h = my_agent::type_id::create("my_agent", this);
   my_subscriber_h = my_subscriber::type_id::create("my_subscriber", this);
   `uvm_info("msg", "ENV Done !", UVM_NONE)
