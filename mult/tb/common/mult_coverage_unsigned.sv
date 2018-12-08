@@ -1,22 +1,18 @@
 class mult_coverage extends uvm_subscriber #(mult_input_t);
 `uvm_component_utils(mult_coverage);
 
-shortint A,B;
-int result;
+logic  [dut_pkg::DATA_WIDTH-1:0] A,B;
+logic  [2*dut_pkg::DATA_WIDTH-1:0] result;
 
   covergroup range_value;
     a_leg: coverpoint A { 
-        bins neg    = {[$:-2]}; // negative values
-        bins minus1 = {-1};     // zero
         bins zero   = {0};      // zero
-        bins plus1  = {1};      // zero
+        bins plus1  = {1};      // 1
         bins pos    = {[2:$]};  // positive values
     }
     b_leg: coverpoint B { 
-        bins neg    = {[$:-2]}; // negative values
-        bins minus1 = {-1};     // zero
         bins zero   = {0};      // zero
-        bins plus1  = {1};      // zero
+        bins plus1  = {1};      // 1
         bins pos    = {[2:$]};  // positive values
     }
 
@@ -28,15 +24,13 @@ function void write(mult_input_t t);
   result = t.dout;
   A = t.A;
   B = t.B;
-  `uvm_info("msg", "Transaction Received", UVM_HIGH)
+  //`uvm_info("msg", "Transaction Received", UVM_HIGH)
   range_value.sample();
-  //zeros_or_ones_or_neg.sample();
 endfunction: write 
 
 function new(string name, uvm_component parent);
   super.new(name,parent);
   range_value = new();
-  //zeros_or_ones_or_neg = new();
 endfunction: new
 
 

@@ -6,9 +6,9 @@ function new(string name = "");
 endfunction: new
 
 task body;
+  mult_input_t tx;
   // a == 0
   repeat(10) begin
-    mult_input_t tx;
     tx = mult_input_t::type_id::create("tx");
     start_item(tx);
     assert(tx.randomize() with {tx.A == 1;});
@@ -16,7 +16,6 @@ task body;
   end
   // b == 0
   repeat(10) begin
-    mult_input_t tx;
     tx = mult_input_t::type_id::create("tx");
     start_item(tx);
     assert(tx.randomize() with {tx.B == 1;});
@@ -24,7 +23,6 @@ task body;
   end
   //  a == b == 0
   repeat(1) begin
-    mult_input_t tx;
     tx = mult_input_t::type_id::create("tx");
     start_item(tx);
     assert(tx.randomize() with {tx.A == 1; tx.B == 1;});
