@@ -1,5 +1,5 @@
-interface dut_if (input bit clock);
-	import dut_pkg::*;
+interface router_if (input bit clock);
+	import router_pkg::*;
 
 	bit reset;
 
@@ -16,11 +16,11 @@ Each of the five interfaces has the following ports:
 */
 
 	// input interface
-    bit [dut_pkg::NPORT-1:0]   clock_rx,rx, credit_o;
-    logic [dut_pkg::NPORT-1:0][dut_pkg::FLIT_WIDTH-1:0]   data_in;
+    bit [router_pkg::NPORT-1:0]        clock_rx, rx,  credit_o;
+    bit [router_pkg::FLIT_WIDTH-1:0]   data_in [router_pkg::NPORT];
     //output interface
-    bit [dut_pkg::NPORT-1:0]   clock_tx,tx, credit_i;
-    logic [dut_pkg::NPORT-1:0][dut_pkg::FLIT_WIDTH-1:0]   data_out;
+    bit [router_pkg::NPORT-1:0]        clock_tx,tx, credit_i;
+    bit [router_pkg::FLIT_WIDTH-1:0]   data_out [router_pkg::NPORT];
 
     task reset_dut();
 	  reset = 1'b1;
@@ -30,44 +30,63 @@ Each of the five interfaces has the following ports:
     endtask : reset_dut;
 
 	assign clock_rx = {clock,clock,clock,clock,clock}; 	
+	//assign clock_rx = 5'b00000; 	
 
 	// send entire packet 
     task send_packet(input packet_t   p, input unsigned port);
-    	int i=0;
+    	int i;
+    	i=0;
     	@(posedge clock_rx[port]);
-    	while(i<p.size()){
-    		if (credit_o[port] == 1'b1){ // dont send if buffer is full
+    	
+    	while (i<(p.payload.size()+2))  // header + packet size + payload . size() accounts only for the payload size
+    	begin
+    		if (credit_o[port] == 1'b1) begin // dont send if buffer is full
     			rx[port] = 1'b1;
-    			data_in[port] = p[i];
+    			data_in[port] = p.payload[i];
     			i++;
-    		}
+    		end
     		@(posedge clock_rx[port]);
-    	}
+    	end
     	rx[port] = 1'b0;
     	data_in[port] = 0;
     	@(posedge clock_rx[port]);
     endtask : send_packet
 
     task get_packet(output packet_t   p, input unsigned port);
-    	unsigned size=0,i=1;
+    	int i,size;
+    	i=0;
     	@(posedge clock_tx[port]);
     	credit_i[port] = 1'b1;
-		// get the packet size from the 1st flit
-    	while (true){
-    		if (tx[port] == 1'b1){
-				size = data_out[];
-				p[0] = data_out;
+		// get the header
+    	while (1'b1)
+    	begin
+    		if (tx[port] == 1'b1) begin
+				p.set_header(data_out[port]);
+				@(posedge clock_tx[port]);
 				break;
-			}
+			end
     		@(posedge clock_tx[port]);
-    	}
-    	
-    	while(i<size){
-    		if (tx[port] == 1'b1){
-    			p[i] = data_out;
+    	end
+		// get the packet size from the 1st flit
+    	while (1'b1)
+    	begin
+    		if (tx[port] == 1'b1) begin
+				size = data_out[port];
+				@(posedge clock_tx[port]);
+				break;
+			end
+    		@(posedge clock_tx[port]);
+    	end
+    	p.payload = new[size];
+    	while(i<p.payload.size()) // size() accounts only for the payload size
+    	begin
+    		if (tx[port] == 1'b1) begin
+    			p.payload[i] = data_out[port];
     			i ++;
-    		}
+    		end
     		@(posedge clock_tx[port]);
-    	}
+    	end
     	credit_i[port] = 1'b0;
     endtask : get_packet
+
+endinterface : router_if

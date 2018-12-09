@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------------
 --
---  DISTRIBUTED HEMPS  - version 5.0
+--  DISTRIBUTED HEMPS  - version 5.0 
 --
 --  Research group: GAPH-PUCRS    -    contact   fernando.moraes@pucrs.br
 --
@@ -54,7 +54,7 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.std_logic_unsigned.all;
 use work.HeMPS_defaults.all;
-use work.HemPS_PKG.all;
+--use work.HemPS_PKG.all;
 
 entity RouterCC is
 generic( address: regmetadeflit);

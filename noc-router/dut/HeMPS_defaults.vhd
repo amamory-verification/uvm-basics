@@ -16,7 +16,7 @@ library IEEE;
 use IEEE.Std_Logic_1164.all;
 use IEEE.std_logic_unsigned.all;
 use IEEE.std_logic_arith.all;
-use work.HeMPS_PKG.all;
+--use work.HeMPS_PKG.all;
 
 package HeMPS_defaults is
 
@@ -51,7 +51,7 @@ package HeMPS_defaults is
 ---------------------------------------------------------
 -- CONSTANT DEPENDENTE DA LARGURA DE BANDA DA REDE - FIXED FOR HEMPS
 ---------------------------------------------------------
-        constant TAM_FLIT : integer range 1 to 64 := 32;
+        constant TAM_FLIT : integer range 1 to 64 := 16;
         constant METADEFLIT : integer range 1 to 32 := (TAM_FLIT/2);
         constant QUARTOFLIT : integer range 1 to 16 := (TAM_FLIT/4);
 
@@ -65,6 +65,9 @@ package HeMPS_defaults is
 ---------------------------------------------------------
 -- CONSTANTS DEPENDENTES DO NUMERO DE ROTEADORES
 ---------------------------------------------------------
+        constant NUMBER_PROCESSORS : integer := 9;
+        constant NUMBER_PROCESSORS_X : integer := 3;
+        constant NUMBER_PROCESSORS_Y : integer := 3;
         constant NROT: integer := NUMBER_PROCESSORS;
 
         constant MIN_X : integer := 0;

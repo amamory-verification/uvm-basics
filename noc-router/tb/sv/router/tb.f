@@ -1,3 +1,3 @@
-dut_pkg.sv
-dut_if.sv
+router_pkg.sv
+router_if.sv
 top.sv
