@@ -18,7 +18,7 @@ parameter Y_ADDR = 1;
 
 
 // #### sequences #####
-//`include "basic_seq.sv"
+`include "basic_seq.sv"
 ////`include "small_packets_seq.sv"
 ////`include "big_packets_seq.sv"
 ////`include "stress_seq.sv"
@@ -26,15 +26,15 @@ parameter Y_ADDR = 1;
 
 
 // ##### tb modules #####
-//`include "router_driver.sv"
-//`include "router_monitor.sv"
-//`include "router_coverage.sv"
-//`include "router_scoreboard.sv"
-//`include "router_agent.sv"
-//`include "router_env.sv"
+`include "router_driver.sv"
+`include "router_monitor.sv"
+`include "router_coverage.sv"
+`include "router_agent.sv"
+`include "router_scoreboard.sv"
+`include "router_env.sv"
 
 // ##### tests #####
-//`include "smoke_test.sv"
+`include "smoke_test.sv"
 
    
 endpackage : router_pkg
