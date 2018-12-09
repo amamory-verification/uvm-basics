@@ -1,6 +1,7 @@
 class router_driver extends uvm_driver #(packet_t);
 `uvm_component_utils(router_driver);
 
+//uvm_analysis_port #(packet_t) aport;
 virtual router_if dut_vi;
 bit [3:0] port;
 
@@ -19,12 +20,12 @@ endfunction : build_phase
 task run_phase(uvm_phase phase);
 	packet_t tx;
 	dut_vi.reset_dut();
-
 	forever
 	begin
 	  seq_item_port.get_next_item(tx);
 	  dut_vi.send_packet(tx,port);
 	  seq_item_port.item_done();
+	  //aport.write(tx); // send the incomming seq_item to the scoreboard/coverage
 	  //`uvm_info("driver", "transaction done !", UVM_HIGH)
 	end
 endtask: run_phase

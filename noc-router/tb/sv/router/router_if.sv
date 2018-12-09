@@ -37,13 +37,39 @@ Each of the five interfaces has the following ports:
     	int i;
     	i=0;
     	@(posedge clock_rx[port]);
-    	
-    	while (i<(p.payload.size()+2))  // header + packet size + payload . size() accounts only for the payload size
+		// send the header
+    	while (1'b1)
+    	begin
+    		if (credit_o[port] == 1'b1) begin
+    			rx[port] = 1'b1;
+    			data_in[port] = p.get_header();
+				@(posedge clock_rx[port]);
+				break;
+			end
+			rx[port] = 1'b0;
+    		@(posedge clock_rx[port]);
+    	end
+		// send the packet size from the 1st flit
+    	while (1'b1)
+    	begin
+    		if (credit_o[port] == 1'b1) begin
+    			rx[port] = 1'b1;
+    			data_in[port] = p.payload.size();
+				@(posedge clock_rx[port]);
+				break;
+			end
+			rx[port] = 1'b0;
+    		@(posedge clock_rx[port]);
+    	end		    	
+    	while (i<p.payload.size())  // size() accounts only for the payload size
     	begin
     		if (credit_o[port] == 1'b1) begin // dont send if buffer is full
     			rx[port] = 1'b1;
     			data_in[port] = p.payload[i];
     			i++;
+    		end else begin
+    			rx[port] = 1'b0;
+    			data_in[port] = 0;
     		end
     		@(posedge clock_rx[port]);
     	end

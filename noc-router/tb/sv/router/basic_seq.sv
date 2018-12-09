@@ -11,7 +11,7 @@ task body;
   begin
     tx = packet_t::type_id::create("tx");
     start_item(tx);
-    assert(tx.randomize());
+    assert(tx.randomize() with {tx.p_size == SMALL; tx.addr == NEIGHBOR;});
     finish_item(tx);
   end
 endtask: body

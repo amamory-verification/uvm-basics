@@ -99,6 +99,13 @@ function void set_header(input bit [router_pkg::FLIT_WIDTH-1:0] h );
   y = h >> 8;
 endfunction: set_header
 
+function shortint get_header();
+  shortint h,aux; 
+  aux = y << 8;
+  h = {aux[7:0], x[7:0]};
+  return h;
+endfunction: get_header
+
 function new(string name = "");
   super.new(name);
 endfunction: new

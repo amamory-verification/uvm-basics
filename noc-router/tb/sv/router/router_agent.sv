@@ -1,12 +1,12 @@
 class router_agent extends uvm_agent;
 `uvm_component_utils(router_agent);
 
- uvm_analysis_port #(packet_t) aport;
+ //uvm_analysis_port #(packet_t) aport;
 
  packet_sequencer sequencer_h;
  router_driver    driver_h;
  router_monitor   monitor_h;
- router_coverage  cov_h;
+ //router_coverage  cov_h;
  bit [3:0] port;
 
  
@@ -15,23 +15,27 @@ function new(string name, uvm_component parent);
 endfunction: new
 
 function void build_phase(uvm_phase phase);
-  aport = new("aport", this); 
+  //aport = new("aport", this); 
   if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
-    `uvm_fatal("agent", "No port");  
-  if (is_active == UVM_ACTIVE) begin
+    `uvm_fatal("agent", "No port"); 
+  // for now, it is allways active 
+  if (!uvm_config_db #(uvm_active_passive_enum)::get (this,"", "is_active", is_active) )
+    `uvm_fatal("agent", "No port");   
+  //is_active = UVM_ACTIVE;
+  if (get_is_active()) begin
     sequencer_h = packet_sequencer::type_id::create("sequencer", this);
     driver_h = router_driver::type_id::create("driver", this);
   end
-  cov_h = router_coverage::type_id::create("coverage", this);
+  //cov_h = router_coverage::type_id::create("coverage", this);
   monitor_h = router_monitor::type_id::create("monitor", this);
   `uvm_info("msg", "Building Agent DONE!", UVM_NONE)
 endfunction: build_phase
 
 function void connect_phase(uvm_phase phase);
-  if (is_active == UVM_ACTIVE) begin
+  if (get_is_active()) begin
     driver_h.seq_item_port.connect(sequencer_h.seq_item_export);
   end
-  monitor_h.aport.connect(aport);
+  //monitor_h.aport.connect(aport);
   `uvm_info("msg", "Connecting Agent DONE!", UVM_NONE)
 endfunction: connect_phase
 

@@ -31,7 +31,8 @@ RouterCC #(.address(16'h0101)) dut1(.clock(clock),
 	.rx(dut_if.rx),  
 	.data_in(dut_if.data_in),
 	.credit_o(dut_if.credit_o), // input ports
-	.credit_i(dut_if.credit_i) ,
+	//.credit_i(dut_if.credit_i) , // TODO
+	.credit_i(5'b11111) ,
 	.clock_tx(dut_if.clock_tx), 
 	.tx(dut_if.tx),  
 	.data_out(dut_if.data_out)
