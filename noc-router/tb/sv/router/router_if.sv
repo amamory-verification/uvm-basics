@@ -81,8 +81,12 @@ Each of the five interfaces has the following ports:
     task get_packet(output packet_t   p, input unsigned port);
     	int i,size;
     	i=0;
-    	@(posedge clock_tx[port]);
-    	credit_i[port] = 1'b1;
+        // wait for the header
+    	@(posedge tx[port]);
+        @(negedge clock_tx[port]);
+        p.set_header(data_out[port]);
+        
+    	//credit_i[port] = 1'b1;
 		// get the header
     	while (1'b1)
     	begin
@@ -112,7 +116,7 @@ Each of the five interfaces has the following ports:
     		end
     		@(posedge clock_tx[port]);
     	end
-    	credit_i[port] = 1'b0;
+    	//credit_i[port] = 1'b0;
     endtask : get_packet
 
 endinterface : router_if

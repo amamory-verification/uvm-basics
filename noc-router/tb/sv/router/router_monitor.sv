@@ -24,8 +24,9 @@ task run_phase(uvm_phase phase);
     packet_t tx;
     tx = packet_t::type_id::create("tx");
     dut_vi.get_packet(tx, port);
+    `uvm_info("monitor", "Got New transaction", UVM_HIGH)
     aport.write(tx);
-    //`uvm_info("msg", "New transaction", UVM_HIGH)
+    //
   end
 endtask: run_phase
 

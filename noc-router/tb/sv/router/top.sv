@@ -45,6 +45,9 @@ begin: blk
 	uvm_config_db#(virtual router_if)::set(null, "*", "dut_vi", dut_if);
 
 	run_test(); // vsim +UVM_TESTNAME=my_test
+	//#10000 // wait to output the last packets
+  	//repeat (500) @(posedge clock);
+
 end // blk
 
 endmodule: top

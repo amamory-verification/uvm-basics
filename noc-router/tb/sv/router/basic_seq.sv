@@ -1,4 +1,4 @@
-class basic_seq extends uvm_sequence #(packet_t);
+class basic_seq extends uvm_sequence #(packet_t); 
 `uvm_object_utils(basic_seq)
 
 function new(string name = "");

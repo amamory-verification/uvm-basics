@@ -10,13 +10,13 @@ function new(string name, uvm_component parent);
 endfunction: new
 
 function void build_phase(uvm_phase phase);
-  //string port_str;
+  //string port_str; 
   foreach (agent_h[i]) begin
     //port_str = $psprintf("agent%d",i);
-    agent_h[i] = router_agent::type_id::create($sformatf("agent%d",i), this);
+    agent_h[i] = router_agent::type_id::create($sformatf("agent%0d",i), this);
     //port_str = $psprintf("agent%d*",i);
-    uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent%d*",i), "port", i);
-    uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent%d*",i), "is_active", UVM_ACTIVE);
+    uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent%0d*",i), "port", i);
+    uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent%0d*",i), "is_active", UVM_ACTIVE);
   end
   coverage_h   = router_coverage::type_id::create("coverage", this);
   scoreboard_h = router_scoreboard::type_id::create("scoreboard", this);
