@@ -8,10 +8,13 @@ https://www.youtube.com/playlist?list=PL589BOiAVX7ZuFi6omNpuSd3WGGFmcu-Q
 
 ## Serial unsigned mutiplier and a Booth signed multiplier
 
-A serial multiplier with its UVM testbench.
-The Booth signed multiplier comes from https://opencores.org/projects/mult_booth_array.
+It is a parametrizable UVM testbench tested on 4 different multipliers.
+
+## Network-on-Chip
+
+It is the NoC design presented in the paper [HERMES: an infrastructure for low area overhead packet-switching networks on chip](https://www.sciencedirect.com/science/article/pii/S0167926004000185)
 
 ## UART interface
 
-An UVM testbench for an UART interface presented in http://www.asic-world.com/examples/verilog/uart.html.
+An UVM testbench for an [UART interface](http://www.asic-world.com/examples/verilog/uart.html).
 
