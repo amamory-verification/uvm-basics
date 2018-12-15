@@ -22,7 +22,18 @@ import router_pkg::*;
 bit clock;
 always #10 clock = ~clock; // clock generator
 
-router_if   dut_if(clock);
+
+// reset generator
+bit reset = 1;
+initial begin
+reset = 1;
+repeat (5) begin
+  @(posedge clock);
+end
+reset = 0;
+end
+
+router_if   dut_if(clock, reset);
 
 // instantiate a central router 
 RouterCC #(.address(16'h0101)) dut1(.clock(clock), 

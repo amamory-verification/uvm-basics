@@ -19,6 +19,8 @@ task run_phase(uvm_phase phase);
   phase.raise_objection(this);
   //`uvm_info("msg", "Starting  SEQ", UVM_LOW)
   seq.start(env_h.agent_h[4].sequencer_h);
+  /// Set a drain time for the Test
+  phase.phase_done.set_drain_time(this, 1500ns);
   //`uvm_info("msg", "SEQ STARTED!!!", UVM_LOW)
   phase.drop_objection(this);
 endtask

@@ -1,7 +1,7 @@
-interface router_if (input bit clock);
+interface router_if (input bit clock, input bit reset);
 	import router_pkg::*;
 
-	bit reset;
+//	bit reset;
 
 /*
 Each of the five interfaces has the following ports:
@@ -17,17 +17,18 @@ Each of the five interfaces has the following ports:
 
 	// input interface
     bit [router_pkg::NPORT-1:0]        clock_rx, rx,  credit_o;
-    bit [router_pkg::FLIT_WIDTH-1:0]   data_in [router_pkg::NPORT];
+    bit [router_pkg::FLIT_WIDTH-1:0]   data_in [router_pkg::NPORT-1:0];
     //output interface
     bit [router_pkg::NPORT-1:0]        clock_tx,tx, credit_i;
-    bit [router_pkg::FLIT_WIDTH-1:0]   data_out [router_pkg::NPORT];
-
+    bit [router_pkg::FLIT_WIDTH-1:0]   data_out [router_pkg::NPORT-1:0];
+/*
     task reset_dut();
 	  reset = 1'b1;
 	  @(negedge clock);
 	  @(negedge clock);
 	  reset = 1'b0;    	
     endtask : reset_dut;
+*/
 
 	assign clock_rx = {clock,clock,clock,clock,clock}; 	
 	//assign clock_rx = 5'b00000; 	
@@ -78,54 +79,41 @@ Each of the five interfaces has the following ports:
     	@(posedge clock_rx[port]);
     endtask : send_packet
 
+    // TODO task not working. logic transfered to the monitor
     task get_packet(output packet_t   p, input unsigned port);
-    	int i,size;
-    	i=0;
+        int i,size;
+        i=0;
         // wait for the header
-    	$display("get_packet STARTED !!!");
-        while(tx[port] !== 0'b1) begin
-            $display("clock %0d !!!", port );
-             i++;
-            @(negedge clock_tx[port]);
-        end;                
+        @(posedge tx[port]);
+        @(negedge clock);
         p.set_header(data_out[port]);
-        $display("MONITOR got header!!!");
-        
-    	//credit_i[port] = 1'b1;
-		// get the header
-    	/*
+        $display("MONITOR %0d got header %H",port,data_out[port]);
+
+        //credit_i[port] = 1'b1;
+
+        // get the packet size from the 1st flits
         while (1'b1)
-    	begin
-    		if (tx[port] == 1'b1) begin
-				p.set_header(data_out[port]);
-                $display("MONITOR got size!!!");
-				@(posedge clock_tx[port]);
-				break;
-			end
-    		@(posedge clock_tx[port]);
-    	end
-        */
-		// get the packet size from the 1st flit
-    	while (1'b1)
-    	begin
-    		if (tx[port] == 1'b1) begin
-				size = data_out[port];
-                $display("MONITOR got size!!!");
-				@(posedge clock_tx[port]);
-				break;
-			end
-    		@(posedge clock_tx[port]);
-    	end
-    	p.payload = new[size];
-    	$display("MONITOR getting payload!!!");
+        begin
+        @(negedge clock);
+        if (tx[port] == 1'b1) begin
+          size = data_out[port];
+          $display("MONITOR %0d got size %0d",port,size);
+          break;
+        end
+        //@(negedge clock);
+        end
+        p.payload = new[size];
+        i=0;
+        // get the payload
         while(i<p.payload.size()) // size() accounts only for the payload size
-    	begin
-    		if (tx[port] == 1'b1) begin
-    			p.payload[i] = data_out[port];
-    			i ++;
-    		end
-    		@(posedge clock_tx[port]);
-    	end
+        begin
+        @(negedge clock);
+        if (tx[port] == 1'b1) begin
+          p.payload[i] = data_out[port];
+          $display("MONITOR %0d got flit %0d %H",port,i,p.payload[i]);
+          i ++;
+        end
+        end
         $display("MONITOR got payload!!!");
     	//credit_i[port] = 1'b0;
     endtask : get_packet
