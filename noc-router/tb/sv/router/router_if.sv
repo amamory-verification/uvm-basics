@@ -82,33 +82,43 @@ Each of the five interfaces has the following ports:
     	int i,size;
     	i=0;
         // wait for the header
-    	@(posedge tx[port]);
-        @(negedge clock_tx[port]);
+    	$display("get_packet STARTED !!!");
+        while(tx[port] !== 0'b1) begin
+            $display("clock %0d !!!", port );
+             i++;
+            @(negedge clock_tx[port]);
+        end;                
         p.set_header(data_out[port]);
+        $display("MONITOR got header!!!");
         
     	//credit_i[port] = 1'b1;
 		// get the header
-    	while (1'b1)
+    	/*
+        while (1'b1)
     	begin
     		if (tx[port] == 1'b1) begin
 				p.set_header(data_out[port]);
+                $display("MONITOR got size!!!");
 				@(posedge clock_tx[port]);
 				break;
 			end
     		@(posedge clock_tx[port]);
     	end
+        */
 		// get the packet size from the 1st flit
     	while (1'b1)
     	begin
     		if (tx[port] == 1'b1) begin
 				size = data_out[port];
+                $display("MONITOR got size!!!");
 				@(posedge clock_tx[port]);
 				break;
 			end
     		@(posedge clock_tx[port]);
     	end
     	p.payload = new[size];
-    	while(i<p.payload.size()) // size() accounts only for the payload size
+    	$display("MONITOR getting payload!!!");
+        while(i<p.payload.size()) // size() accounts only for the payload size
     	begin
     		if (tx[port] == 1'b1) begin
     			p.payload[i] = data_out[port];
@@ -116,6 +126,7 @@ Each of the five interfaces has the following ports:
     		end
     		@(posedge clock_tx[port]);
     	end
+        $display("MONITOR got payload!!!");
     	//credit_i[port] = 1'b0;
     endtask : get_packet
 
