@@ -1,7 +1,7 @@
 class router_agent extends uvm_agent;
 `uvm_component_utils(router_agent);
 
- //uvm_analysis_port #(packet_t) aport;
+ //uvm_analysis_port #(packet_t) aport; 
 
  packet_sequencer sequencer_h;
  router_driver    driver_h;

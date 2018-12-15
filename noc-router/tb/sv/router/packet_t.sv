@@ -20,6 +20,7 @@ rand shortint  x, y;
 // initial port where the packet is injected
 rand bit [3:0] iport;
 
+
 // max network size
 //constraint c_x {  x >=0 ;  x < 2**(router_pkg::FLIT_WIDTH/2)-1; }
 //constraint c_y {  y >=0 ;  y < 2**(router_pkg::FLIT_WIDTH/2)-1; }

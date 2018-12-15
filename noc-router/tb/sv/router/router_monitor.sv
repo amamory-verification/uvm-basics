@@ -1,7 +1,8 @@
 class router_monitor extends uvm_monitor;
 `uvm_component_utils(router_monitor);
 
-uvm_analysis_port #(packet_t) aport;
+uvm_analysis_port #(packet_t) aport; // used to send the output packet to the sb
+
 virtual router_if dut_vi;
 bit [3:0] port;
 

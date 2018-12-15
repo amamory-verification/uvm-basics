@@ -1,7 +1,8 @@
 class router_driver extends uvm_driver #(packet_t);
 `uvm_component_utils(router_driver);
 
-//uvm_analysis_port #(packet_t) aport; 
+uvm_analysis_port #(packet_t) aport; // used to send the incomming packet to the sb
+
 virtual router_if dut_vi;
 bit [3:0] port;
 
@@ -10,6 +11,7 @@ function new(string name, uvm_component parent);
 endfunction : new
 
 function void build_phase(uvm_phase phase);
+	aport = new("aport", this); 
 	if (!uvm_config_db #(virtual router_if)::get (null,"*", "dut_vi", dut_vi) )
 		`uvm_fatal("driver", "No DUT_IF");
 	if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
@@ -72,6 +74,7 @@ task run_phase(uvm_phase phase);
 		dut_vi.data_in[port] = 0;
 		@(posedge dut_vi.clock);
 
+		 aport.write(tx); // send it to the sb
 		seq_item_port.item_done();
 	end
   	repeat (500) @(posedge dut_vi.clock);
