@@ -20,7 +20,7 @@ function void build_phase(uvm_phase phase);
 endfunction : build_phase
 
 task run_phase(uvm_phase phase);
-	packet_t tx;
+	packet_t tx, aux;
 	int i;
 	//dut_vi.reset_dut();
 	@(negedge dut_vi.reset);
@@ -28,6 +28,7 @@ task run_phase(uvm_phase phase);
 	@(posedge dut_vi.clock);
 	forever
 	begin
+		tx = packet_t::type_id::create("tx");
 		seq_item_port.get_next_item(tx);
 		//dut_vi.send_packet(tx,port);
 
@@ -74,7 +75,9 @@ task run_phase(uvm_phase phase);
 		dut_vi.data_in[port] = 0;
 		@(posedge dut_vi.clock);
 
-		 aport.write(tx); // send it to the sb
+		tx.iport = port; // set the output port for sb verification
+		//`uvm_info("DRIVER", $sformatf("%b %b",tx.iport,tx.oport),UVM_NONE);
+		aport.write(tx); // send it to the sb
 		seq_item_port.item_done();
 	end
   	repeat (500) @(posedge dut_vi.clock);

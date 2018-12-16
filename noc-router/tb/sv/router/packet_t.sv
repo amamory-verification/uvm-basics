@@ -15,11 +15,13 @@ rand address_t addr;
 // TODO optimize according to https://verificationacademy.com/forums/systemverilog/randomizing-dynamic-array-size
 rand bit [router_pkg::FLIT_WIDTH-1:0]   payload[];
 // packet header
-rand shortint  x, y;
+rand bit [7:0]  x, y;
 
 // initial port where the packet is injected
 rand bit [3:0] iport;
 
+// output port where the packet was captured
+bit [3:0] oport;
 
 // max network size
 //constraint c_x {  x >=0 ;  x < 2**(router_pkg::FLIT_WIDTH/2)-1; }
@@ -96,20 +98,64 @@ endfunction
 
 // TODO confirmar se eh assim q eh formado o header
 function void set_header(input bit [router_pkg::FLIT_WIDTH-1:0] h ); 
-  x = h && 16'h00FF;
-  y = h >> 8;
+  y = h[7:0];
+  x = h[15:8];  
 endfunction: set_header
 
 function shortint get_header();
-  shortint h,aux; 
-  aux = y << 8;
-  h = {aux[7:0], x[7:0]};
-  return h;
+  return {x[7:0], y[7:0]};
 endfunction: get_header
 
 function new(string name = "");
   super.new(name);
+  // when the transaction is input, them oport=-1
+  // otherwise, when the transaction is output, them iport=-1
+  iport = -1;
+  oport = -1;
 endfunction: new
+
+
+
+virtual function bit do_compare( uvm_object rhs, uvm_comparer comparer );
+  packet_t that;
+  if ( ! $cast( that, rhs ) ) return 0;
+
+  return ( super.do_compare( rhs, comparer )  &&
+           this.x     == that.x     &&
+           this.y      == that.y      &&
+           this.payload.size() == that.payload.size() &&
+           this.payload == that.payload );
+endfunction: do_compare
+
+virtual function void do_copy( uvm_object rhs );
+  packet_t that;
+
+  if ( ! $cast( that, rhs ) ) begin
+     `uvm_error( get_name(), "rhs is not a packet_t" )
+     return;
+  end
+
+  super.do_copy( rhs );
+  this.x     = that.x;
+  this.y     = that.y;
+  this.iport = that.iport;
+  this.oport = that.oport;
+  this.payload = that.payload;
+endfunction: do_copy
+
+virtual function string convert2string();
+  string s = super.convert2string();      
+  s = { s, $psprintf( "\nx    : %0d", x) };
+  s = { s, $psprintf( "\ny    : %0d", y) };
+  s = { s, $psprintf( "\nip   : %0d", iport) };
+  s = { s, $psprintf( "\nop   : %0d", oport) };
+  s = { s, $psprintf( "\nsize : %0d", payload.size()) };
+  s = { s, $psprintf( "\npayload : ") };
+  foreach(payload[i]) begin
+  	s = { s, $psprintf( "\n\t%H ",payload[i])};
+  end
+  return s;
+endfunction: convert2string
 
 endclass: packet_t
 

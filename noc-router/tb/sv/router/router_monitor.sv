@@ -66,6 +66,7 @@ task run_phase(uvm_phase phase);
     end
     `uvm_info("monitor", $sformatf("%s got payload",get_full_name()), UVM_NONE)
 
+    tx.oport = port; // set the sb output ap for verification
     aport.write(tx);
   end
 endtask: run_phase

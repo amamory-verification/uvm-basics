@@ -21,7 +21,7 @@ endgroup: range_value
  
 function void write(packet_t t);
 
-  //`uvm_info("msg", "Transaction Received", UVM_HIGH)
+  `uvm_info("COVERAGE", "PACKET RECEIVED !!!!", UVM_LOW);
   range_value.sample();
 endfunction: write 
 

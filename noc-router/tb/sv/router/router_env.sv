@@ -25,8 +25,9 @@ endfunction: build_phase
 function void connect_phase(uvm_phase phase);
   `uvm_info("msg", "Connecting ENV", UVM_NONE)
   foreach (agent_h[i]) begin
-    //agent_h[i].monitor_h.aport.connect(coverage_h.analysis_export);
-    // connect monitors with the sb
+    // conenct monitor with coverage
+    agent_h[i].monitor_h.aport.connect(coverage_h.analysis_export);
+    // connect monitors/drivers with the sb
     agent_h[i].monitor_h.aport.connect(scoreboard_h.mon_ap);
     agent_h[i].driver_h.aport.connect(scoreboard_h.drv_ap);
   end
