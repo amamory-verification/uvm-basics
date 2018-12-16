@@ -17,7 +17,7 @@ function void build_phase(uvm_phase phase);
   if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
     `uvm_fatal("monitor", "No port");
   $display("PORT number: %s - %0d",get_full_name() ,port);
-  `uvm_info("msg", "MONITOR Done !!!", UVM_NONE)
+  `uvm_info("msg", "MONITOR Done !!!", UVM_HIGH)
 endfunction: build_phase
 
 task run_phase(uvm_phase phase);
@@ -29,7 +29,7 @@ task run_phase(uvm_phase phase);
   forever
   begin
     tx = packet_t::type_id::create("tx");
-    `uvm_info("monitor", $sformatf("%s getting new transaction",get_full_name()), UVM_NONE)
+    `uvm_info("monitor", $sformatf("%s getting new transaction",get_full_name()), UVM_HIGH)
     // TODO ideally I would call a task from the BFM to let the monitor cleaner. however, it is not working. 
     // I will investigate more in the future
     //dut_vi.get_packet(tx, port);
@@ -38,7 +38,7 @@ task run_phase(uvm_phase phase);
     @(posedge dut_vi.tx[port]);
     @(negedge dut_vi.clock);
     tx.set_header(dut_vi.data_out[port]);
-    `uvm_info("monitor", $sformatf("%s got header %H",get_full_name(),dut_vi.data_out[port]), UVM_NONE)
+    `uvm_info("monitor", $sformatf("%s got header %H",get_full_name(),dut_vi.data_out[port]), UVM_HIGH)
       
     //credit_i[port] = 1'b1;
       
@@ -48,7 +48,7 @@ task run_phase(uvm_phase phase);
       @(negedge dut_vi.clock);
       if (dut_vi.tx[port] == 1'b1) begin
         size = dut_vi.data_out[port];
-        `uvm_info("monitor", $sformatf("%s got size %0d",get_full_name(),size), UVM_NONE)
+        `uvm_info("monitor", $sformatf("%s got size %0d",get_full_name(),size), UVM_HIGH)
         break;
       end
     end
@@ -60,11 +60,11 @@ task run_phase(uvm_phase phase);
       @(negedge dut_vi.clock);
       if (dut_vi.tx[port] == 1'b1) begin
         tx.payload[i] = dut_vi.data_out[port];
-        `uvm_info("monitor", $sformatf("%s got flit %0d %H",get_full_name(),i,tx.payload[i]), UVM_NONE)
+        `uvm_info("monitor", $sformatf("%s got flit %0d %H",get_full_name(),i,tx.payload[i]), UVM_HIGH)
         i ++;
       end
     end
-    `uvm_info("monitor", $sformatf("%s got payload",get_full_name()), UVM_NONE)
+    `uvm_info("monitor", $sformatf("%s got payload",get_full_name()), UVM_HIGH)
 
     tx.oport = port; // set the sb output ap for verification
     aport.write(tx);

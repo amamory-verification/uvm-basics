@@ -36,7 +36,7 @@ end
 router_if   dut_if(clock, reset);
 
 // instantiate a central router 
-RouterCC #(.address(16'h0101)) dut1(.clock(clock), 
+RouterCC #(.address(8'h11)) dut1(.clock(clock), 
 	.reset(dut_if.reset), 
 	.clock_rx(dut_if.clock_rx), 
 	.rx(dut_if.rx),  

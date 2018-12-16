@@ -13,6 +13,8 @@ uvm_tlm_analysis_fifo #(packet_t) input_fifo;
 uvm_tlm_analysis_fifo #(packet_t) output_fifo;
 
 int packet_matches, packet_mismatches; 
+int packets_sent, packets_received; 
+
 
 packet_t input_packet_queue[$];
 
@@ -38,6 +40,8 @@ function void build_phase(uvm_phase phase);
   output_fifo = new( "output_fifo", this); 
   packet_matches = 0;
   packet_mismatches = 0;
+  packets_sent = 0;
+  packets_received = 0;
 endfunction: build_phase
 
 
@@ -60,6 +64,7 @@ task get_input_data(uvm_tlm_analysis_fifo #(packet_t) fifo);
   forever begin
     fifo.get(tx);
     input_packet_queue.push_back(tx);
+    packets_sent++;
     `uvm_info("SCOREBOARD", "INPUT PACKET RECEIVED !!!!", UVM_LOW);
   end
 endtask: get_input_data
@@ -72,6 +77,8 @@ task get_output_data(uvm_tlm_analysis_fifo #(packet_t) fifo);
   forever begin
     tx = packet_t::type_id::create("tx");
     fifo.get(tx);
+    packets_received++;
+    `uvm_info("SCOREBOARD", "OUTPUT PACKET RECEIVED !!!!", UVM_LOW);
     if (input_packet_queue.size() == 0) begin
        `uvm_error("SB_MISMATCH", $sformatf("INPUT PACKET QUEUE IS EMPTY !!!!\n%s",tx.convert2string()));
        packet_mismatches++;
@@ -103,26 +110,37 @@ virtual function void extract_phase( uvm_phase phase );
   packet_t t;
 
   super.extract_phase( phase );
-  if ( input_fifo.try_get( t ) ) begin
-     `uvm_error( "input_fifo", 
-                 { "found a leftover packet: ", t.convert2string() } )
-  end
 
-  if ( output_fifo.try_get( t ) ) begin
-     `uvm_error( "output_fifo",
-                 { "found a leftover packet: ", t.convert2string() } )
-  end
+  `uvm_info("msg", $sformatf("simulation summary:\n   sent packets: %0d\n   received packets: %0d\n   matches: %0d\n   mismatches: %0d"
+      ,packets_sent, packets_received, packet_matches, packet_mismatches), UVM_NONE);
+
+  if (packets_sent == 0)
+    `uvm_error("SB_MISMATCH", $sformatf("no packets sent"));
+  if (packets_received == 0)
+    `uvm_error("SB_MISMATCH", $sformatf("no packets received"));
+  if (packets_sent > 0 && (packets_sent != packets_received))
+    `uvm_error("SB_MISMATCH", $sformatf("number of packets sent %0d is different from the number of packets received %0d",packets_sent, packets_received));
+  if (packet_mismatches != 0)
+    `uvm_error("SB_MISMATCH", $sformatf("%0d mismatches detected", packet_mismatches));
+  if (packets_sent > 0 && (packet_matches != packets_sent))
+    `uvm_error("SB_MISMATCH", $sformatf("number of packets sent %0d is different from the number of packets with match %0d",packets_sent, packet_matches));
+
+  if (input_packet_queue.size() > 0)
+    `uvm_error( "SB_MISMATCH", { "found %0d leftover packet at the input queue: ", input_packet_queue.size()} )
+
+  if ( input_fifo.try_get( t ) ) 
+    `uvm_error( "SB_MISMATCH", { "found a leftover packet at the input_fifo: ", t.convert2string() } )
+
+  if ( output_fifo.try_get( t ) ) 
+    `uvm_error( "SB_MISMATCH", { "found a leftover packet at the output_fifo: ", t.convert2string() } )
 endfunction: extract_phase
 
 /* check the XY routing algorithm
-        constant EAST: integer := 0;
-        constant WEST: integer := 1;
-        constant NORTH : integer := 2;
-        constant SOUTH : integer := 3;
-        constant LOCAL : integer := 4;
-current router address is 
+
+current router address is: 
   router_pkg::X_ADDR = 1;
   router_pkg::Y_ADDR = 1;
+the routing logic is :  
         lx <= address((METADEFLIT - 1) downto QUARTOFLIT);
         ly <= address((QUARTOFLIT - 1) downto 0);
 
@@ -132,7 +150,6 @@ current router address is
         dirx <= WEST when lx > tx else EAST;
         diry <= NORTH when ly < ty else SOUTH
 */
-
 function bit check_xy_routing (byte x, byte y, byte ip, byte op);
   const byte EAST  = 0;
   const byte WEST  = 1;
@@ -140,11 +157,16 @@ function bit check_xy_routing (byte x, byte y, byte ip, byte op);
   const byte SOUTH = 3;
   const byte LOCAL = 4;
 
-  `uvm_info("SCOREBOARD", $sformatf("checking XY %0d %0d %0d %0d",x,y,ip,op), UVM_LOW);
+  `uvm_info("SCOREBOARD", $sformatf("checking XY %0d %0d %0d %0d",x,y,ip,op), UVM_HIGH);
   // if the target is the router itself, then the ouput must be LOCAL
   if (router_pkg::X_ADDR == x && router_pkg::Y_ADDR == y) begin
-    if(op==LOCAL)
-      return 1;
+    if(op==LOCAL) begin
+      // Hermes router does not allow loopback
+      if (ip==LOCAL)
+        return 0;
+      else
+        return 1;
+    end 
     else
       return 0;
   end

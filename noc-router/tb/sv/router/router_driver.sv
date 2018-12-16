@@ -16,7 +16,7 @@ function void build_phase(uvm_phase phase);
 		`uvm_fatal("driver", "No DUT_IF");
 	if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
 		`uvm_fatal("driver", "No port");
-	`uvm_info("msg", "DRIVER Done!!!", UVM_NONE)
+	`uvm_info("msg", "DRIVER Done!!!", UVM_HIGH)
 endfunction : build_phase
 
 task run_phase(uvm_phase phase);
@@ -40,6 +40,7 @@ task run_phase(uvm_phase phase);
 			if (dut_vi.credit_o[port] == 1'b1) begin
 				dut_vi.rx[port] = 1'b1;
 				dut_vi.data_in[port] = tx.get_header();
+				//`uvm_info("DRIVER", $sformatf("SENT HEADER %h",tx.get_header()), UVM_NONE)
 				@(posedge dut_vi.clock);
 				break;
 			end
@@ -76,7 +77,6 @@ task run_phase(uvm_phase phase);
 		@(posedge dut_vi.clock);
 
 		tx.iport = port; // set the output port for sb verification
-		//`uvm_info("DRIVER", $sformatf("%b %b",tx.iport,tx.oport),UVM_NONE);
 		aport.write(tx); // send it to the sb
 		seq_item_port.item_done();
 	end

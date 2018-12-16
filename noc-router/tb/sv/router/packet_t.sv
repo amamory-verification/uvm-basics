@@ -1,6 +1,9 @@
 class packet_t extends uvm_sequence_item;
 `uvm_object_utils(packet_t)
 
+parameter half_flit = router_pkg::FLIT_WIDTH/2;
+parameter quarter_flit = router_pkg::FLIT_WIDTH/4;
+
 // to ease randomization of packet size
 typedef enum {ZERO, SMALL, MED, LARGE} packet_size_t;
 rand packet_size_t p_size;
@@ -14,14 +17,16 @@ rand address_t addr;
 // packet payload and size (payload.size())
 // TODO optimize according to https://verificationacademy.com/forums/systemverilog/randomizing-dynamic-array-size
 rand bit [router_pkg::FLIT_WIDTH-1:0]   payload[];
-// packet header
-rand bit [7:0]  x, y;
+// packet header - only 7 : 0 is used, y is 3: 0 and x is 7: 4
+rand bit [quarter_flit-1:0]  x, y;
 
 // initial port where the packet is injected
 rand bit [3:0] iport;
 
 // output port where the packet was captured
 bit [3:0] oport;
+
+
 
 // max network size
 //constraint c_x {  x >=0 ;  x < 2**(router_pkg::FLIT_WIDTH/2)-1; }
@@ -71,21 +76,21 @@ constraint c_addr {
 			x inside {router_pkg::X_ADDR-1 , router_pkg::X_ADDR+1};
 		}
 		else if (router_pkg::X_ADDR == 0){
-			y == router_pkg::X_ADDR+1;
+			x inside {router_pkg::X_ADDR , router_pkg::X_ADDR+1};
 		}
 
 		if (router_pkg::Y_ADDR > 0){
 			y inside {router_pkg::Y_ADDR-1 , router_pkg::Y_ADDR+1};
 		}
 		else if (router_pkg::Y_ADDR == 0){
-			y == router_pkg::Y_ADDR+1;
+			y inside {router_pkg::Y_ADDR , router_pkg::Y_ADDR+1};
 		}	
-	}else if (addr == FARAWAY){ // send to distante routers === TODO fix for invalid negative address or addr > 128
-		x inside {[router_pkg::X_ADDR-100 : router_pkg::X_ADDR-10] , [router_pkg::X_ADDR+10 : router_pkg::X_ADDR+100]};
-		y inside {[router_pkg::Y_ADDR-100 : router_pkg::Y_ADDR-10] , [router_pkg::Y_ADDR+10 : router_pkg::Y_ADDR+100]};
+	}else if (addr == FARAWAY){ // send to distante routers === TODO fix for invalid negative address or addr > 15
+		x inside {[router_pkg::X_ADDR-15 : router_pkg::X_ADDR-5] , [router_pkg::X_ADDR+5 : router_pkg::X_ADDR+15]};
+		y inside {[router_pkg::Y_ADDR-15 : router_pkg::Y_ADDR-5] , [router_pkg::Y_ADDR+5 : router_pkg::Y_ADDR+15]};
 	} else{
-		x inside {[router_pkg::X_ADDR-9 : router_pkg::X_ADDR-2] , [router_pkg::X_ADDR+2 : router_pkg::X_ADDR+9]};
-		y inside {[router_pkg::Y_ADDR-9 : router_pkg::Y_ADDR-2] , [router_pkg::Y_ADDR+2 : router_pkg::Y_ADDR+9]};
+		x inside {[router_pkg::X_ADDR-4 : router_pkg::X_ADDR-2] , [router_pkg::X_ADDR+2 : router_pkg::X_ADDR+4]};
+		y inside {[router_pkg::Y_ADDR-4 : router_pkg::Y_ADDR-2] , [router_pkg::Y_ADDR+2 : router_pkg::Y_ADDR+4]};
 	}
 }
 
@@ -96,14 +101,13 @@ begin
 end
 endfunction
 
-// TODO confirmar se eh assim q eh formado o header
 function void set_header(input bit [router_pkg::FLIT_WIDTH-1:0] h ); 
-  y = h[7:0];
-  x = h[15:8];  
+  y = h[quarter_flit-1:0];
+  x = h[half_flit-1 : quarter_flit];  
 endfunction: set_header
 
-function shortint get_header();
-  return {x[7:0], y[7:0]};
+function bit [router_pkg::FLIT_WIDTH-1:0] get_header();
+  return {8'b0,x, y};
 endfunction: get_header
 
 function new(string name = "");
