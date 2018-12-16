@@ -9,7 +9,7 @@ endfunction: new
 
 task body;
   packet_t tx;
-  repeat(5)
+  repeat(100)
   begin
     tx = packet_t::type_id::create("tx");
     tx.dport = port;

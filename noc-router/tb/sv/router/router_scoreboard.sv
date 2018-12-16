@@ -126,7 +126,7 @@ virtual function void extract_phase( uvm_phase phase );
     `uvm_error("SB_MISMATCH", $sformatf("number of packets sent %0d is different from the number of packets with match %0d",packets_sent, packet_matches));
 
   if (input_packet_queue.size() > 0)
-    `uvm_error( "SB_MISMATCH", { "found %0d leftover packet at the input queue: ", input_packet_queue.size()} )
+    `uvm_error( "SB_MISMATCH", $sformatf("found %0d leftover packet at the input queue: ", input_packet_queue.size()) )
 
   if ( input_fifo.try_get( t ) ) 
     `uvm_error( "SB_MISMATCH", { "found a leftover packet at the input_fifo: ", t.convert2string() } )
