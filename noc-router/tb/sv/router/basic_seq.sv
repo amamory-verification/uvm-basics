@@ -1,6 +1,8 @@
 class basic_seq extends uvm_sequence #(packet_t); 
 `uvm_object_utils(basic_seq)
 
+bit [3:0] port;
+
 function new(string name = "");
   super.new(name);
 endfunction: new
@@ -10,8 +12,9 @@ task body;
   repeat(5)
   begin
     tx = packet_t::type_id::create("tx");
+    tx.dport = port;
     start_item(tx);
-    assert(tx.randomize() with {tx.p_size == SMALL; tx.addr == NEIGHBOR;});
+    assert(tx.randomize() with {tx.p_size == SMALL;});
     finish_item(tx);
   end
 endtask: body

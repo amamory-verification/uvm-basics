@@ -76,7 +76,7 @@ task run_phase(uvm_phase phase);
 		dut_vi.data_in[port] = 0;
 		@(posedge dut_vi.clock);
 
-		tx.iport = port; // set the output port for sb verification
+		tx.dport = port; // set the output port for sb verification
 		aport.write(tx); // send it to the sb
 		seq_item_port.item_done();
 	end

@@ -87,7 +87,7 @@ task get_output_data(uvm_tlm_analysis_fifo #(packet_t) fifo);
     for( i=0; i< input_packet_queue.size(); i++) begin
       //$display("%s",input_packet_queue[i].convert2string());
       if (input_packet_queue[i].compare(tx)) begin
-        if (check_xy_routing (tx.x, tx.y, input_packet_queue[i].iport, tx.oport)) begin
+        if (check_xy_routing (tx.x, tx.y, input_packet_queue[i].dport, tx.oport)) begin
           `uvm_info("SB_MATCH", $sformatf("packet received successfully !!!!\n%s",tx.convert2string()), UVM_LOW);
           packet_matches++;
           found = 1;

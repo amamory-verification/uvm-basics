@@ -4,6 +4,13 @@ class packet_t extends uvm_sequence_item;
 parameter half_flit = router_pkg::FLIT_WIDTH/2;
 parameter quarter_flit = router_pkg::FLIT_WIDTH/4;
 
+// input port hard constraint  
+parameter EAST  = 0;
+parameter WEST  = 1;
+parameter NORTH = 2;
+parameter SOUTH = 3;
+parameter LOCAL = 4;
+
 // to ease randomization of packet size
 typedef enum {ZERO, SMALL, MED, LARGE} packet_size_t;
 rand packet_size_t p_size;
@@ -11,8 +18,8 @@ rand packet_size_t p_size;
 bit [4:0] w_zero=1, w_small=2, w_med=10, w_large=1;
 
 // to ease randomization of packet destination
-typedef enum {ITSELF, NEIGHBOR, NEARBY, FARAWAY} address_t;
-rand address_t addr;
+//typedef enum {ITSELF, NEIGHBOR, NEARBY, FARAWAY} address_t;
+//rand address_t addr;
 
 // packet payload and size (payload.size())
 // TODO optimize according to https://verificationacademy.com/forums/systemverilog/randomizing-dynamic-array-size
@@ -20,25 +27,22 @@ rand bit [router_pkg::FLIT_WIDTH-1:0]   payload[];
 // packet header - only 7 : 0 is used, y is 3: 0 and x is 7: 4
 rand bit [quarter_flit-1:0]  x, y;
 
-// initial port where the packet is injected
-rand bit [3:0] iport;
+rand bit [7:0] header;
 
 // output port where the packet was captured
 bit [3:0] oport;
 
+// driver port where the packet was inserted
+bit [3:0] dport;
 
+// it contains the valid target addresses
+bit [7:0] valid_target_addr[$];
 
 // max network size
 //constraint c_x {  x >=0 ;  x < 2**(router_pkg::FLIT_WIDTH/2)-1; }
 //constraint c_y {  y >=0 ;  y < 2**(router_pkg::FLIT_WIDTH/2)-1; }
 
-// input port hard constraint  
-//constant EAST: integer := 0;
-//constant WEST: integer := 1;
-//constant NORTH : integer := 2;
-//constant SOUTH : integer := 3;
-//constant LOCAL : integer := 4;
-constraint c_i_port {  iport inside {[0:4]}; }
+//constraint c_i_port {  iport inside {[0:4]};}
 
 
 // choose random packet size with weights
@@ -66,6 +70,7 @@ constraint c_size {
 	}
 }
 
+/*
 // packet destination in number of hops
 constraint c_addr { 
 	if (addr == ITSELF){ // loopback
@@ -93,11 +98,69 @@ constraint c_addr {
 		y inside {[router_pkg::Y_ADDR-4 : router_pkg::Y_ADDR-2] , [router_pkg::Y_ADDR+2 : router_pkg::Y_ADDR+4]};
 	}
 }
+*/
+
+constraint c_header { 
+	header inside {valid_target_addr};
+	x == header[7:4];
+	y == header[3:0];
+	solve header before x;
+	solve header before y;
+}
+
+
 
 // randomize the payload
 function void pre_randomize();
 begin
-	
+	bit [3:0] i,j;
+	if (dport == -1)
+		`uvm_fatal(get_name(), "set the dport before randomization" )
+	for (i = 0; i <= router_pkg::X_MAX; i++) begin
+		for (j = 0; j <= router_pkg::Y_MAX; j++) begin
+			// exclude loopback from the local port
+		if (dport == LOCAL) begin
+			if (!((i == router_pkg::X_ADDR) && (j == router_pkg::Y_ADDR))) begin
+				//$display("LOCAL TARGETS %h %0d %0d",{i,j}, i,j );
+				valid_target_addr.push_back({i,j});
+			end
+		end
+		// exclude target address to the left hand side of the current router addr
+		if (dport == WEST) begin
+			if (i >= router_pkg::X_ADDR) begin
+				//$display("WEST TARGETS %h %0d %0d",{i,j}, i,j );
+				valid_target_addr.push_back({i,j});
+			end
+		end
+		// exclude target address to the right hand side of the current router addr
+		if (dport == EAST) begin
+			if (i <= router_pkg::X_ADDR) begin
+				//$display("EAST TARGETS %h %0d %0d",{i,j}, i,j );
+				valid_target_addr.push_back({i,j});
+			end
+		end
+		// exclude target address above the current router addr. turns are forbiden
+		if (dport == NORTH) begin
+			if ((i == router_pkg::X_ADDR) && (j <= router_pkg::Y_ADDR)) begin
+				//$display("NORTH TARGETS %h %0d %0d",{i,j}, i,j );
+				valid_target_addr.push_back({i,j});
+			end
+		end
+		// exclude target address below the current router addr. turns are forbiden
+		if (dport == SOUTH) begin
+			if ((i == router_pkg::X_ADDR) && (j >= router_pkg::Y_ADDR)) begin
+				$display("SOUTH TARGETS %h %0d %0d",{i,j}, i,j );
+				valid_target_addr.push_back({i,j});
+			end
+		end
+	end
+	end
+	/*
+	$display("VALID TARGETS");
+	foreach(valid_target_addr[i]) begin
+		$display("%h",valid_target_addr[i]);
+	end
+	*/	
 end
 endfunction
 
@@ -114,8 +177,9 @@ function new(string name = "");
   super.new(name);
   // when the transaction is input, them oport=-1
   // otherwise, when the transaction is output, them iport=-1
-  iport = -1;
+  dport = -1;
   oport = -1;
+
 endfunction: new
 
 
@@ -142,7 +206,7 @@ virtual function void do_copy( uvm_object rhs );
   super.do_copy( rhs );
   this.x     = that.x;
   this.y     = that.y;
-  this.iport = that.iport;
+  //this.iport = that.iport;
   this.oport = that.oport;
   this.payload = that.payload;
 endfunction: do_copy
@@ -151,7 +215,7 @@ virtual function string convert2string();
   string s = super.convert2string();      
   s = { s, $psprintf( "\nx    : %0d", x) };
   s = { s, $psprintf( "\ny    : %0d", y) };
-  s = { s, $psprintf( "\nip   : %0d", iport) };
+  //s = { s, $psprintf( "\nip   : %0d", iport) };
   s = { s, $psprintf( "\nop   : %0d", oport) };
   s = { s, $psprintf( "\nsize : %0d", payload.size()) };
   s = { s, $psprintf( "\npayload : ") };

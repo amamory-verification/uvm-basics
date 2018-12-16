@@ -12,6 +12,10 @@ parameter MAX_FLITS = 128;
 parameter X_ADDR = 1;
 parameter Y_ADDR = 1;
 
+// NoC size . used to set the target routers
+parameter X_MAX = 2;
+parameter Y_MAX = 2;
+
  
 // ##### transactions / seq_item #####
 `include "packet_t.sv"
