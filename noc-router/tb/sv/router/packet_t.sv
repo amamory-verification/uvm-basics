@@ -110,7 +110,7 @@ constraint c_header {
 
 
 
-// randomize the payload
+// create the list of valid target addresses following XY routing algorithm
 function void pre_randomize();
 begin
 	bit [3:0] i,j;
@@ -149,18 +149,12 @@ begin
 		// exclude target address below the current router addr. turns are forbiden
 		if (dport == SOUTH) begin
 			if ((i == router_pkg::X_ADDR) && (j >= router_pkg::Y_ADDR)) begin
-				$display("SOUTH TARGETS %h %0d %0d",{i,j}, i,j );
+				//$display("SOUTH TARGETS %h %0d %0d",{i,j}, i,j );
 				valid_target_addr.push_back({i,j});
 			end
 		end
 	end
-	end
-	/*
-	$display("VALID TARGETS");
-	foreach(valid_target_addr[i]) begin
-		$display("%h",valid_target_addr[i]);
-	end
-	*/	
+	end	
 end
 endfunction
 
@@ -176,7 +170,7 @@ endfunction: get_header
 function new(string name = "");
   super.new(name);
   // when the transaction is input, them oport=-1
-  // otherwise, when the transaction is output, them iport=-1
+  // otherwise, when the transaction is output, them dport=-1
   dport = -1;
   oport = -1;
 
@@ -206,7 +200,7 @@ virtual function void do_copy( uvm_object rhs );
   super.do_copy( rhs );
   this.x     = that.x;
   this.y     = that.y;
-  //this.iport = that.iport;
+  this.dport = that.dport;
   this.oport = that.oport;
   this.payload = that.payload;
 endfunction: do_copy
@@ -215,7 +209,7 @@ virtual function string convert2string();
   string s = super.convert2string();      
   s = { s, $psprintf( "\nx    : %0d", x) };
   s = { s, $psprintf( "\ny    : %0d", y) };
-  //s = { s, $psprintf( "\nip   : %0d", iport) };
+  s = { s, $psprintf( "\nip   : %0d", dport) };
   s = { s, $psprintf( "\nop   : %0d", oport) };
   s = { s, $psprintf( "\nsize : %0d", payload.size()) };
   s = { s, $psprintf( "\npayload : ") };

@@ -13,8 +13,11 @@ task body;
   begin
     tx = packet_t::type_id::create("tx");
     tx.dport = port;
+    tx.w_zero = 0;
     start_item(tx);
     assert(tx.randomize() with {tx.p_size == SMALL;});
+    //assert(tx.randomize());
+    //assert(tx.randomize() with {tx.payload.size() == 1;});
     finish_item(tx);
   end
 endtask: body

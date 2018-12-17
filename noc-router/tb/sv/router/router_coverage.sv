@@ -1,33 +1,62 @@
 class router_coverage extends uvm_subscriber #(packet_t);
 `uvm_component_utils(router_coverage);
 
-logic  [router_pkg::FLIT_WIDTH-1:0] A,B;
+bit [3:0] oport, iport, x, y;
+bit [7:0] packet_size;
 
-covergroup range_value;
-  a_leg: coverpoint A { 
-      bins zero   = {0};      // zero
-      bins plus1  = {1};      // 1
-      bins pos    = {[2:$]};  // positive values
+
+// used to check if all input ports sent packets to all output ports, except in case of loopback
+covergroup cg_ports;
+  cp_iport: coverpoint iport { 
+      bins port[]    = {[0:4]};  // input ports. one bin per port
   }
-  b_leg: coverpoint B { 
-      bins zero   = {0};      // zero
-      bins plus1  = {1};      // 1
-      bins pos    = {[2:$]};  // positive values
+  cp_oport: coverpoint oport { 
+      bins port[]    = {[0:4]};  // output ports. one bin per port
   }
 
-  a_b:  cross a_leg, b_leg;
-endgroup: range_value
+  x_io_ports:  cross cp_iport, cp_oport{
+    // exclude loopback from cross_coverage
+    ignore_bins loopback = x_io_ports with (cp_iport == cp_oport);
+  }
+endgroup: cg_ports
 
+// used to checke whether all routers in the noc received packets from this router
+covergroup cg_noc_addr;
+  cp_x: coverpoint x { 
+      bins addr[]    = {[0:router_pkg::X_MAX]};  // x noc addr. 
+  }
+  cp_y: coverpoint y { 
+      bins addr[]    = {[0:router_pkg::Y_MAX]};  // y noc addr
+  }
+
+  x_noc_addr:  cross cp_x, cp_y;
+endgroup: cg_noc_addr
+
+// used to check if packets from all possible sizes were simulated
+covergroup cg_packet_sizes;
+  cp_sizes: coverpoint packet_size { 
+      bins port[]    = {[0:128]};  // valid packet lenghts. one bin per size
+  }
+endgroup: cg_packet_sizes
  
 function void write(packet_t t);
+  oport = t.oport;
+  iport = t.dport;
+  x = t.x;
+  y = t.y;
+  packet_size = t.payload.size();
 
+  cg_ports.sample();
+  cg_packet_sizes.sample();
+  cg_noc_addr.sample();
   `uvm_info("COVERAGE", "PACKET RECEIVED !!!!", UVM_LOW);
-  range_value.sample();
 endfunction: write 
 
 function new(string name, uvm_component parent);
   super.new(name,parent);
-  range_value = new();
+  cg_ports = new();
+  cg_packet_sizes = new();
+  cg_noc_addr = new();
 endfunction: new
 
 

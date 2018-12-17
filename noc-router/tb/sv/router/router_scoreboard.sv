@@ -1,21 +1,20 @@
-//class router_scoreboard extends uvm_subscriber #(packet_t);
 class router_scoreboard extends uvm_scoreboard;
 
 `uvm_component_utils(router_scoreboard);
 
-//uvm_analysis_port # (packet_t) drv_ap[router_pkg::NPORT]; // from driver  to sb
-//uvm_analysis_port # (packet_t) mon_ap[router_pkg::NPORT]; // from monitor to sb
-
 uvm_analysis_port # (packet_t) drv_ap; // from driver  to sb
 uvm_analysis_port # (packet_t) mon_ap; // from monitor to sb
+
+uvm_analysis_port #(packet_t) cov_ap;  // used to send checker packets from the sb to the coverage
 
 uvm_tlm_analysis_fifo #(packet_t) input_fifo;
 uvm_tlm_analysis_fifo #(packet_t) output_fifo;
 
+// counter used to generate a simulation report at the end
 int packet_matches, packet_mismatches; 
 int packets_sent, packets_received; 
 
-
+// queue where the input packets are temporally stored until they leave at some output port and be checked by the sb
 packet_t input_packet_queue[$];
 
 
@@ -25,17 +24,9 @@ endfunction: new
 
 
 function void build_phase(uvm_phase phase);
-  // build the driver's and monitor's analysis ports to connecto to the sb
-  /*
-  foreach drv_ap[i] begin
-    drv_ap[i] = new( $sformatf("drv_ap%0d",i)), this); 
-  end
-  foreach mon_ap[i] begin
-    mon_ap[i] = new( $sformatf("mon_ap%0d",i)), this); 
-  end
-  */
   drv_ap = new( "drv_ap", this);
   mon_ap = new( "mon_ap", this); 
+  cov_ap = new( "cov_ap", this); 
   input_fifo  = new( "input_fifo", this); 
   output_fifo = new( "output_fifo", this); 
   packet_matches = 0;
@@ -91,6 +82,9 @@ task get_output_data(uvm_tlm_analysis_fifo #(packet_t) fifo);
           `uvm_info("SB_MATCH", $sformatf("packet received successfully !!!!\n%s",tx.convert2string()), UVM_LOW);
           packet_matches++;
           found = 1;
+          // set the source port so coverage data can be extracted
+          tx.dport = input_packet_queue[i].dport;
+          cov_ap.write(tx); // send checked packets to the coverage module
           input_packet_queue.delete(i);
           break;
         end else
@@ -105,7 +99,7 @@ task get_output_data(uvm_tlm_analysis_fifo #(packet_t) fifo);
 endtask: get_output_data
 
 
-// checks leftover packets in the FIFOs
+// checks leftover packets in the FIFOs and generate the summary simulation report at the end of simulation
 virtual function void extract_phase( uvm_phase phase );
   packet_t t;
 
