@@ -26,3 +26,8 @@ onbreak {resume}
 log /* -r
 run -all
 
+coverage attribute -name TESTNAME -value smoke_test
+coverage save smoke_test.ucdb
+
+#vcover merge  -out multi.ucdb smoke_test.ucdb zeros_ones_test.ucdb neg_test.ucdb
+vcover report smoke_test.ucdb -cvg -details
