@@ -5,6 +5,8 @@ class router_agent extends uvm_agent;
  router_driver    driver_h;
  router_monitor   monitor_h;
  bit [3:0] port;
+ bit [3:0] cred_distrib;
+
 
  
 function new(string name, uvm_component parent);
@@ -12,7 +14,8 @@ function new(string name, uvm_component parent);
 endfunction: new
 
 function void build_phase(uvm_phase phase);
-  //aport = new("aport", this); 
+  if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", cred_distrib) )
+    `uvm_fatal("agent", "No cred_distrib"); 
   if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
     `uvm_fatal("agent", "No port"); 
   if (!uvm_config_db #(uvm_active_passive_enum)::get (this,"", "is_active", is_active) )

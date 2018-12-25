@@ -4,6 +4,7 @@ class router_env extends uvm_env;
 router_agent       agent_h [router_pkg::NPORT];
 router_coverage    coverage_h;
 router_scoreboard  scoreboard_h;
+bit [3:0] cred_distrib = 1;
 
 function new(string name, uvm_component parent);
   super.new(name,parent);
@@ -14,6 +15,7 @@ function void build_phase(uvm_phase phase);
   foreach (agent_h[i]) begin
     agent_h[i] = router_agent::type_id::create($sformatf("agent%0d",i), this);
     uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent%0d*",i), "port", i);
+    uvm_config_db #(bit [3:0])              ::set(this, "*", "cred_distrib", cred_distrib);
     uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent%0d*",i), "is_active", UVM_ACTIVE);
   end
 

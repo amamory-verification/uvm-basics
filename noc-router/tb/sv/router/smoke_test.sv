@@ -43,8 +43,8 @@ task run_phase(uvm_phase phase);
     $display(" ALL SEQS ENDED at %0t !!!", $time);
   end
 */  
-  /// Set a drain time for the Test
-  phase.phase_done.set_drain_time(this, 1500ns);
+  // end the simulation a little bit latter
+  phase.phase_done.set_drain_time(this, 100ns);
   //`uvm_info("msg", "SEQ STARTED!!!", UVM_LOW)
   phase.drop_objection(this);
 endtask

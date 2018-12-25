@@ -38,16 +38,17 @@ router_if   dut_if(clock, reset);
 // instantiate a central router 
 RouterCC #(.address(8'h11)) dut1(.clock(clock), 
 	.reset(dut_if.reset), 
+	// input ports
 	.clock_rx(dut_if.clock_rx), 
 	.rx(dut_if.rx),  
 	.data_in(dut_if.data_in),
-	.credit_o(dut_if.credit_o), // input ports
-	//.credit_i(dut_if.credit_i) , // TODO
-	.credit_i(5'b11111) ,
+	.credit_o(dut_if.credit_o), 
+	// output ports
+	.credit_i(dut_if.credit_i) ,
 	.clock_tx(dut_if.clock_tx), 
 	.tx(dut_if.tx),  
 	.data_out(dut_if.data_out)
-	); // output ports
+	); 
 
 
 initial

@@ -56,6 +56,7 @@ task run_phase(uvm_phase phase);
 			// wait until the buffer it not full again
 			@(negedge dut_vi.clock iff dut_vi.credit_o[port] == 1'b1);;
 		end
+		@(posedge dut_vi.clock);	
 		dut_vi.rx[port] = 1'b0;
 		dut_vi.data_in[port] = 0;
 		@(posedge dut_vi.clock);	

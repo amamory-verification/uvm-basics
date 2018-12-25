@@ -44,16 +44,18 @@ endfunction: connect_phase
 // main task
 task run_phase(uvm_phase phase);
   fork
-    get_input_data(input_fifo);
-    get_output_data(output_fifo);
+    get_input_data(input_fifo, phase);
+    get_output_data(output_fifo, phase);
   join
 endtask: run_phase
 
 // task for input packets
-task get_input_data(uvm_tlm_analysis_fifo #(packet_t) fifo);
+task get_input_data(uvm_tlm_analysis_fifo #(packet_t) fifo, uvm_phase phase);
   packet_t tx;
   forever begin
     fifo.get(tx);
+    // use objections terminate the simulation after all the packets were received 
+    phase.raise_objection(this);
     input_packet_queue.push_back(tx);
     packets_sent++;
     `uvm_info("SCOREBOARD", "INPUT PACKET RECEIVED !!!!", UVM_LOW);
@@ -61,13 +63,14 @@ task get_input_data(uvm_tlm_analysis_fifo #(packet_t) fifo);
 endtask: get_input_data
 
 // task for output packets
-task get_output_data(uvm_tlm_analysis_fifo #(packet_t) fifo);
+task get_output_data(uvm_tlm_analysis_fifo #(packet_t) fifo, uvm_phase phase);
   packet_t tx;
   int i;
   bit found;
   forever begin
     tx = packet_t::type_id::create("tx");
     fifo.get(tx);
+    
     packets_received++;
     `uvm_info("SCOREBOARD", "OUTPUT PACKET RECEIVED !!!!", UVM_LOW);
     if (input_packet_queue.size() == 0) begin
@@ -95,6 +98,8 @@ task get_output_data(uvm_tlm_analysis_fifo #(packet_t) fifo);
        `uvm_error("SB_MISMATCH", $sformatf("PACKET MISMATCH !!!!\n%s",tx.convert2string()));
        packet_mismatches++;      
     end 
+    // drop one objection to indicate that a packet was received. one step closer to terminate the simulation 
+    phase.drop_objection(this);
   end
 endtask: get_output_data
 
