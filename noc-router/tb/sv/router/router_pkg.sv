@@ -23,6 +23,8 @@ parameter Y_MAX = 2;
 
 // #### sequences #####
 `include "basic_seq.sv"
+`include "base_vseq.sv"
+`include "main_vseq.sv"
 ////`include "small_packets_seq.sv"
 ////`include "big_packets_seq.sv"
 ////`include "stress_seq.sv"
@@ -39,6 +41,6 @@ parameter Y_MAX = 2;
 
 // ##### tests #####
 `include "smoke_test.sv"
-
+`include "main_test.sv"
    
 endpackage : router_pkg

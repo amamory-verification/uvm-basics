@@ -20,7 +20,8 @@ vcom ../../../dut/RouterCC.vhd
 vlog -f tb.f
 
 
-vsim top -coverage +UVM_VERBOSITY=UVM_FULL +UVM_TESTNAME=smoke_test
+vsim top -coverage +UVM_TIMEOUT=1ms +UVM_VERBOSITY=UVM_FULL +UVM_TESTNAME=main_test 
+#### +uvm_set_config_int=uvm_test_top.env.agent4.monitor,cred_distrib,10
 set NoQuitOnFinish 1
 onbreak {resume}
 log /* -r
