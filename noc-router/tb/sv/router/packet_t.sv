@@ -10,10 +10,6 @@ rand packet_size_t p_size;
 // weights for packet size
 bit [4:0] w_zero=1, w_small=2, w_med=10, w_large=1;
 
-// to ease randomization of packet destination
-//typedef enum {ITSELF, NEIGHBOR, NEARBY, FARAWAY} address_t;
-//rand address_t addr;
-
 // packet payload and size (payload.size())
 // TODO optimize according to https://verificationacademy.com/forums/systemverilog/randomizing-dynamic-array-size
 rand bit [router_pkg::FLIT_WIDTH-1:0]   payload[];
@@ -23,8 +19,11 @@ rand bit [quarter_flit-1:0]  x, y;
 rand bit [7:0] header;
 
 
-// randomize the number of cycles the driver waits to start sending the packet
+// randomize the number of cycles the driver waits to start sending the packet. used by driver
 rand bit [3:0] cycle2send;
+
+// randomize the number of cycles between flits. used by driver
+rand bit [3:0] cycle2flit;
 
 // output port where the packet was captured
 bit [3:0] oport;
@@ -34,13 +33,6 @@ bit [3:0] dport;
 
 // it contains the valid target addresses
 bit [7:0] valid_target_addr[$];
-
-// max network size
-//constraint c_x {  x >=0 ;  x < 2**(router_pkg::FLIT_WIDTH/2)-1; }
-//constraint c_y {  y >=0 ;  y < 2**(router_pkg::FLIT_WIDTH/2)-1; }
-
-//constraint c_i_port {  iport inside {[0:4]};}
-
 
 // choose random packet size with weights
 constraint c_p_size {
@@ -52,12 +44,15 @@ constraint c_p_size {
 	};
 }
 
-
 // choose random # of cycles to start sendung this transaction
 constraint c_cycle2send {
 	cycle2send dist { [0:2] := 10, [3:15] := 1 };
 }
 
+// choose random # of cycles to start sendung this transaction
+constraint c_cycle2flit {
+	cycle2flit dist { 0 := 15, [1:2] := 5, [3:15] := 1 };
+}
 
 // max packet size in flits
 constraint c_size { 
@@ -73,36 +68,6 @@ constraint c_size {
 	}
 }
 
-/*
-// packet destination in number of hops
-constraint c_addr { 
-	if (addr == ITSELF){ // loopback
-		x == router_pkg::X_ADDR;
-		y == router_pkg::Y_ADDR;
-	}else if (addr == NEIGHBOR){ // send to a next router
-		if (router_pkg::X_ADDR > 0){
-			x inside {router_pkg::X_ADDR-1 , router_pkg::X_ADDR+1};
-		}
-		else if (router_pkg::X_ADDR == 0){
-			x inside {router_pkg::X_ADDR , router_pkg::X_ADDR+1};
-		}
-
-		if (router_pkg::Y_ADDR > 0){
-			y inside {router_pkg::Y_ADDR-1 , router_pkg::Y_ADDR+1};
-		}
-		else if (router_pkg::Y_ADDR == 0){
-			y inside {router_pkg::Y_ADDR , router_pkg::Y_ADDR+1};
-		}	
-	}else if (addr == FARAWAY){ // send to distante routers === TODO fix for invalid negative address or addr > 15
-		x inside {[router_pkg::X_ADDR-15 : router_pkg::X_ADDR-5] , [router_pkg::X_ADDR+5 : router_pkg::X_ADDR+15]};
-		y inside {[router_pkg::Y_ADDR-15 : router_pkg::Y_ADDR-5] , [router_pkg::Y_ADDR+5 : router_pkg::Y_ADDR+15]};
-	} else{
-		x inside {[router_pkg::X_ADDR-4 : router_pkg::X_ADDR-2] , [router_pkg::X_ADDR+2 : router_pkg::X_ADDR+4]};
-		y inside {[router_pkg::Y_ADDR-4 : router_pkg::Y_ADDR-2] , [router_pkg::Y_ADDR+2 : router_pkg::Y_ADDR+4]};
-	}
-}
-*/
-
 constraint c_header { 
 	header inside {valid_target_addr};
 	x == header[7:4];
@@ -110,8 +75,6 @@ constraint c_header {
 	solve header before x;
 	solve header before y;
 }
-
-
 
 // create the list of valid target addresses following XY routing algorithm
 function void pre_randomize();

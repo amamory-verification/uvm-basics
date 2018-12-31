@@ -19,8 +19,16 @@ function void build_phase(uvm_phase phase);
 	`uvm_info("msg", "DRIVER Done!!!", UVM_HIGH)
 endfunction : build_phase
 
+task wait_cycles(int cycles);
+	dut_vi.rx[port] = 1'b0;
+	repeat (cycles) begin
+		@(posedge dut_vi.clock);
+	end
+	dut_vi.rx[port] = 1'b1;
+endtask
+
 task run_phase(uvm_phase phase);
-	packet_t tx, aux;
+	packet_t tx;
 	int i;
 	@(negedge dut_vi.reset);
 	@(posedge dut_vi.clock);
@@ -34,24 +42,21 @@ task run_phase(uvm_phase phase);
 		//`uvm_info("msg", tx.convert2string(), UVM_LOW)
 		i=0;
 		//send header after some random number of clock cycles, from 0 to 15 cycles
-		repeat (tx.cycle2send) begin
-			@(posedge dut_vi.clock);
-		end		
-		dut_vi.rx[port] = 1'b1;
+		wait_cycles(tx.cycle2send);
 		dut_vi.data_in[port] = tx.get_header();	
 		// wait until there is space in the input buffer
 		@(negedge dut_vi.clock iff dut_vi.credit_o[port] == 1'b1);	
-		// send the size
 		@(posedge dut_vi.clock);
-		dut_vi.rx[port] = 1'b1;
+		// send the size after some random number of clock cycles, from 0 to 15 cycles
+		wait_cycles(tx.cycle2flit);
 		dut_vi.data_in[port] = tx.payload.size();
 		@(negedge dut_vi.clock iff dut_vi.credit_o[port] == 1'b1);
-		// send payload
+		// send payload after some random number of clock cycles, from 0 to 15 cycles
 		i=0;	
 		while (i<tx.payload.size())  // size() accounts only for the payload size
 		begin
 			@(posedge dut_vi.clock);
-			dut_vi.rx[port] = 1'b1;
+			wait_cycles(tx.cycle2flit);
 			dut_vi.data_in[port] = tx.payload[i];
 			i++;
 			// wait until the buffer it not full again
