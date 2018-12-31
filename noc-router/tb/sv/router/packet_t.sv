@@ -21,9 +21,14 @@ rand bit [7:0] header;
 
 // randomize the number of cycles the driver waits to start sending the packet. used by driver
 rand bit [3:0] cycle2send;
+// used to change the random distribution of  cycle2send
+bit [3:0] cycle2send_dist[16] = {10,10,10,1,1,1,1,1,1,1,1,1,1,1,1,1};
+
 
 // randomize the number of cycles between flits. used by driver
 rand bit [3:0] cycle2flit;
+// used to change the random distribution of  cycle2flit
+bit [3:0] cycle2flit_dist[16] = {15,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
 // output port where the packet was captured
 bit [3:0] oport;
@@ -44,14 +49,28 @@ constraint c_p_size {
 	};
 }
 
-// choose random # of cycles to start sendung this transaction
+// choose random # of cycles to start sending this transaction
 constraint c_cycle2send {
-	cycle2send dist { [0:2] := 10, [3:15] := 1 };
+	// fixed distribution 
+	//cycle2send dist { [0:2] := 10, [3:15] := 1 };
+	// variable distribution. TODO: there must be a better way to do it !!!
+	cycle2send dist { 0 := cycle2send_dist[0], 1 := cycle2send_dist[1], 2 := cycle2send_dist[2], 3 := cycle2send_dist[3], 4 := cycle2send_dist[4],
+					  5 := cycle2send_dist[5], 6 := cycle2send_dist[6], 7 := cycle2send_dist[7], 8 := cycle2send_dist[8], 9 := cycle2send_dist[9],
+					  10 := cycle2send_dist[10], 11 := cycle2send_dist[11], 12 := cycle2send_dist[12], 13 := cycle2send_dist[13], 
+					  14 := cycle2send_dist[14], 15 := cycle2send_dist[15]
+	};
 }
 
-// choose random # of cycles to start sendung this transaction
+// choose random # of cycles between flits
 constraint c_cycle2flit {
-	cycle2flit dist { 0 := 15, [1:2] := 5, [3:15] := 1 };
+	// fixed distribution 
+	//cycle2flit dist { 0 := 15, [1:2] := 5, [3:15] := 1 };
+	// variable distribution. TODO: there must be a better way to do it !!!
+	cycle2flit dist { 0 := cycle2flit_dist[0], 1 := cycle2flit_dist[1], 2 := cycle2flit_dist[2], 3 := cycle2flit_dist[3], 4 := cycle2flit_dist[4],
+					  5 := cycle2flit_dist[5], 6 := cycle2flit_dist[6], 7 := cycle2flit_dist[7], 8 := cycle2flit_dist[8], 9 := cycle2flit_dist[9],
+					  10 := cycle2flit_dist[10], 11 := cycle2flit_dist[11], 12 := cycle2flit_dist[12], 13 := cycle2flit_dist[13], 
+					  14 := cycle2flit_dist[14], 15 := cycle2flit_dist[15]
+	};	
 }
 
 // max packet size in flits
