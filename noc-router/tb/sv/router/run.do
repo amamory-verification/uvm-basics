@@ -1,6 +1,5 @@
-
-#if [file exists "work"] {vdel -all}
-#vlib work
+if [file exists "work"] {vdel -all}
+vlib work
 
 # Comment out either the SystemVerilog or VHDL DUT.
 # There can be only one!
@@ -19,16 +18,24 @@ vcom ../../../dut/RouterCC.vhd
 # TB
 vlog -f tb.f
 
-
-vsim top -coverage +UVM_TIMEOUT=1ms +UVM_VERBOSITY=UVM_FULL +UVM_TESTNAME=main_test 
+# timeout of 1ms
+vsim top -coverage +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_FULL +UVM_TESTNAME=smoke_test 
 #### +uvm_set_config_int=uvm_test_top.env.agent4.monitor,cred_distrib,10
 set NoQuitOnFinish 1
 onbreak {resume}
 log /* -r
 run -all
-
 coverage attribute -name TESTNAME -value smoke_test
 coverage save smoke_test.ucdb
 
-#vcover merge  -out multi.ucdb smoke_test.ucdb zeros_ones_test.ucdb neg_test.ucdb
-vcover report smoke_test.ucdb -cvg -details
+# timeout of 1ms
+vsim top -coverage +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_FULL +UVM_TESTNAME=main_test 
+set NoQuitOnFinish 1
+onbreak {resume}
+log /* -r
+run -all
+coverage attribute -name TESTNAME -value main_test
+coverage save main_test.ucdb
+
+vcover merge  -out router.ucdb main_test.ucdb smoke_test.ucdb 
+vcover report router.ucdb -cvg -details

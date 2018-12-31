@@ -15,6 +15,15 @@ covergroup cg_ports;
   }
 
   x_io_ports:  cross cp_iport, cp_oport{
+    // exclude invalid turns, like N-> W
+    // example from https://www.amiq.com/consulting/2014/09/17/how-to-ignore-cross-coverage-bins-using-expressions-in-systemverilog/
+    function CrossQueueType createIgnoreBins();
+      createIgnoreBins.push_back('{router_pkg::NORTH,router_pkg::EAST});
+      createIgnoreBins.push_back('{router_pkg::NORTH,router_pkg::WEST});
+      createIgnoreBins.push_back('{router_pkg::SOUTH,router_pkg::EAST});
+      createIgnoreBins.push_back('{router_pkg::SOUTH,router_pkg::WEST});
+    endfunction
+    ignore_bins ignore_invalid_turns = createIgnoreBins();    
     // exclude loopback from cross_coverage
     ignore_bins loopback = x_io_ports with (cp_iport == cp_oport);
   }
