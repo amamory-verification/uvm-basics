@@ -16,6 +16,12 @@ parameter Y_ADDR = 1;
 parameter X_MAX = 2;
 parameter Y_MAX = 2;
 
+// input port hard constraint  
+parameter EAST  = 0;
+parameter WEST  = 1;
+parameter NORTH = 2;
+parameter SOUTH = 3;
+parameter LOCAL = 4;
  
 // ##### transactions / seq_item #####
 `include "packet_t.sv"

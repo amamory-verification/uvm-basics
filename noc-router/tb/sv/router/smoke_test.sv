@@ -1,3 +1,6 @@
+/*
+simple test that injects 10 packets into the local port
+*/
 class smoke_test extends uvm_test;
 `uvm_component_utils(smoke_test)
 
@@ -13,36 +16,16 @@ function void build_phase(uvm_phase phase);
 endfunction: build_phase
 
 task run_phase(uvm_phase phase);
-  basic_seq seq[router_pkg::NPORT];
-  int k;
-  //`uvm_info("msg", "Running TEST1", UVM_LOW)
+  basic_seq seq;
   phase.raise_objection(this);
 
-  k = 4;
-  seq[k] = basic_seq::type_id::create($psprintf("seq[%0d]",k));
-  seq[k].port = k;
-  seq[k].start(env_h.agent_h[k].sequencer_h);  
+  seq = basic_seq::type_id::create("seq[4]");
+  // this seq will inject packets into the local port only
+  seq.port = router_pkg::LOCAL;
+  // number of packets to be simulated
+  seq.npackets = 10;
+  seq.start(env_h.agent_h[seq.port].sequencer_h);  
 
-/*  
-  k = 2;
-  seq[k] = basic_seq::type_id::create($psprintf("seq[%0d]",k));
-  seq[k].start(env_h.agent_h[k].sequencer_h);  
-
-  for(int j=0; j < router_pkg::NPORT; ++j) begin
-    fork
-      automatic int k = j;
-      begin
-        $display(" START SEQ %0d at time %0t",k,$time);
-        seq[k] = basic_seq::type_id::create($psprintf("seq[%0d]",k));
-        seq[k].start(env_h.agent_h[k].sequencer_h);
-      end
-    join_none
-    $display(" END SEQ %0d at time %0t",j,$time);
-
-    wait fork; // wait for all the above fork-join_none to complete
-    $display(" ALL SEQS ENDED at %0t !!!", $time);
-  end
-*/  
   // end the simulation a little bit latter
   phase.phase_done.set_drain_time(this, 100ns);
   //`uvm_info("msg", "SEQ STARTED!!!", UVM_LOW)

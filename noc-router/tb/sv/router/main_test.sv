@@ -1,3 +1,6 @@
+/*
+test that injects packets in all input ports in parallel
+*/
 class main_test extends uvm_test;
 `uvm_component_utils(main_test)
 
@@ -7,21 +10,11 @@ function new (string name, uvm_component parent);
   super.new(name,parent);
 endfunction : new
 
-
 // Initialise the virtual sequence handles
 function void init_vseq(base_vseq vseq);
-  /*
-  vseq.sequencer0 = env_h.agent_h[0].sequencer_h;
-  vseq.sequencer1 = env_h.agent_h[1].sequencer_h;
-  vseq.sequencer2 = env_h.agent_h[2].sequencer_h;
-  vseq.sequencer3 = env_h.agent_h[3].sequencer_h;
-  vseq.sequencer4 = env_h.agent_h[4].sequencer_h;
-  */
-  
   foreach (vseq.sequencer[i]) begin
     vseq.sequencer[i] = env_h.agent_h[i].sequencer_h;
   end
-   
 endfunction: init_vseq
 
 function void build_phase(uvm_phase phase);

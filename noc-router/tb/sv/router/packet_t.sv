@@ -4,13 +4,6 @@ class packet_t extends uvm_sequence_item;
 parameter half_flit = router_pkg::FLIT_WIDTH/2;
 parameter quarter_flit = router_pkg::FLIT_WIDTH/4;
 
-// input port hard constraint  
-parameter EAST  = 0;
-parameter WEST  = 1;
-parameter NORTH = 2;
-parameter SOUTH = 3;
-parameter LOCAL = 4;
-
 // to ease randomization of packet size
 typedef enum {ZERO, SMALL, MED, LARGE} packet_size_t;
 rand packet_size_t p_size;
@@ -119,35 +112,35 @@ begin
 	for (i = 0; i <= router_pkg::X_MAX; i++) begin
 		for (j = 0; j <= router_pkg::Y_MAX; j++) begin
 			// exclude loopback from the local port
-		if (dport == LOCAL) begin
+		if (dport == router_pkg::LOCAL) begin
 			if (!((i == router_pkg::X_ADDR) && (j == router_pkg::Y_ADDR))) begin
 				//$display("LOCAL TARGETS %h %0d %0d",{i,j}, i,j );
 				valid_target_addr.push_back({i,j});
 			end
 		end
 		// exclude target address to the left hand side of the current router addr
-		if (dport == WEST) begin
+		if (dport == router_pkg::WEST) begin
 			if (i >= router_pkg::X_ADDR) begin
 				//$display("WEST TARGETS %h %0d %0d",{i,j}, i,j );
 				valid_target_addr.push_back({i,j});
 			end
 		end
 		// exclude target address to the right hand side of the current router addr
-		if (dport == EAST) begin
+		if (dport == router_pkg::EAST) begin
 			if (i <= router_pkg::X_ADDR) begin
 				//$display("EAST TARGETS %h %0d %0d",{i,j}, i,j );
 				valid_target_addr.push_back({i,j});
 			end
 		end
 		// exclude target address above the current router addr. turns are forbiden
-		if (dport == NORTH) begin
+		if (dport == router_pkg::NORTH) begin
 			if ((i == router_pkg::X_ADDR) && (j <= router_pkg::Y_ADDR)) begin
 				//$display("NORTH TARGETS %h %0d %0d",{i,j}, i,j );
 				valid_target_addr.push_back({i,j});
 			end
 		end
 		// exclude target address below the current router addr. turns are forbiden
-		if (dport == SOUTH) begin
+		if (dport == router_pkg::SOUTH) begin
 			if ((i == router_pkg::X_ADDR) && (j >= router_pkg::Y_ADDR)) begin
 				//$display("SOUTH TARGETS %h %0d %0d",{i,j}, i,j );
 				valid_target_addr.push_back({i,j});
