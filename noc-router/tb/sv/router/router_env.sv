@@ -4,7 +4,7 @@ class router_env extends uvm_env;
 router_agent       agent_h [router_pkg::NPORT];
 router_coverage    coverage_h;
 router_scoreboard  scoreboard_h;
-bit [3:0] cred_distrib = 1;
+bit [3:0] cred_distrib = 10;
 
 function new(string name, uvm_component parent);
   super.new(name,parent);

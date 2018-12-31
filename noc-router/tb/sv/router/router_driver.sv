@@ -22,7 +22,6 @@ endfunction : build_phase
 task run_phase(uvm_phase phase);
 	packet_t tx, aux;
 	int i;
-	//dut_vi.reset_dut();
 	@(negedge dut_vi.reset);
 	@(posedge dut_vi.clock);
 	@(posedge dut_vi.clock);
@@ -32,7 +31,7 @@ task run_phase(uvm_phase phase);
 		tx = packet_t::type_id::create("tx");
 		seq_item_port.get_next_item(tx);
 		//dut_vi.send_packet(tx,port);
-
+		//`uvm_info("msg", tx.convert2string(), UVM_LOW)
 		i=0;
 		//send header
 		@(posedge dut_vi.clock);

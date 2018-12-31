@@ -1,9 +1,7 @@
-class base_vseq extends uvm_sequence #(packet_t); 
+class base_vseq extends uvm_sequence #(uvm_sequence_item); 
 `uvm_object_utils(base_vseq)
 
-//packet_sequencer sequencer[router_pkg::NPORT];
-packet_sequencer sequencer0;
-packet_sequencer sequencer1;
+packet_sequencer sequencer[router_pkg::NPORT];
 
 function new(string name = "base_vseq");
   super.new(name);

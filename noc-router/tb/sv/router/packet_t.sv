@@ -221,5 +221,16 @@ endfunction: convert2string
 
 endclass: packet_t
 
+
+
+/*
+   `uvm_object_utils_begin( jelly_bean_transaction )
+      `uvm_field_enum( flavor_e, flavor, UVM_ALL_ON )
+      `uvm_field_enum( color_e,  color,  UVM_ALL_ON )
+      `uvm_field_int ( sugar_free,       UVM_ALL_ON )
+      `uvm_field_int ( sour,             UVM_ALL_ON )
+      `uvm_field_enum( taste_e,  taste,  UVM_ALL_ON )
+   `uvm_object_utils_end
+*/
 typedef uvm_sequencer #(packet_t) packet_sequencer;
 
