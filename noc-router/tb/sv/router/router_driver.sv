@@ -33,8 +33,10 @@ task run_phase(uvm_phase phase);
 		//dut_vi.send_packet(tx,port);
 		//`uvm_info("msg", tx.convert2string(), UVM_LOW)
 		i=0;
-		//send header
-		@(posedge dut_vi.clock);
+		//send header after some random number of clock cycles, from 0 to 15 cycles
+		repeat (tx.cycle2send) begin
+			@(posedge dut_vi.clock);
+		end		
 		dut_vi.rx[port] = 1'b1;
 		dut_vi.data_in[port] = tx.get_header();	
 		// wait until there is space in the input buffer
@@ -58,7 +60,7 @@ task run_phase(uvm_phase phase);
 		@(posedge dut_vi.clock);	
 		dut_vi.rx[port] = 1'b0;
 		dut_vi.data_in[port] = 0;
-		@(posedge dut_vi.clock);	
+		//@(posedge dut_vi.clock);	
 
 		tx.dport = port; // set the output port for sb verification
 		aport.write(tx); // send it to the sb

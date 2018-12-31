@@ -22,6 +22,10 @@ rand bit [quarter_flit-1:0]  x, y;
 
 rand bit [7:0] header;
 
+
+// randomize the number of cycles the driver waits to start sending the packet
+rand bit [3:0] cycle2send;
+
 // output port where the packet was captured
 bit [3:0] oport;
 
@@ -46,6 +50,12 @@ constraint c_p_size {
 		MED   := w_med,
 		LARGE := w_large
 	};
+}
+
+
+// choose random # of cycles to start sendung this transaction
+constraint c_cycle2send {
+	cycle2send dist { [0:2] := 10, [3:15] := 1 };
 }
 
 
