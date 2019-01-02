@@ -1,5 +1,6 @@
 **/*.ucdb
 **/*.wlf
 **/*.vcd
+**/*.log
 **/transcript
 **/work
