@@ -12,19 +12,27 @@ endfunction : new
 
 function void build_phase(uvm_phase phase);
 	aport = new("aport", this); 
-	if (!uvm_config_db #(virtual router_if)::get (null,"*", "dut_vi", dut_vi) )
-		`uvm_fatal("driver", "No DUT_IF");
+
+	// print config_db
+	`uvm_info("msg", "DRiVER - CFG", UVM_LOW)
+	print_config();
+	`uvm_info("msg", "DRiVER - CFG2", UVM_LOW)
+
 	if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
 		`uvm_fatal("driver", "No port");
+	if (!uvm_config_db #(virtual router_if)::get (this,"*", $sformatf("in_if%0d*",port), dut_vi) )
+		`uvm_fatal("driver", "No DUT_IF");
+
+
 	`uvm_info("msg", "DRIVER Done!!!", UVM_HIGH)
 endfunction : build_phase
 
 task wait_cycles(int cycles);
-	dut_vi.rx[port] = 1'b0;
+	dut_vi.avail = 1'b0;
 	repeat (cycles) begin
 		@(posedge dut_vi.clock);
 	end
-	dut_vi.rx[port] = 1'b1;
+	dut_vi.avail = 1'b1;
 endtask
 
 task run_phase(uvm_phase phase);
@@ -43,28 +51,28 @@ task run_phase(uvm_phase phase);
 		i=0;
 		//send header after some random number of clock cycles, from 0 to 15 cycles
 		wait_cycles(tx.cycle2send);
-		dut_vi.data_in[port] = tx.get_header();	
+		dut_vi.data = tx.get_header();	
 		// wait until there is space in the input buffer
-		@(negedge dut_vi.clock iff dut_vi.credit_o[port] == 1'b1);	
+		@(negedge dut_vi.clock iff dut_vi.credit == 1'b1);	
 		@(posedge dut_vi.clock);
 		// send the size after some random number of clock cycles, from 0 to 15 cycles
 		wait_cycles(tx.cycle2flit);
-		dut_vi.data_in[port] = tx.payload.size();
-		@(negedge dut_vi.clock iff dut_vi.credit_o[port] == 1'b1);
+		dut_vi.data = tx.payload.size();
+		@(negedge dut_vi.clock iff dut_vi.credit == 1'b1);
 		// send payload after some random number of clock cycles, from 0 to 15 cycles
 		i=0;	
 		while (i<tx.payload.size())  // size() accounts only for the payload size
 		begin
 			@(posedge dut_vi.clock);
 			wait_cycles(tx.cycle2flit);
-			dut_vi.data_in[port] = tx.payload[i];
+			dut_vi.data = tx.payload[i];
 			i++;
 			// wait until the buffer it not full again
-			@(negedge dut_vi.clock iff dut_vi.credit_o[port] == 1'b1);;
+			@(negedge dut_vi.clock iff dut_vi.credit == 1'b1);;
 		end
 		@(posedge dut_vi.clock);	
-		dut_vi.rx[port] = 1'b0;
-		dut_vi.data_in[port] = 0;
+		dut_vi.avail = 1'b0;
+		dut_vi.data = 0;
 		//@(posedge dut_vi.clock);	
 
 		tx.dport = port; // set the output port for sb verification

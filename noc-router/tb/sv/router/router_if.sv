@@ -14,13 +14,26 @@ Each of the five interfaces has the following ports:
 --                        |             |
                            _____________
 */
-
+/*
 	// input interface
     bit [router_pkg::NPORT-1:0]        clock_rx, rx,  credit_o;
     bit [router_pkg::FLIT_WIDTH-1:0]   data_in [router_pkg::NPORT-1:0];
     //output interface
     bit [router_pkg::NPORT-1:0]        clock_tx,tx, credit_i;
     bit [router_pkg::FLIT_WIDTH-1:0]   data_out [router_pkg::NPORT-1:0];
+*/
+
+    logic        clk, avail,  credit;
+    logic [15:0]  data;
+
+    modport datain (
+            input clk, avail, data,
+            output credit
+        );
+    modport dataout (
+            output clk, avail, data,
+            input credit
+        );     
 /*
     task reset_dut();
 	  reset = 1'b1;
@@ -30,11 +43,11 @@ Each of the five interfaces has the following ports:
     endtask : reset_dut;
 */
 
-	assign clock_rx = {clock,clock,clock,clock,clock}; 	
+	//assign clock_rx = {clock,clock,clock,clock,clock}; 	
 	//assign clock_rx = 5'b00000; 	
-
+/*
 	// send entire packet 
-    task send_packet(input packet_t   p, input unsigned port);
+    task send_packet(input packet_t   p);
     	int i;
     	i=0;
     	@(posedge clock_rx[port]);
@@ -117,5 +130,5 @@ Each of the five interfaces has the following ports:
         $display("MONITOR got payload!!!");
     	//credit_i[port] = 1'b0;
     endtask : get_packet
-
+*/
 endinterface : router_if

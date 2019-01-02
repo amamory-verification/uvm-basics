@@ -41,10 +41,17 @@ endfunction: new
 function void build_phase(uvm_phase phase);
   bit [3:0] cred_distrib;
   aport = new("aport", this); 
-  if (!uvm_config_db #(virtual router_if)::get (null,"*", "dut_vi", dut_vi) )
-    `uvm_fatal("monitor", "No DUT_IF");  
+
+
+  // print config_db
+  print_config();
+  
   if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
     `uvm_fatal("monitor", "No port");
+
+  if (!uvm_config_db #(virtual router_if)::get (null,"*", $sformatf("in_if%0d*",port), dut_vi) )
+    `uvm_fatal("monitor", "No DUT_IF");
+
   if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", cred_distrib) )
     `uvm_fatal("monitor", "No cred_distrib");
   `uvm_info("monitor", $sformatf("got cred_distrib %0d",cred_distrib), UVM_LOW)
@@ -65,7 +72,7 @@ task set_credit;
   forever
   begin
     assert(credit.randomize() );
-    dut_vi.credit_i[port] = credit.credit;
+    dut_vi.credit = credit.credit;
     @(posedge dut_vi.clock);
   end
 
@@ -87,13 +94,13 @@ task extract_packets;
     //dut_vi.get_packet(tx, port);
 
     // get the header
-    @(negedge dut_vi.clock iff (dut_vi.credit_i[port] == 1'b1 && dut_vi.tx[port] == 1'b1) );
-    tx.set_header(dut_vi.data_out[port]);
-    `uvm_info("monitor", $sformatf("%s got header %H",get_full_name(),dut_vi.data_out[port]), UVM_HIGH)
+    @(negedge dut_vi.clock iff (dut_vi.credit == 1'b1 && dut_vi.avail == 1'b1) );
+    tx.set_header(dut_vi.data);
+    `uvm_info("monitor", $sformatf("%s got header %H",get_full_name(),dut_vi.data), UVM_HIGH)
       
     // get the packet size from the 1st flits
-    @(negedge dut_vi.clock iff (dut_vi.credit_i[port] == 1'b1 && dut_vi.tx[port] == 1'b1) );
-    size = dut_vi.data_out[port];
+    @(negedge dut_vi.clock iff (dut_vi.credit == 1'b1 && dut_vi.avail == 1'b1) );
+    size = dut_vi.data;
     `uvm_info("monitor", $sformatf("%s got size %0d",get_full_name(),size), UVM_HIGH)  
 
     tx.payload = new[size];
@@ -101,8 +108,8 @@ task extract_packets;
     i=0;
     while(i<tx.payload.size()) // size() accounts only for the payload size
     begin
-      @(negedge dut_vi.clock iff (dut_vi.credit_i[port] == 1'b1 && dut_vi.tx[port] == 1'b1) );
-      tx.payload[i] = dut_vi.data_out[port];
+      @(negedge dut_vi.clock iff (dut_vi.credit == 1'b1 && dut_vi.avail == 1'b1) );
+      tx.payload[i] = dut_vi.data;
       `uvm_info("monitor", $sformatf("%s got flit %0d %H",get_full_name(),i,tx.payload[i]), UVM_HIGH)
       i ++;
     end
