@@ -1,8 +1,8 @@
 /*
 simple test that injects 10 packets into the local port
 */
-class smoke_test extends base_test;
-`uvm_component_utils(smoke_test)
+class sequential_test extends base_test;
+`uvm_component_utils(sequential_test)
 
 //router_env env_h;
 
@@ -17,15 +17,15 @@ function void build_phase(uvm_phase phase);
 endfunction: build_phase
 
 task run_phase(uvm_phase phase);
-  basic_seq seq;
-  phase.raise_objection(this);
+  sequential_seq seq;
+  seq = sequential_seq::type_id::create("seq");
 
-  seq = basic_seq::type_id::create("seq");
-  // this seq will inject packets into the local port only
-  seq.port = router_pkg::LOCAL;
-  // number of packets to be simulated
-  seq.npackets = 10;
-  seq.start(env_h.agent_h[seq.port].sequencer_h);  
+  phase.raise_objection(this);
+  init_vseq(seq); 
+
+  // set the starting port
+  seq.starting_port = $urandom_range(0,router_pkg::NPORT-1);
+  seq.start(null);  
 
   // end the simulation a little bit latter
   phase.phase_done.set_drain_time(this, 100ns);
@@ -33,4 +33,4 @@ task run_phase(uvm_phase phase);
   phase.drop_objection(this);
 endtask
 
-endclass: smoke_test
+endclass: sequential_test

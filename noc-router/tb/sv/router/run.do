@@ -31,6 +31,15 @@ run -all
 coverage attribute -name TESTNAME -value smoke_test
 coverage save smoke_test.ucdb
 
+vsim top -coverage +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=sequential_test 
+#### +uvm_set_config_int=uvm_test_top.env.agent4.monitor,cred_distrib,10
+set NoQuitOnFinish 1
+onbreak {resume}
+log /* -r
+run -all
+coverage attribute -name TESTNAME -value sequential_test
+coverage save sequential_test.ucdb
+
 # timeout of 1ms
 vsim top -coverage +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=main_test 
 set NoQuitOnFinish 1
@@ -40,6 +49,6 @@ run -all
 coverage attribute -name TESTNAME -value main_test
 coverage save main_test.ucdb
 
-vcover merge  -out router.ucdb main_test.ucdb smoke_test.ucdb 
+vcover merge  -out router.ucdb main_test.ucdb smoke_test.ucdb sequential_test.ucdb
 vcover report router.ucdb -cvg -details
 

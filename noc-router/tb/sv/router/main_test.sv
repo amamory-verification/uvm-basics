@@ -1,25 +1,27 @@
 /*
-test that injects packets in all input ports in parallel
+test that injects packets in all input ports in parallel 
 */
-class main_test extends uvm_test;
+class main_test extends base_test;
 `uvm_component_utils(main_test)
 
-router_env env_h;
+//router_env env_h;
 
 function new (string name, uvm_component parent);
   super.new(name,parent);
 endfunction : new
 
 // Initialise the virtual sequence handles
+/*
 function void init_vseq(base_vseq vseq);
   foreach (vseq.sequencer[i]) begin
     vseq.sequencer[i] = env_h.agent_h[i].sequencer_h;
   end
 endfunction: init_vseq
+*/
 
 function void build_phase(uvm_phase phase);
   super.build_phase(phase);
-  env_h = router_env::type_id::create("env", this);
+  //env_h = router_env::type_id::create("env", this);
   `uvm_info("msg", "Building main_test DONE!", UVM_LOW)
 endfunction: build_phase
 

@@ -1,5 +1,5 @@
 /*
- this virtual sequence can inject packets in all input ports in parallel
+ this virtual hierarchical sequence injects 5 'basic_seq' in all input ports in parallel
 */
 class main_vseq extends base_vseq; 
 `uvm_object_utils(main_vseq)

@@ -30,6 +30,7 @@ parameter LOCAL = 4;
 // #### sequences #####
 `include "base_vseq.sv"
 `include "basic_seq.sv"
+`include "sequential_seq.sv"
 `include "main_vseq.sv"
 ////`include "small_packets_seq.sv"
 ////`include "big_packets_seq.sv"
@@ -46,7 +47,9 @@ parameter LOCAL = 4;
 `include "router_env.sv"
 
 // ##### tests #####
+`include "base_test.sv"
 `include "smoke_test.sv"
+`include "sequential_test.sv"
 `include "main_test.sv"
    
 endpackage : router_pkg
