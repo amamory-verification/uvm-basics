@@ -58,7 +58,7 @@ function void write(packet_t t);
   cg_ports.sample();
   cg_packet_sizes.sample();
   cg_noc_addr.sample();
-  `uvm_info("COVERAGE", "PACKET RECEIVED !!!!", UVM_LOW);
+  `uvm_info("COVERAGE", "PACKET RECEIVED !!!!", UVM_HIGH);
 endfunction: write 
 
 function new(string name, uvm_component parent);

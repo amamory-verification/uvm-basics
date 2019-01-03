@@ -4,7 +4,7 @@ class router_env extends uvm_env;
 router_agent       agent_h [router_pkg::NPORT];
 router_coverage    coverage_h;
 router_scoreboard  scoreboard_h;
-bit [3:0] cred_distrib = 10; // TODO allow different credit distribution for each agent. now, all agents have the same value 
+bit [3:0] cred_distrib = 2; // TODO allow different credit distribution for each agent. now, all agents have the same value 
 
 function new(string name, uvm_component parent);
   super.new(name,parent);
@@ -21,11 +21,11 @@ function void build_phase(uvm_phase phase);
 
   coverage_h   = router_coverage::type_id::create("coverage", this);
   scoreboard_h = router_scoreboard::type_id::create("scoreboard", this);
-  `uvm_info("msg", "ENV Done !", UVM_NONE)
+  `uvm_info("msg", "ENV Done !", UVM_HIGH)
 endfunction: build_phase
 
 function void connect_phase(uvm_phase phase);
-  `uvm_info("msg", "Connecting ENV", UVM_NONE)
+  `uvm_info("msg", "Connecting ENV", UVM_HIGH)
   foreach (agent_h[i]) begin
     // connect monitors/drivers with the sb
     agent_h[i].monitor_h.aport.connect(scoreboard_h.mon_ap);
@@ -33,7 +33,7 @@ function void connect_phase(uvm_phase phase);
   end
   // conenct sb with coverage
   scoreboard_h.cov_ap.connect(coverage_h.analysis_export);
-  `uvm_info("msg", "Connecting ENV Done !", UVM_NONE)
+  `uvm_info("msg", "Connecting ENV Done !", UVM_HIGH)
 endfunction: connect_phase
 
 endclass: router_env

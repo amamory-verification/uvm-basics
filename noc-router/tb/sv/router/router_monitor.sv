@@ -48,15 +48,16 @@ function void build_phase(uvm_phase phase);
 
   if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
     `uvm_fatal("monitor", "No port");
+  `uvm_info("monitor", $sformatf("PORT number: %0d",port), UVM_HIGH)
 
   if(!uvm_config_db#(virtual router_if)::read_by_name($sformatf("monitor%0d",port), "out_if", dut_vi))
       `uvm_fatal("monitor", "No in_if");
 
   if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", cred_distrib) )
     `uvm_fatal("monitor", "No cred_distrib");
-  `uvm_info("monitor", $sformatf("got cred_distrib %0d",cred_distrib), UVM_LOW)
+  `uvm_info("monitor", $sformatf("got cred_distrib %0d",cred_distrib), UVM_HIGH)
   credit = new(cred_distrib);
-  $display("PORT number: %s - %0d",get_full_name() ,port);
+
   `uvm_info("msg", "MONITOR Done !!!", UVM_HIGH)
 endfunction: build_phase
 

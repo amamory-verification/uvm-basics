@@ -25,14 +25,14 @@ function void build_phase(uvm_phase phase);
     driver_h = router_driver::type_id::create("driver", this);
   end
   monitor_h = router_monitor::type_id::create("monitor", this);
-  `uvm_info("msg", "Building Agent DONE!", UVM_NONE)
+  `uvm_info("msg", "Building Agent DONE!", UVM_HIGH)
 endfunction: build_phase
 
 function void connect_phase(uvm_phase phase);
   if (get_is_active()) begin
     driver_h.seq_item_port.connect(sequencer_h.seq_item_export);
   end
-  `uvm_info("msg", "Connecting Agent DONE!", UVM_NONE)
+  `uvm_info("msg", "Connecting Agent DONE!", UVM_HIGH)
 endfunction: connect_phase
 
 endclass: router_agent

@@ -21,9 +21,7 @@ vlog -f tb.f
 # timeout of 1ms
 # use '-sv_seed' to set the seed. example '-sv_seed=10'
 # use +UVM_CONFIG_DB_TRACE to debug config_db
-vsim top -coverage +UVM_CONFIG_DB_TRACE +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_FULL +UVM_TESTNAME=smoke_test 
-
-vsim top -coverage +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_FULL +UVM_TESTNAME=smoke_test 
+vsim top -coverage +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=smoke_test 
 #### +uvm_set_config_int=uvm_test_top.env.agent4.monitor,cred_distrib,10
 set NoQuitOnFinish 1
 onbreak {resume}
@@ -34,7 +32,7 @@ coverage attribute -name TESTNAME -value smoke_test
 coverage save smoke_test.ucdb
 
 # timeout of 1ms
-vsim top -coverage +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_FULL +UVM_TESTNAME=main_test 
+vsim top -coverage +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=main_test 
 set NoQuitOnFinish 1
 onbreak {resume}
 log /* -r

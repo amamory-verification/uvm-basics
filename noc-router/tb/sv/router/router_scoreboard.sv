@@ -58,7 +58,7 @@ task get_input_data(uvm_tlm_analysis_fifo #(packet_t) fifo, uvm_phase phase);
     phase.raise_objection(this);
     input_packet_queue.push_back(tx);
     packets_sent++;
-    `uvm_info("SCOREBOARD", "INPUT PACKET RECEIVED !!!!", UVM_LOW);
+    `uvm_info("SCOREBOARD", "INPUT PACKET RECEIVED !!!!", UVM_FULL);
   end
 endtask: get_input_data
 
@@ -72,7 +72,7 @@ task get_output_data(uvm_tlm_analysis_fifo #(packet_t) fifo, uvm_phase phase);
     fifo.get(tx);
     
     packets_received++;
-    `uvm_info("SCOREBOARD", "OUTPUT PACKET RECEIVED !!!!", UVM_LOW);
+    `uvm_info("SCOREBOARD", "OUTPUT PACKET RECEIVED !!!!", UVM_FULL);
     if (input_packet_queue.size() == 0) begin
        `uvm_error("SB_MISMATCH", $sformatf("INPUT PACKET QUEUE IS EMPTY !!!!\n%s",tx.convert2string()));
        packet_mismatches++;
@@ -82,7 +82,7 @@ task get_output_data(uvm_tlm_analysis_fifo #(packet_t) fifo, uvm_phase phase);
       //$display("%s",input_packet_queue[i].convert2string());
       if (input_packet_queue[i].compare(tx)) begin
         if (check_xy_routing (tx.x, tx.y, input_packet_queue[i].dport, tx.oport)) begin
-          `uvm_info("SB_MATCH", $sformatf("packet received successfully !!!!\n%s",tx.convert2string()), UVM_LOW);
+          `uvm_info("SB_MATCH", $sformatf("packet received successfully !!!!\n%s",tx.convert2string()), UVM_FULL);
           packet_matches++;
           found = 1;
           // set the source port so coverage data can be extracted
