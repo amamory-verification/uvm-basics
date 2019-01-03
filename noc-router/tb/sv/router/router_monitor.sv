@@ -44,13 +44,13 @@ function void build_phase(uvm_phase phase);
 
 
   // print config_db
-  print_config();
-  
+  //print_config();
+
   if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
     `uvm_fatal("monitor", "No port");
 
-  if (!uvm_config_db #(virtual router_if)::get (null,"*", $sformatf("in_if%0d*",port), dut_vi) )
-    `uvm_fatal("monitor", "No DUT_IF");
+  if(!uvm_config_db#(virtual router_if)::read_by_name($sformatf("monitor%0d",port), "out_if", dut_vi))
+      `uvm_fatal("monitor", "No in_if");
 
   if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", cred_distrib) )
     `uvm_fatal("monitor", "No cred_distrib");
@@ -68,6 +68,7 @@ endfunction
 
 // generates random credit signal at the output port, simulating neighbor congested routers with full buffers
 task set_credit;
+  dut_vi.credit = 0;
   @(negedge dut_vi.reset);
   forever
   begin
@@ -130,5 +131,3 @@ task run_phase(uvm_phase phase);
 endtask: run_phase
 
 endclass : router_monitor
-
-
