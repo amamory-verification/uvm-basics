@@ -28,8 +28,8 @@ parameter LOCAL = 4;
 
 
 // #### sequences #####
-`include "basic_seq.sv"
 `include "base_vseq.sv"
+`include "basic_seq.sv"
 `include "main_vseq.sv"
 ////`include "small_packets_seq.sv"
 ////`include "big_packets_seq.sv"
