@@ -15,15 +15,27 @@ endfunction: build_phase
 
 task run_phase(uvm_phase phase);
   basic_seq seq;
-  phase.raise_objection(this);
 
+  phase.raise_objection(this);
   seq = basic_seq::type_id::create("seq");
-  // this seq will inject packets into the local port only
-  seq.port = router_pkg::LOCAL;
-  // number of packets to be simulated
-  seq.npackets = 10;
-  seq.header = 8'h10;
-  seq.start(env_h.agent_h[seq.port].sequencer_h);  
+  init_vseq(seq); 
+
+  assert(seq.randomize() with { 
+      // number of packets to be simulated
+      npackets == 1; 
+      // set the timing behavior of the sequence
+      seq.cycle2send == 1;
+      seq.cycle2flit == 0;
+      // this seq will inject packets into the NORTH port only
+      seq.port == router_pkg::NORTH;
+      // all packets will be sent to the router 8'h11
+      seq.header == 8'h11;
+      // only small packets
+      seq.p_size == packet_t::SMALL;
+    }
+  );
+
+  seq.start(env_h.agent_h[router_pkg::NORTH].sequencer_h);  
 
   // end the simulation a little bit latter
   phase.phase_done.set_drain_time(this, 100ns);

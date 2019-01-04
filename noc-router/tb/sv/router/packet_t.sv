@@ -95,52 +95,12 @@ constraint c_header {
 	solve header before y;
 }
 
+
 // create the list of valid target addresses following XY routing algorithm
 function void pre_randomize();
-begin
-	bit [3:0] i,j;
 	if (dport == -1)
 		`uvm_fatal(get_name(), "set the dport before randomization" )
-	for (i = 0; i <= router_pkg::X_MAX; i++) begin
-		for (j = 0; j <= router_pkg::Y_MAX; j++) begin
-			// exclude loopback from the local port
-		if (dport == router_pkg::LOCAL) begin
-			if (!((i == router_pkg::X_ADDR) && (j == router_pkg::Y_ADDR))) begin
-				//$display("LOCAL TARGETS %h %0d %0d",{i,j}, i,j );
-				valid_target_addr.push_back({i,j});
-			end
-		end
-		// exclude target address to the left hand side of the current router addr
-		if (dport == router_pkg::WEST) begin
-			if (i >= router_pkg::X_ADDR) begin
-				//$display("WEST TARGETS %h %0d %0d",{i,j}, i,j );
-				valid_target_addr.push_back({i,j});
-			end
-		end
-		// exclude target address to the right hand side of the current router addr
-		if (dport == router_pkg::EAST) begin
-			if (i <= router_pkg::X_ADDR) begin
-				//$display("EAST TARGETS %h %0d %0d",{i,j}, i,j );
-				valid_target_addr.push_back({i,j});
-			end
-		end
-		// exclude target address above the current router addr. turns are forbiden
-		if (dport == router_pkg::NORTH) begin
-			if ((i == router_pkg::X_ADDR) && (j <= router_pkg::Y_ADDR)) begin
-				//$display("NORTH TARGETS %h %0d %0d",{i,j}, i,j );
-				valid_target_addr.push_back({i,j});
-			end
-		end
-		// exclude target address below the current router addr. turns are forbiden
-		if (dport == router_pkg::SOUTH) begin
-			if ((i == router_pkg::X_ADDR) && (j >= router_pkg::Y_ADDR)) begin
-				//$display("SOUTH TARGETS %h %0d %0d",{i,j}, i,j );
-				valid_target_addr.push_back({i,j});
-			end
-		end
-	end
-	end	
-end
+	valid_target_addr = router_pkg::valid_addrs(dport);
 endfunction
 
 function void set_header(input bit [router_pkg::FLIT_WIDTH-1:0] h ); 
