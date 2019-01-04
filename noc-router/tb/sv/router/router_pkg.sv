@@ -32,6 +32,8 @@ parameter LOCAL = 4;
 `include "basic_seq.sv"
 `include "sequential_seq.sv"
 `include "main_vseq.sv"
+//`include "bottleneck_seq.sv"
+
 ////`include "small_packets_seq.sv"
 ////`include "big_packets_seq.sv"
 ////`include "stress_seq.sv"
@@ -51,5 +53,6 @@ parameter LOCAL = 4;
 `include "smoke_test.sv"
 `include "sequential_test.sv"
 `include "main_test.sv"
+`include "bottleneck_test.sv"
    
 endpackage : router_pkg

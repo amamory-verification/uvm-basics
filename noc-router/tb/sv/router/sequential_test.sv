@@ -1,10 +1,9 @@
 /*
-simple test that injects 10 packets into the local port
-*/
+ this hierarchical sequence injects injects 5 'basic_seq' in sequential port order, starting with the port 'starting_port'.
+ It generates 20 small packets per port
+ */
 class sequential_test extends base_test;
 `uvm_component_utils(sequential_test)
-
-//router_env env_h;
 
 function new (string name, uvm_component parent);
   super.new(name,parent);
@@ -12,7 +11,6 @@ endfunction : new
 
 function void build_phase(uvm_phase phase);
   super.build_phase(phase);
-  //env_h = router_env::type_id::create("env", this);
   `uvm_info("msg", "Building Environment DONE!", UVM_LOW)
 endfunction: build_phase
 

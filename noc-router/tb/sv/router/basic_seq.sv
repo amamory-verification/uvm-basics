@@ -18,8 +18,14 @@ task body;
     // disable packets with zero payload
     tx.w_zero = 0;
     start_item(tx);
-    // create only small packets
-    assert(tx.randomize() with {tx.p_size == psize;});
+    // this.header is the default value, then it means that it must be randomized, else, it must use the assinged value
+    if (this.header == 8'hFF) 
+      assert(tx.randomize() with {tx.p_size == psize;});
+    else begin
+      //tx.header.mode(0);
+      assert(tx.randomize() with {tx.p_size == psize; tx.header == header;});
+    end
+    
     //assert(tx.randomize());
     //assert(tx.randomize() with {tx.payload.size() == 1;});
     finish_item(tx);

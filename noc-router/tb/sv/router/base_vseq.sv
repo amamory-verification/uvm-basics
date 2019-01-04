@@ -9,12 +9,16 @@ bit [3:0] port;
 int npackets;
 // say the packet size used in the sequence. default is SMALL
 packet_t::packet_size_t psize;
+// the target address to the packets. default is FF, which is a invalid header. this means that header must be randomized
+bit [7:0] header;
+
 
 function new(string name = "base_vseq");
   super.new(name);
   npackets = 50;
   port = 0;
   psize = packet_t::SMALL;
+  header = 16'hFF;
 endfunction: new
 
 endclass: base_vseq
