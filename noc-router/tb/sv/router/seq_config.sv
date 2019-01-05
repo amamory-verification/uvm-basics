@@ -97,7 +97,6 @@ function void do_copy( uvm_object rhs );
   this.w_med           = that.w_med;
   this.w_large         = that.w_large;
   this.header          = that.header;
-  //this.valid_target_addr = that.valid_target_addr;
   this.cycle2send      = that.cycle2send;
   this.cycle2send_dist = that.cycle2send_dist;
   this.cycle2flit      = that.cycle2flit;
@@ -115,9 +114,6 @@ virtual function string convert2string();
   s = { s, $psprintf( "\n cycle2send : %0d", cycle2send) };
   s = { s, $psprintf( "\n cycle2flit : %0d", cycle2flit) };
   s = { s, $psprintf( "\n npackets   : %0d", npackets) };
-  //foreach(payload[i]) begin
-  //	s = { s, $psprintf( "\n\t%H ",payload[i])};
-  //end
   return s;
 endfunction: convert2string
 

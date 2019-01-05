@@ -1,5 +1,5 @@
 /*
- this flat sequence injects 'npackets' with random header into a single port 'port'   
+ this hier sequence injects 'npackets' with random header
 */
 class rand_header_seq extends base_vseq; 
 `uvm_object_utils(rand_header_seq)

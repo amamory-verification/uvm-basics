@@ -11,14 +11,28 @@ endfunction : new
 
 task run_phase(uvm_phase phase);
   sequential_seq seq;
+  seq_config cfg;
 
+  // configuring sequence parameters
+  cfg = seq_config::type_id::create("seq_cfg");
+  assert(cfg.randomize() with { 
+      // number of packets to be simulated
+      npackets == 10; 
+      // set the timing behavior of the sequence
+      cycle2send == 1;
+      cycle2flit == 0;
+      // only small packets
+      p_size == packet_t::SMALL;
+    }
+  );
   phase.raise_objection(this);
   seq = sequential_seq::type_id::create("seq");
   init_vseq(seq); 
+  seq.set_seq_config(cfg);
 
   // set the starting port
   assert(seq.randomize() with {
-      starting_port == 3;
+      starting_port == 3;  
     });
   seq.start(null);  
 

@@ -1,6 +1,5 @@
 /*
  this hierarchical sequence injects injects 5 'basic_seq' in sequential port order, starting with the port 'starting_port'.
- It generates 20 small packets per port
 */
 class sequential_seq extends base_vseq; 
 `uvm_object_utils(sequential_seq)
@@ -18,28 +17,32 @@ endfunction: new
 
 task body;
   basic_seq seq;
+  seq_config bs_cfg;
   int j = starting_port;
+
+  // configuring sequence parameters
+  seq = basic_seq::type_id::create("seq");
+  bs_cfg = seq_config::type_id::create("seq_cfg");
+  bs_cfg.do_copy(cfg); 
+  bs_cfg.rand_mode(0);
+  bs_cfg.header.rand_mode(1); 
+  bs_cfg.port.rand_mode(1); 
+  //$display("%s",cfg.convert2string());
+  //$display("%s",bs_cfg.convert2string());   
   for (int i = 0; i < router_pkg::NPORT; i++) begin
-    // configuring seqe=uence parameters
-    cfg = seq_config::type_id::create("seq_cfg");
-    assert(cfg.randomize() with { 
-        // number of packets to be simulated
-        npackets == 20; 
-        // set the timing behavior of the sequence
-        cycle2send == 1;
-        cycle2flit == 0;
+
+    // it is necessary to randomize since it is changing the port, which is related to the header field
+    assert(bs_cfg.randomize() with { 
         // input port
         port == j % router_pkg::NPORT;
-        // only small packets
-        p_size == packet_t::SMALL;
       }
     )
+    //$display("%s",bs_cfg.convert2string());
     // configure the sequence
-    seq = basic_seq::type_id::create("seq");
-    seq.set_seq_config(cfg); 
+    seq.set_seq_config(bs_cfg); 
 
     assert(seq.randomize());
-    seq.start (sequencer[cfg.port]);
+    seq.start (sequencer[bs_cfg.port]);
 
     j = j +1;
   end

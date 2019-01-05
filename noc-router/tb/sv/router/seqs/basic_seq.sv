@@ -27,6 +27,7 @@ task body;
         tx.cycle2flit == cfg.cycle2flit;
       }
     );
+    `uvm_info("basic_seq", cfg.convert2string(), UVM_HIGH)
 
     finish_item(tx);
   end

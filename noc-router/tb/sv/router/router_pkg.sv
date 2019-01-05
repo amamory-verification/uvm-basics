@@ -81,11 +81,11 @@ endfunction
 
 // #### sequences #####
 `include "seq_config.sv"
-`include "base_vseq.sv"
-`include "basic_seq.sv"
-`include "rand_header_seq.sv"
-`include "sequential_seq.sv"
-//`include "main_vseq.sv"
+`include "./seqs/base_vseq.sv"
+`include "./seqs/basic_seq.sv"
+`include "./seqs/rand_header_seq.sv"
+`include "./seqs/sequential_seq.sv"
+`include "./seqs/main_vseq.sv"
 //`include "bottleneck_seq.sv"
 
 ////`include "small_packets_seq.sv"
@@ -103,12 +103,12 @@ endfunction
 `include "router_env.sv"
 
 // ##### tests #####
-`include "base_test.sv"
-`include "smoke_test.sv"
-`include "rand_header_test.sv"
-`include "random_test.sv"
-`include "sequential_test.sv"
-//`include "main_test.sv"
+`include "./tests/base_test.sv"
+`include "./tests/smoke_test.sv"
+`include "./tests/rand_header_test.sv"
+`include "./tests/random_test.sv"
+`include "./tests/sequential_test.sv"
+`include "./tests/main_test.sv"
 //`include "bottleneck_test.sv"
    
 
