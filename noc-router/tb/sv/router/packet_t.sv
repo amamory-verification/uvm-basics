@@ -36,9 +36,6 @@ bit [3:0] oport;
 // driver port where the packet was inserted
 bit [3:0] dport;
 
-// it contains the valid target addresses
-bit [7:0] valid_target_addr[$];
-
 // choose random packet size with weights
 constraint c_p_size {
 	p_size dist {
@@ -88,20 +85,15 @@ constraint c_size {
 }
 
 constraint c_header { 
-	header inside {valid_target_addr};
-	x == header[7:4];
+  // given the input port 'dport', it returns the list of possible target address for the header
+  header inside {router_pkg::valid_addrs(this.dport)};
+  x == header[7:4];
 	y == header[3:0];
+  solve dport before header;
 	solve header before x;
 	solve header before y;
 }
 
-
-// create the list of valid target addresses following XY routing algorithm
-function void pre_randomize();
-	if (dport == -1)
-		`uvm_fatal(get_name(), "set the dport before randomization" )
-	valid_target_addr = router_pkg::valid_addrs(dport);
-endfunction
 
 function void set_header(input bit [router_pkg::FLIT_WIDTH-1:0] h ); 
   y = h[quarter_flit-1:0];

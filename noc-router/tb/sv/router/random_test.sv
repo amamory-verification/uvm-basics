@@ -1,8 +1,8 @@
 /*
-simple test that injects 10 packets into the north port
+simple test that injects 10 packets into a single randomly selected port
 */
-class smoke_test extends base_test;
-`uvm_component_utils(smoke_test)
+class random_test extends base_test;
+`uvm_component_utils(random_test)
 
 function new (string name, uvm_component parent);
   super.new(name,parent);
@@ -17,20 +17,11 @@ task run_phase(uvm_phase phase);
   basic_seq seq;
   seq_config cfg;
 
-  // configuring seqe=uence parameters
+  // configuring sequence parameters
   cfg = seq_config::type_id::create("seq_cfg");
   assert(cfg.randomize() with { 
       // number of packets to be simulated
       npackets == 10; 
-      // set the timing behavior of the sequence
-      cycle2send == 1;
-      cycle2flit == 0;
-      // this seq will inject packets into the NORTH port only
-      port == router_pkg::NORTH;
-      // all packets will be sent to the router 8'h11
-      header == 8'h11;
-      // only small packets
-      p_size == packet_t::SMALL;
     }
   );
 
@@ -51,4 +42,4 @@ task run_phase(uvm_phase phase);
   phase.drop_objection(this);
 endtask
 
-endclass: smoke_test
+endclass: random_test

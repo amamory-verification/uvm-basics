@@ -27,9 +27,10 @@ typedef bit [7:0] bitstream_t[$];
 
 // create the list of valid target addresses following XY routing algorithm assuming the 'dport' incomming port
 function bitstream_t valid_addrs(input bit [3:0] dport);
-	
-	//bitstream_t valid_addr_q;
+//function automatic valid_addrs(ref bit [7:0] valid_addr[$], input bit [3:0] dport);
 	bit [3:0] i,j;
+	//$display("%p",valid_addrs);
+	valid_addrs = {}; // delete all
 	if (!(dport >= 0 && dport <= router_pkg::NPORT-1))
 		`uvm_fatal("", "set the dport before randomization" )
 	for (i = 0; i <= router_pkg::X_MAX; i++) begin
@@ -71,8 +72,6 @@ function bitstream_t valid_addrs(input bit [3:0] dport);
 			end
 		end // for j
 	end // for i
-	//return valid_addr_q;
-	
 endfunction
 
 
@@ -81,9 +80,11 @@ endfunction
 
 
 // #### sequences #####
+`include "seq_config.sv"
 `include "base_vseq.sv"
 `include "basic_seq.sv"
-//`include "sequential_seq.sv"
+`include "rand_header_seq.sv"
+`include "sequential_seq.sv"
 //`include "main_vseq.sv"
 //`include "bottleneck_seq.sv"
 
@@ -104,7 +105,9 @@ endfunction
 // ##### tests #####
 `include "base_test.sv"
 `include "smoke_test.sv"
-//`include "sequential_test.sv"
+`include "rand_header_test.sv"
+`include "random_test.sv"
+`include "sequential_test.sv"
 //`include "main_test.sv"
 //`include "bottleneck_test.sv"
    
