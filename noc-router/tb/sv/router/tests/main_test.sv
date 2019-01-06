@@ -8,18 +8,8 @@ function new (string name, uvm_component parent);
   super.new(name,parent);
 endfunction : new
 
-function void build_phase(uvm_phase phase);
-  super.build_phase(phase);
-  `uvm_info("msg", "Building main_test DONE!", UVM_LOW)
-endfunction: build_phase
-
-function void connect_phase(uvm_phase phase);
-  super.connect_phase(phase);
-  `uvm_info("msg", "connecting main_test DONE!", UVM_LOW)
-endfunction: connect_phase
-
 task run_phase(uvm_phase phase);
-  main_vseq vseq = main_vseq::type_id::create("vseq");
+  main_vseq seq = main_vseq::type_id::create("seq");
   seq_config cfg = seq_config::type_id::create("seq_cfg");
 
   assert(cfg.randomize() with { 
@@ -36,9 +26,9 @@ task run_phase(uvm_phase phase);
 
   phase.raise_objection(this);
   // start the virtual sequence
-  init_vseq(vseq); 
-  vseq.set_seq_config(cfg);
-  vseq.start(null);  
+  init_vseq(seq); 
+  seq.set_seq_config(cfg);
+  seq.start(null);  
   // end the simulation a little bit latter
   phase.phase_done.set_drain_time(this, 100ns);
   phase.drop_objection(this);

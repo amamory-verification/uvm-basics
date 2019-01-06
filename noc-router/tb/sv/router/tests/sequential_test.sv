@@ -1,7 +1,6 @@
 /*
  this hierarchical sequence injects injects 5 'basic_seq' in sequential port order, starting with the port 'starting_port'.
- It generates every port sends 20 small packets to the same target address
- */
+ It generates every port sends 20 small packets to the same target address*/
 class sequential_test extends base_test;
 `uvm_component_utils(sequential_test)
 

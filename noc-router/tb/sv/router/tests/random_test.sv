@@ -8,11 +8,6 @@ function new (string name, uvm_component parent);
   super.new(name,parent);
 endfunction : new
 
-function void build_phase(uvm_phase phase);
-  super.build_phase(phase);
-  `uvm_info("msg", "Building test DONE!", UVM_LOW)
-endfunction: build_phase
-
 task run_phase(uvm_phase phase);
   basic_seq seq;
   seq_config cfg;

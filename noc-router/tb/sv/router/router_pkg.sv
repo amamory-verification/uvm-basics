@@ -23,10 +23,26 @@ parameter NORTH = 2;
 parameter SOUTH = 3;
 parameter LOCAL = 4;
  
-typedef bit [7:0] bitstream_t[$];
+typedef bit [7:0] bitstream8_t[$];
+typedef bit [3:0] bitstream4_t[$];
+
+function bitstream4_t valid_ports(input bit [7:0] h);
+	bitstream8_t vaddrs;
+
+	valid_ports = {};
+	for (int i = 0; i <= router_pkg::NPORT-1; i++) begin
+		vaddrs = {};
+		vaddrs = valid_addrs(i);
+		// if h is in vaddrs, then i is a possible port to send packet to h
+		if (vaddrs.sum with (item==h))
+			valid_ports.push_back(i);
+	end
+	$display("%H --- %p\n",h, valid_ports);
+endfunction
+
 
 // create the list of valid target addresses following XY routing algorithm assuming the 'dport' incomming port
-function bitstream_t valid_addrs(input bit [3:0] dport);
+function bitstream8_t valid_addrs(input bit [3:0] dport);
 //function automatic valid_addrs(ref bit [7:0] valid_addr[$], input bit [3:0] dport);
 	bit [3:0] i,j;
 	//$display("%p",valid_addrs);
@@ -78,7 +94,6 @@ endfunction
 // ##### transactions / seq_item #####
 `include "packet_t.sv"
 
-
 // #### sequences #####
 `include "seq_config.sv"
 `include "./seqs/base_vseq.sv"
@@ -86,13 +101,7 @@ endfunction
 `include "./seqs/rand_header_seq.sv"
 `include "./seqs/sequential_seq.sv"
 `include "./seqs/main_vseq.sv"
-//`include "bottleneck_seq.sv"
-
-////`include "small_packets_seq.sv"
-////`include "big_packets_seq.sv"
-////`include "stress_seq.sv"
-////`include "random_time_seq.sv"
-
+`include "./seqs/bottleneck_seq.sv"
 
 // ##### tb modules #####
 `include "router_driver.sv"
@@ -109,8 +118,6 @@ endfunction
 `include "./tests/random_test.sv"
 `include "./tests/sequential_test.sv"
 `include "./tests/main_test.sv"
-//`include "bottleneck_test.sv"
+`include "./tests/bottleneck_test.sv"
    
-
-
 endpackage : router_pkg
