@@ -14,11 +14,12 @@ task run_phase(uvm_phase phase);
 
   // configuring sequence parameters
   cfg = seq_config::type_id::create("seq_cfg");
-  assert(cfg.randomize() with { 
+  if( !cfg.randomize() with { 
       // number of packets to be simulated
       npackets == 10; 
     }
-  );
+  )
+    `uvm_error("rand", "invalid cfg randomization"); 
 
   phase.raise_objection(this);
 
@@ -27,13 +28,13 @@ task run_phase(uvm_phase phase);
   init_vseq(seq); 
   seq.set_seq_config(cfg);
 
-  assert(seq.randomize());
+  if( !seq.randomize())
+    `uvm_error("rand", "invalid seq randomization"); 
 
   seq.start(seq.sequencer[cfg.port]);  
 
   // end the simulation a little bit latter
   phase.phase_done.set_drain_time(this, 100ns);
-  //`uvm_info("msg", "SEQ STARTED!!!", UVM_LOW)
   phase.drop_objection(this);
 endtask
 

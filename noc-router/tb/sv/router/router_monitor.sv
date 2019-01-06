@@ -73,7 +73,8 @@ task set_credit;
   @(negedge dut_vi.reset);
   forever
   begin
-    assert(credit.randomize() );
+    if( !credit.randomize() )
+      `uvm_error("monitor", "invalid credit randomization"); 
     dut_vi.credit = credit.credit;
     @(posedge dut_vi.clock);
   end

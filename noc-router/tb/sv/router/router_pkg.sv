@@ -26,6 +26,7 @@ parameter LOCAL = 4;
 typedef bit [7:0] bitstream8_t[$];
 typedef bit [3:0] bitstream4_t[$];
 
+// given a router addr h, give me the ports that can send packets to it
 function bitstream4_t valid_ports(input bit [7:0] h);
 	bitstream8_t vaddrs;
 
@@ -37,7 +38,7 @@ function bitstream4_t valid_ports(input bit [7:0] h);
 		if (vaddrs.sum with (item==h))
 			valid_ports.push_back(i);
 	end
-	$display("%H --- %p\n",h, valid_ports);
+	//$display("%H --- %p\n",h, valid_ports);
 endfunction
 
 

@@ -30,11 +30,12 @@ task body();
 		bs_cfg[i].port.rand_mode(1);
 		// set the input router port where the sequence will inject its packets
 	    // it is necessary to randomize since it is changing the port, which is related to the header field
-	    assert(bs_cfg[i].randomize() with { 
+	    if (! bs_cfg[i].randomize() with { 
 	        // input port
 	        port == val_ports[i];
 	      }
-	    );
+	    )
+	    	`uvm_error("rand", "invalid cfg randomization"); 
 	    //$display("BS_CFG\nI: %d\n\n%s",i,bs_cfg[i].convert2string());
 	    seq[i].set_seq_config(bs_cfg[i]); 	
 	end 
@@ -46,7 +47,8 @@ task body();
 	      fork
 	      automatic int idx=index;
 	        begin
-	        	assert( seq[idx].randomize() );
+	        	if (! seq[idx].randomize() )
+	        		`uvm_error("rand", "invalid seq randomization"); 
 	            seq[idx].start (sequencer[seq[idx].cfg.port]);
 	        end
 	      join_none;

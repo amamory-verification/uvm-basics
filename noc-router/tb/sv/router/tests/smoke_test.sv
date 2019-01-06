@@ -14,7 +14,7 @@ task run_phase(uvm_phase phase);
 
   // configuring seqe=uence parameters
   cfg = seq_config::type_id::create("seq_cfg");
-  assert(cfg.randomize() with { 
+  if( !cfg.randomize() with { 
       // number of packets to be simulated
       npackets == 10; 
       // set the timing behavior of the sequence
@@ -27,7 +27,8 @@ task run_phase(uvm_phase phase);
       // only small packets
       p_size == packet_t::SMALL;
     }
-  );
+  )
+    `uvm_error("rand", "invalid cfg randomization"); 
 
   phase.raise_objection(this);
 
@@ -36,7 +37,8 @@ task run_phase(uvm_phase phase);
   init_vseq(seq); 
   seq.set_seq_config(cfg);
 
-  assert(seq.randomize());
+  if( !seq.randomize())
+    `uvm_error("rand", "invalid seq randomization"); 
 
   seq.start(seq.sequencer[cfg.port]);  
 

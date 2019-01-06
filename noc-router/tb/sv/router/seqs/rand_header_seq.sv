@@ -27,10 +27,12 @@ task body;
   repeat(cfg.npackets)
   begin
     // randomize the header only
-    assert(bs_cfg.randomize());
+    if(!bs_cfg.randomize())
+      `uvm_error("rand", "invalid cfg randomization"); 
     //$display("%s",bs_cfg.convert2string());
     seq.set_seq_config(bs_cfg); 
-    assert(seq.randomize());
+    if( !seq.randomize())
+      `uvm_error("rand", "invalid seq randomization"); 
     seq.start (sequencer[bs_cfg.port]);
   end
 endtask: body

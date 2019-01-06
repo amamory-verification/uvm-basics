@@ -5,10 +5,12 @@ parameter half_flit = router_pkg::FLIT_WIDTH/2;
 parameter quarter_flit = router_pkg::FLIT_WIDTH/4;
 
 // to ease randomization of packet size
-typedef enum {ZERO, SMALL, MED, LARGE} packet_size_t;
+//typedef enum {ZERO, SMALL, MED, LARGE} packet_size_t;
+typedef enum {SMALL, MED, LARGE} packet_size_t; // zero is not supported by the router. enable only to generated invalid packets
 rand packet_size_t p_size;
 // weights for packet size
-bit [4:0] w_zero=1, w_small=2, w_med=10, w_large=1;
+//bit [4:0] w_zero=1, w_small=2, w_med=10, w_large=1;
+bit [4:0] w_small=20, w_med=5, w_large=1;
 
 // packet payload and size (payload.size())
 // TODO optimize according to https://verificationacademy.com/forums/systemverilog/randomizing-dynamic-array-size
@@ -39,7 +41,7 @@ bit [3:0] dport;
 // choose random packet size with weights
 constraint c_p_size {
 	p_size dist {
-		ZERO  := w_zero,
+		//ZERO  := w_zero, // not supported by the router. enable only to generated invalid packets
 		SMALL := w_small,
 		MED   := w_med,
 		LARGE := w_large
@@ -72,9 +74,10 @@ constraint c_cycle2flit {
 
 // max packet size in flits
 constraint c_size { 
-	if (p_size == ZERO){
-		payload.size() == 0;
-	}else if (p_size == SMALL){
+	//if (p_size == ZERO){
+	//	payload.size() == 0;
+	//}else 
+  if (p_size == SMALL){
 		payload.size() >= 1; payload.size() <= 3;
 	
 	}else if (p_size == LARGE){

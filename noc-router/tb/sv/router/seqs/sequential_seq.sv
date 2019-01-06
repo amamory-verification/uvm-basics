@@ -32,16 +32,18 @@ task body;
   for (int i = 0; i < router_pkg::NPORT; i++) begin
 
     // it is necessary to randomize since it is changing the port, which is related to the header field
-    assert(bs_cfg.randomize() with { 
+    if( !bs_cfg.randomize() with { 
         // input port
         port == j % router_pkg::NPORT;
       }
     )
+      `uvm_error("rand", "invalid cfg randomization"); 
     //$display("%s",bs_cfg.convert2string());
     // configure the sequence
     seq.set_seq_config(bs_cfg); 
 
-    assert(seq.randomize());
+    if( !seq.randomize())
+      `uvm_error("rand", "invalid seq randomization"); 
     seq.start (sequencer[bs_cfg.port]);
 
     j = j +1;
