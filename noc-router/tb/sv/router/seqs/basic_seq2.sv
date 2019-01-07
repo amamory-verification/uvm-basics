@@ -1,9 +1,12 @@
 /*
- this flat sequence injects 'npackets' into a single port 'port'   
+ this flat sequence injects 'npackets' into a single port 'port'.
+ the difference compared to basic_seq.sv is the use of config_db   
 */
-class basic_seq extends base_vseq; 
-`uvm_object_utils(basic_seq)
+class basic_seq2 extends base_vseq; 
+`uvm_object_utils(basic_seq2)
 
+
+rand bit [3:0] cycle2send;
 
 function new(string name = "basic_seq");
   super.new(name);
@@ -12,7 +15,10 @@ endfunction: new
 
 task body;
   packet_t tx;
-  //$display("NAME ---- %s",get_full_name());
+  //$display("%s",get_full_name());
+
+  // one example of another way to get individual config values
+  uvm_config_db#(bit [3:0]):: get(null, get_full_name(), "cycle2send", cycle2send);
   repeat(cfg.npackets)
   begin
     tx = packet_t::type_id::create("tx");
@@ -24,7 +30,8 @@ task body;
     if( ! tx.randomize() with {
         tx.p_size == cfg.p_size;
         tx.header == cfg.header;
-        tx.cycle2send == cfg.cycle2send;
+        //tx.cycle2send == cfg.cycle2send;
+        tx.cycle2send == cycle2send;
         tx.cycle2flit == cfg.cycle2flit;
       }
     )
@@ -35,5 +42,5 @@ task body;
   end
 endtask: body
 
-endclass: basic_seq
+endclass: basic_seq2
 

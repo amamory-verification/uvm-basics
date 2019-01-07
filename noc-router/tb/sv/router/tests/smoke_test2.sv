@@ -2,8 +2,8 @@
 simple test that injects 10 packets into the north port.
 the difference compared to smoke_test.sv is the use of config_db  
 */
-class smoke_test extends base_test;
-`uvm_component_utils(smoke_test)
+class smoke_test2 extends base_test;
+`uvm_component_utils(smoke_test2)
 
 function new (string name, uvm_component parent);
   super.new(name,parent);
@@ -15,11 +15,12 @@ task run_phase(uvm_phase phase);
 
   // configuring sequence parameters
   cfg = seq_config::type_id::create("seq_cfg");
+  uvm_config_db#(bit [3:0])::set(this, "uvm_test_top.env.agent*.sequencer.seq", "cycle2send",1);
   if( !cfg.randomize() with { 
       // number of packets to be simulated
       npackets == 10; 
       // set the timing behavior of the sequence
-      cycle2send == 1;
+      //cycle2send == 1;
       cycle2flit == 0;
       // this seq will inject packets into the NORTH port only
       port == router_pkg::NORTH;
@@ -49,4 +50,4 @@ task run_phase(uvm_phase phase);
   phase.drop_objection(this);
 endtask
 
-endclass: smoke_test
+endclass: smoke_test2
