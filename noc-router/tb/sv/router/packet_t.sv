@@ -159,8 +159,18 @@ virtual function string convert2string();
   return s;
 endfunction: convert2string
 
-endclass: packet_t
+function void do_record(uvm_recorder recorder);
+  super.do_record(recorder);
 
+  `uvm_record_attribute(recorder.tr_handle, "x",x);
+  `uvm_record_attribute(recorder.tr_handle, "y",y);
+  `uvm_record_attribute(recorder.tr_handle, "ip",dport);
+  `uvm_record_attribute(recorder.tr_handle, "op",oport);
+  `uvm_record_attribute(recorder.tr_handle, "size",payload.size());
+  //`uvm_record_attribute(recorder.tr_handle, "payload",payload);
+endfunction
+
+endclass: packet_t
 
 
 /*

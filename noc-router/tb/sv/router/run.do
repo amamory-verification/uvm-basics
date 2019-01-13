@@ -18,13 +18,18 @@ vcom ../../../dut/RouterCC.vhd
 # TB
 vlog -f tb.f
 
+# USEFULL PARAMETERS
 # timeout of 1ms
 # use '-sv_seed' to set the seed. example '-sv_seed=10'
 # -sv_seed random 
 # use +UVM_CONFIG_DB_TRACE to debug config_db
 # to debug randomization errors -solvefaildebug
+# to enable DB debug  db
+# to enable SV class debug -classdebug
+# to enable UVM debug -uvmcontrol=all
+# to enable the fullest UVM-aware debug '-classdebug -msgmode both -uvmcontrol=all'
 #### +uvm_set_config_int=uvm_test_top.env.agent4.monitor,cred_distrib,10
-vsim top -coverage +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=smoke_test 
+vsim top -coverage -classdebug -msgmode both -uvmcontrol=all +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=smoke_test 
 set NoQuitOnFinish 1
 onbreak {resume}
 log /* -r
@@ -33,6 +38,7 @@ do shutup.do
 run -all
 coverage attribute -name TESTNAME -value smoke_test
 coverage save smoke_test.ucdb
+
 
 vsim top -coverage +UVM_TIMEOUT=1000000 +UVM_VERBOSITY=UVM_LOW +UVM_TESTNAME=smoke_test2 
 set NoQuitOnFinish 1
@@ -90,3 +96,4 @@ coverage save main_test.ucdb
 
 vcover merge  -out router.ucdb main_test.ucdb bottleneck_test.ucdb sequential_test.ucdb random_test.ucdb rand_header_test.ucdb smoke_test2.ucdb  smoke_test.ucdb 
 vcover report router.ucdb -cvg -details
+

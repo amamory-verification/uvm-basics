@@ -59,6 +59,9 @@ RouterCC_wrapper  dut1(.clock(clock),
 initial
 begin: blk
 
+	// enable uvm transaction recording. must be executed before creating the uvm components 
+	uvm_config_db# (int) :: set (null, "*", "recording_detail",1);
+
 	run_test(); // vsim +UVM_TESTNAME=my_test
 
 end // blk

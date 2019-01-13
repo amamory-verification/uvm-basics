@@ -8,6 +8,11 @@ add wave -noupdate /top/dut1/clock_rx
 add wave -noupdate -expand /top/dut1/rx
 add wave -noupdate -expand /top/dut1/data_in
 add wave -noupdate /top/dut1/credit_o
+add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent0/sequencer/seq
+add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent1/sequencer/seq
+add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent2/sequencer/seq
+add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent3/sequencer/seq
+add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent4/sequencer/seq
 add wave -noupdate -divider -height 50 OUTPUT
 add wave -noupdate /top/dut1/clock_tx
 add wave -noupdate -expand /top/dut1/tx
@@ -69,8 +74,9 @@ add wave -noupdate /top/dut1/CC/SwitchControl/auxfree
 add wave -noupdate /top/dut1/CC/SwitchControl/source
 add wave -noupdate /top/dut1/CC/SwitchControl/sender_ant
 add wave -noupdate /top/dut1/CC/SwitchControl/clock
+add wave -noupdate /uvm_root/uvm_test_top/env/scoreboard/mon_ap
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {250 ns} 0}
+WaveRestoreCursors {{Cursor 1} {51 ns} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 266
 configure wave -valuecolwidth 100
@@ -86,4 +92,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ns} {561 ns}
+WaveRestoreZoom {0 ns} {1050 ns}
