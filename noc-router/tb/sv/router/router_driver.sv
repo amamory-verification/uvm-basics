@@ -19,7 +19,8 @@ function void build_phase(uvm_phase phase);
 	if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
 		`uvm_fatal("driver", "No port");
 
-	if(!uvm_config_db#(virtual router_if)::read_by_name($sformatf("driver%0d",port), "in_if", dut_vi))
+	//if(!uvm_config_db#(virtual router_if)::read_by_name($sformatf("driver%0d",port), "in_if", dut_vi))
+    if(!uvm_config_db#(virtual router_if)::get (this,"", "if", dut_vi))
 	    `uvm_fatal("driver", "No in_if"); 	
 
 	`uvm_info("msg", "DRIVER Done!!!", UVM_HIGH)

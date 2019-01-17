@@ -1,25 +1,3 @@
-//class used to implement the random credit logic
-class credit_class;
-  // the probability to have credit to send flits outside the router. 
-  // cred_distrib == 10 ==> 100%, i.e. the next router is always free to send flits
-  // cred_distrib == 1 ==> 10%, i.e. the next router is always free only 10% of the time
-  bit [3:0] cred_distrib;
-  rand bit credit;
-
-
-  constraint cred {
-    // the sum of the probs must be 10
-    credit dist {
-      0  := 10-cred_distrib,
-      1  := cred_distrib
-    };
-  }
-
-  // dist == 5 means 50% of the time there will be credit
-  function new (input bit [3:0] disto = 5);
-    cred_distrib = disto;
-  endfunction
-endclass
 
 // the monitor class
 class router_monitor extends uvm_monitor;
@@ -31,7 +9,7 @@ virtual router_if dut_vi;
 bit [3:0] port;
 
 // logic used to randomize credit at the output port
-credit_class credit;
+//credit_class credit;
 
 
 function new(string name, uvm_component parent);
@@ -50,13 +28,14 @@ function void build_phase(uvm_phase phase);
     `uvm_fatal("monitor", "No port");
   `uvm_info("monitor", $sformatf("PORT number: %0d",port), UVM_HIGH)
 
-  if(!uvm_config_db#(virtual router_if)::read_by_name($sformatf("monitor%0d",port), "out_if", dut_vi))
+  //if(!uvm_config_db#(virtual router_if)::read_by_name($sformatf("monitor%0d",port), "out_if", dut_vi))
+  if(!uvm_config_db#(virtual router_if)::get (this,"", "if", dut_vi))
       `uvm_fatal("monitor", "No in_if");
 
-  if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", cred_distrib) )
-    `uvm_fatal("monitor", "No cred_distrib");
-  `uvm_info("monitor", $sformatf("got cred_distrib %0d",cred_distrib), UVM_HIGH)
-  credit = new(cred_distrib);
+//  if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", cred_distrib) )
+//    `uvm_fatal("monitor", "No cred_distrib");
+//  `uvm_info("monitor", $sformatf("got cred_distrib %0d",cred_distrib), UVM_HIGH)
+  //credit = new(cred_distrib);
 
   `uvm_info("msg", "MONITOR Done !!!", UVM_HIGH)
 endfunction: build_phase
@@ -71,6 +50,8 @@ endfunction
 task set_credit;
   dut_vi.credit = 0;
   @(negedge dut_vi.reset);
+  dut_vi.credit = 1;
+  /*
   forever
   begin
     if( !credit.randomize() )
@@ -78,7 +59,7 @@ task set_credit;
     dut_vi.credit = credit.credit;
     @(posedge dut_vi.clock);
   end
-
+  */
 endtask
 
 // extract packets from the output interface and send them to the scoreboard
