@@ -28,35 +28,42 @@ endclass
 // It is only used when the agent is attached with a unconnected output port 
 // TODO setar range de 0.0 a 1.0
 /////////////////////
-class credit_i_driver extends uvm_component;
+// hermes driver for outgoing packets
+//class credit_i_driver extends uvm_component;
+class credit_i_driver extends router_driver;
 `uvm_component_utils(credit_i_driver);
 
-virtual router_if dut_vi;
+//virtual router_if dut_vi;
 
 // logic used to randomize credit at the output port
 credit_class credit;
-
+//bit [3:0] port;
 
 function new(string name, uvm_component parent);
   super.new(name, parent);
 endfunction : new
 
 function void build_phase(uvm_phase phase);
-	int distrib;
+	bit [3:0] distrib;
+	super.build_phase(phase);
 
   	// print config_db
 	//print_config();
-
-	//if(!uvm_config_db#(virtual router_if)::read_by_name($sformatf("driver%0d",port), "in_if", dut_vi))
+/*
+  	if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
+    	`uvm_fatal("driver", "No port");
+    `uvm_info("driver", $sformatf("PORT number: %0d",port), UVM_HIGH)
+	
     if(!uvm_config_db#(virtual router_if)::get (this,"", "if", dut_vi))
-	    `uvm_fatal("driver", "No in_if"); 	
-
+	    `uvm_fatal("driver", "No if"); 	
+*/
+	// this should be set by the test, for each output agent
 	if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", distrib) )
 		`uvm_fatal("monitor", "No cred_distrib");
-	`uvm_info("monitor", $sformatf("got cred_distrib %0d",cred_distrib), UVM_HIGH)
+	`uvm_info("driver", $sformatf("got cred_distrib %0d",distrib), UVM_HIGH)
 
 	// the random distribution is set only once per driver. does not seem necessary to change it during runtime
-	credit = new(cred_distrib(distrib));
+	credit = new(distrib);
 
 	`uvm_info("msg", "DRIVER Done!!!", UVM_HIGH)
 endfunction : build_phase

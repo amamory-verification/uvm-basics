@@ -13,18 +13,22 @@ endfunction: new
 
 function void build_phase(uvm_phase phase);
   // build the agent and pass its parameters
+  print_config(); 
   foreach (agent_in_h[i]) begin
     agent_in_h[i] = router_agent::type_id::create($sformatf("agent_in_%0d",i), this);
     // TODO factory overrride no driver
-    uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_in_%0d*",i), "port", i);
-    uvm_config_db #(bit [3:0])              ::set(this, "*", "cred_distrib", cred_distrib);
-    uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent_in_%0d*",i), "is_active", UVM_ACTIVE);
+    uvm_config_db #(string)                 ::set(this, $sformatf("agent_in_%0d",i), "port_dir", "in");
+    uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_in_%0d",i), "port", i);
+    uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent_in_%0d",i), "is_active", UVM_ACTIVE);
+    `uvm_info("env", $sformatf("AGENT_IN %0d DOOOOONE !!!",i), UVM_HIGH)
   end
   foreach (agent_out_h[i]) begin
     agent_out_h[i] = router_agent::type_id::create($sformatf("agent_out_%0d",i), this);
-    uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_out_%0d*",i), "port", i);
-    //uvm_config_db #(bit [3:0])              ::set(this, "*", "cred_distrib", cred_distrib);
-    uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent_out_%0d*",i), "is_active", UVM_ACTIVE);
+    uvm_config_db #(string)                 ::set(this, $sformatf("agent_out_%0d",i), "port_dir", "out");
+    uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_out_%0d",i), "port", i);
+    uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_out_%0d",i), "cred_distrib", cred_distrib);
+    uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent_out_%0d",i), "is_active", UVM_ACTIVE);
+    `uvm_info("env", $sformatf("AGENT_OUT %0d DOOOOONE !!!",i), UVM_HIGH)
   end
 
   coverage_h   = router_coverage::type_id::create("coverage", this);
@@ -34,10 +38,13 @@ endfunction: build_phase
 
 function void connect_phase(uvm_phase phase);
   `uvm_info("msg", "Connecting ENV", UVM_HIGH)
-  foreach (agent_h[i]) begin
-    // connect monitors/drivers with the sb
-    agent_h[i].monitor_h.aport.connect(scoreboard_h.mon_ap);
-    agent_h[i].driver_h.aport.connect(scoreboard_h.drv_ap);
+  foreach (agent_in_h[i]) begin
+    // connect in monitors with the sb
+    agent_in_h[i].monitor_h.aport.connect(scoreboard_h.in_mon_ap);
+  end
+  foreach (agent_out_h[i]) begin
+    // connect out monitors with the sb
+    agent_out_h[i].monitor_h.aport.connect(scoreboard_h.out_mon_ap);
   end
   // conenct sb with coverage
   scoreboard_h.cov_ap.connect(coverage_h.analysis_export);

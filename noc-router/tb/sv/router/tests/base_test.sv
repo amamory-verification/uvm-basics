@@ -13,9 +13,15 @@ endfunction : new
 // Initialise the virtual sequence handles
 function void init_vseq(base_vseq vseq);
   foreach (vseq.sequencer[i]) begin
-    vseq.sequencer[i] = env_h.agent_h[i].sequencer_h;
+    vseq.sequencer[i] = env_h.agent_in_h[i].sequencer_h;
   end
 endfunction: init_vseq
+
+function void end_of_elaboration_phase(uvm_phase phase); 
+	super.end_of_elaboration_phase(phase); 
+	this.print(); 
+	factory.print(); 
+endfunction 
 
 function void build_phase(uvm_phase phase);
   super.build_phase(phase);

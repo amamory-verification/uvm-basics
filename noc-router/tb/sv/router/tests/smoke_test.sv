@@ -9,6 +9,13 @@ function new (string name, uvm_component parent);
   super.new(name,parent);
 endfunction : new
 
+
+function void build_phase(uvm_phase phase);
+  super.build_phase(phase);
+  uvm_config_db#(bit [3:0])::set(this, "uvm_test_top.env.agent_out*.driver", "cred_distrib",3);
+endfunction
+
+
 task run_phase(uvm_phase phase);
   basic_seq seq;
   seq_config cfg;

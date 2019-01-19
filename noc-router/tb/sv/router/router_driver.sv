@@ -1,3 +1,4 @@
+// hermes driver for incomming packets
 class router_driver extends uvm_driver #(packet_t);
 `uvm_component_utils(router_driver);
 
@@ -18,10 +19,10 @@ function void build_phase(uvm_phase phase);
 
 	if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
 		`uvm_fatal("driver", "No port");
+	`uvm_info("driver", $sformatf("PORT number: %0d",port), UVM_HIGH)
 
-	//if(!uvm_config_db#(virtual router_if)::read_by_name($sformatf("driver%0d",port), "in_if", dut_vi))
     if(!uvm_config_db#(virtual router_if)::get (this,"", "if", dut_vi))
-	    `uvm_fatal("driver", "No in_if"); 	
+	    `uvm_fatal("driver", "No if"); 	
 
 	`uvm_info("msg", "DRIVER Done!!!", UVM_HIGH)
 endfunction : build_phase

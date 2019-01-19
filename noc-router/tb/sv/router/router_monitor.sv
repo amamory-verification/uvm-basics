@@ -1,4 +1,3 @@
-
 // the monitor class
 class router_monitor extends uvm_monitor;
 `uvm_component_utils(router_monitor);
@@ -8,18 +7,12 @@ uvm_analysis_port #(packet_t) aport; // used to send the output packet to the sb
 virtual router_if dut_vi;
 bit [3:0] port;
 
-// logic used to randomize credit at the output port
-//credit_class credit;
-
-
 function new(string name, uvm_component parent);
   super.new(name,parent);
 endfunction: new
 
 function void build_phase(uvm_phase phase);
-  bit [3:0] cred_distrib;
   aport = new("aport", this); 
-
 
   // print config_db
   //print_config();
@@ -28,14 +21,8 @@ function void build_phase(uvm_phase phase);
     `uvm_fatal("monitor", "No port");
   `uvm_info("monitor", $sformatf("PORT number: %0d",port), UVM_HIGH)
 
-  //if(!uvm_config_db#(virtual router_if)::read_by_name($sformatf("monitor%0d",port), "out_if", dut_vi))
   if(!uvm_config_db#(virtual router_if)::get (this,"", "if", dut_vi))
-      `uvm_fatal("monitor", "No in_if");
-
-//  if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", cred_distrib) )
-//    `uvm_fatal("monitor", "No cred_distrib");
-//  `uvm_info("monitor", $sformatf("got cred_distrib %0d",cred_distrib), UVM_HIGH)
-  //credit = new(cred_distrib);
+      `uvm_fatal("monitor", "No if");
 
   `uvm_info("msg", "MONITOR Done !!!", UVM_HIGH)
 endfunction: build_phase
