@@ -31,14 +31,14 @@ function void build_phase(uvm_phase phase);
     `uvm_fatal("agent", "unexpected port_dir value");    
 
   // the output agent's driver 
-  
+  /*
   if (get_is_active() && port_dir == "out") 
   begin
     if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", cred_distrib) )
       `uvm_fatal("agent", "No cred_distrib"); 
     uvm_config_db #(bit [3:0])::set (this,"driver", "cred_distrib", cred_distrib);
   end
-  
+  */
 
   // port id
   if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )

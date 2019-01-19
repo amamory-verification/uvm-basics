@@ -26,7 +26,7 @@ function void build_phase(uvm_phase phase);
     agent_out_h[i] = router_agent::type_id::create($sformatf("agent_out_%0d",i), this);
     uvm_config_db #(string)                 ::set(this, $sformatf("agent_out_%0d",i), "port_dir", "out");
     uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_out_%0d",i), "port", i);
-    uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_out_%0d",i), "cred_distrib", cred_distrib);
+    //uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_out_%0d",i), "cred_distrib", cred_distrib);
     uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent_out_%0d",i), "is_active", UVM_ACTIVE);
     `uvm_info("env", $sformatf("AGENT_OUT %0d DOOOOONE !!!",i), UVM_HIGH)
   end

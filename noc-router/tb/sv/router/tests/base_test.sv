@@ -19,8 +19,10 @@ endfunction: init_vseq
 
 function void end_of_elaboration_phase(uvm_phase phase); 
 	super.end_of_elaboration_phase(phase); 
-	this.print(); 
-	factory.print(); 
+	if (uvm_top.get_report_verbosity_level() >= UVM_HIGH) begin
+		this.print(); 
+		factory.print(); 
+	end
 endfunction 
 
 function void build_phase(uvm_phase phase);

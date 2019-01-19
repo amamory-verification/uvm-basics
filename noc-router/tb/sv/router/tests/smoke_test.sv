@@ -12,7 +12,14 @@ endfunction : new
 
 function void build_phase(uvm_phase phase);
   super.build_phase(phase);
-  uvm_config_db#(bit [3:0])::set(this, "uvm_test_top.env.agent_out*.driver", "cred_distrib",3);
+  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_*.driver", "cred_distrib",3);
+/*
+  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_0.driver", "cred_distrib",3);
+  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_1.driver", "cred_distrib",4);
+  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_2.driver", "cred_distrib",5);
+  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_3.driver", "cred_distrib",6);
+  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_4.driver", "cred_distrib",7);
+*/  
 endfunction
 
 
