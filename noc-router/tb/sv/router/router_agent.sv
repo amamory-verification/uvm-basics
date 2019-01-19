@@ -1,5 +1,5 @@
 class router_agent extends uvm_agent;
-`uvm_component_utils(router_agent);
+`uvm_component_utils(router_agent); 
 
  packet_sequencer sequencer_h;
  router_driver    driver_h;
@@ -14,6 +14,9 @@ function new(string name, uvm_component parent);
 endfunction: new
 
 function void build_phase(uvm_phase phase);
+  //if(!uvm_config_db#(virtual router_if)::read_by_name($sformatf("monitor%0d",port), "out_if", dut_vi))
+  //if(!uvm_config_db#(virtual router_if)::get (this,"", "if", dut_vi))
+  //    `uvm_fatal("monitor", "No in_if");  
   if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", cred_distrib) )
     `uvm_fatal("agent", "No cred_distrib"); 
   if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )

@@ -19,7 +19,7 @@ import uvm_pkg::*;
 import router_pkg::*;
 
 bit clock;
-always #10 clock = ~clock; // clock generator
+always #10 clock = ~clock; // clock generator  
 
 
 // reset generator
@@ -42,8 +42,8 @@ for(i=0; i< router_pkg::NPORT; i++)
 begin : dut_inst
 	initial 
 	begin
-	  uvm_config_db#(virtual router_if)::set(null,$sformatf("driver%0d",i),"in_if",in_if[i]);
-	  uvm_config_db#(virtual router_if)::set(null,$sformatf("monitor%0d",i),"out_if",out_if[i]);
+	  uvm_config_db#(virtual router_if)::set(null,$sformatf("agent_in_%0d",i),"if",in_if[i]);
+	  uvm_config_db#(virtual router_if)::set(null,$sformatf("agent_out_%0d",i),"if",out_if[i]);
 	end
 end
 

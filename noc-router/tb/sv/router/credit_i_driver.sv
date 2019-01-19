@@ -1,0 +1,78 @@
+//class used to implement the random credit logic 
+class credit_class;
+  // the probability to have credit to send flits outside the router. 
+  // cred_distrib == 10 ==> 100%, i.e. the next router is always free to send flits
+  // cred_distrib == 1 ==> 10%, i.e. the next router is always free only 10% of the time
+  bit [3:0] cred_distrib;
+  rand bit credit;
+
+
+  constraint cred {
+    // the sum of the probs must be 10
+    credit dist {
+      0  := 10-cred_distrib,
+      1  := cred_distrib
+    };
+  }
+
+  // dist == 5 means 50% of the time there will be credit
+  function new (input bit [3:0] disto = 5);
+    cred_distrib = disto;
+  endfunction
+endclass
+
+
+/////////////////////
+// This driver generates the input credit signal in the router output ports.
+// It allows to change the random prob of asserting this signal.
+// It is only used when the agent is attached with a unconnected output port 
+// TODO setar range de 0.0 a 1.0
+/////////////////////
+class credit_i_driver extends uvm_component;
+`uvm_component_utils(credit_i_driver);
+
+virtual router_if dut_vi;
+
+// logic used to randomize credit at the output port
+credit_class credit;
+
+
+function new(string name, uvm_component parent);
+  super.new(name, parent);
+endfunction : new
+
+function void build_phase(uvm_phase phase);
+	int distrib;
+
+  	// print config_db
+	//print_config();
+
+	//if(!uvm_config_db#(virtual router_if)::read_by_name($sformatf("driver%0d",port), "in_if", dut_vi))
+    if(!uvm_config_db#(virtual router_if)::get (this,"", "if", dut_vi))
+	    `uvm_fatal("driver", "No in_if"); 	
+
+	if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", distrib) )
+		`uvm_fatal("monitor", "No cred_distrib");
+	`uvm_info("monitor", $sformatf("got cred_distrib %0d",cred_distrib), UVM_HIGH)
+
+	// the random distribution is set only once per driver. does not seem necessary to change it during runtime
+	credit = new(cred_distrib(distrib));
+
+	`uvm_info("msg", "DRIVER Done!!!", UVM_HIGH)
+endfunction : build_phase
+
+
+// generates random credit signal at the output port, simulating neighbor congested routers with full buffers
+task run_phase(uvm_phase phase);
+	dut_vi.credit = 0;
+	@(negedge dut_vi.reset);
+	forever
+	begin
+		if( !credit.randomize() )
+			`uvm_error("monitor", "invalid credit randomization"); 
+		dut_vi.credit = credit.credit;
+		@(posedge dut_vi.clock);
+	end
+endtask: run_phase
+
+endclass: credit_i_driver

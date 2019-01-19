@@ -95,8 +95,12 @@ endfunction
 // ##### transactions / seq_item #####
 `include "packet_t.sv"
 
-// #### sequences #####
+
+// #### configuration classes #####
 `include "seq_config.sv"
+`include "hermes_agent_cfg.sv"
+
+// #### sequences #####
 `include "./seqs/base_vseq.sv"
 `include "./seqs/basic_seq.sv"
 `include "./seqs/basic_seq2.sv" // example using config_db
@@ -107,6 +111,7 @@ endfunction
 
 // ##### tb modules #####
 `include "router_driver.sv"
+`include "credit_i_driver.sv"
 `include "router_monitor.sv"
 `include "router_coverage.sv"
 `include "router_agent.sv"
