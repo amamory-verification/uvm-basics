@@ -10,11 +10,13 @@ packet_sequencer sequencer[router_pkg::NPORT];
 // Handle for sequence configuration object
 seq_config cfg;
 
+
 // test should create/randomize the config and pass it to the sequence
 function void set_seq_config(seq_config cfg0);
 	// pass the handle of the cfg created by the caller
 	cfg = cfg0;
 endfunction : set_seq_config
+
 
 function new(string name = "base_vseq");
   super.new(name);

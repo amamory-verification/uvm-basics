@@ -29,7 +29,7 @@ endclass
 // TODO setar range de 0.0 a 1.0
 /////////////////////
 // hermes driver for outgoing packets
-class credit_i_driver extends router_driver;
+class credit_i_driver extends router_base_driver;
 `uvm_component_utils(credit_i_driver);
 
 // logic used to randomize credit at the output port

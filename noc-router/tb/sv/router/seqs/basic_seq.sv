@@ -13,6 +13,8 @@ endfunction: new
 task body;
   packet_t tx;
   //$display("NAME ---- %s",get_full_name());
+  //if ( !uvm_config_db#(seq_config)::get(get_sequencer(), "", "config", cfg) )
+  //  `uvm_error(get_type_name(), "Failed to get seq_config object")
   repeat(cfg.npackets)
   begin
     tx = packet_t::type_id::create("tx");
@@ -24,8 +26,8 @@ task body;
     if( ! tx.randomize() with {
         tx.p_size == cfg.p_size;
         tx.header == cfg.header;
-        tx.cycle2send == cfg.cycle2send;
-        tx.cycle2flit == cfg.cycle2flit;
+        //tx.cycle2send == cfg.cycle2send;
+        //tx.cycle2flit == cfg.cycle2flit;
       }
     )
       `uvm_error("rand", "invalid seq item randomization"); 

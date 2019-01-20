@@ -1,28 +1,25 @@
 // hermes driver for incomming packets
-class router_driver extends uvm_driver #(packet_t);
+class router_driver extends router_base_driver;
 `uvm_component_utils(router_driver);
 
-uvm_analysis_port #(packet_t) aport; // used to send the incomming packet to the sb 
-
-virtual router_if dut_vi;
-bit [3:0] port;
+bit [3:0] cycle2send; // send header after some random number of clock cycles, from 0 to 15 cycles
+bit [3:0] cycle2flit; // send the size after some random number of clock cycles, from 0 to 15 cycles
 
 function new(string name, uvm_component parent);
   super.new(name, parent);
 endfunction : new
 
 function void build_phase(uvm_phase phase);
-	aport = new("aport", this); 
+	super.build_phase(phase);
 
   	// print config_db
 	//print_config();
 
-	if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
-		`uvm_fatal("driver", "No port");
-	`uvm_info("driver", $sformatf("PORT number: %0d",port), UVM_HIGH)
+    if(!uvm_config_db#(bit [3:0])::get (this,"", "cycle2send", cycle2send))
+	    `uvm_fatal("driver", "No cycle2send"); 	
 
-    if(!uvm_config_db#(virtual router_if)::get (this,"", "if", dut_vi))
-	    `uvm_fatal("driver", "No if"); 	
+    if(!uvm_config_db#(bit [3:0])::get (this,"", "cycle2flit", cycle2flit))
+	    `uvm_fatal("driver", "No cycle2flit"); 	
 
 	`uvm_info("msg", "DRIVER Done!!!", UVM_HIGH)
 endfunction : build_phase
@@ -52,14 +49,14 @@ task run_phase(uvm_phase phase);
 		//dut_vi.send_packet(tx,port);
 		//`uvm_info("msg", tx.convert2string(), UVM_LOW)
 		i=0;
-		//send header after some random number of clock cycles, from 0 to 15 cycles
-		wait_cycles(tx.cycle2send);
+		
+		wait_cycles(cycle2send);
 		dut_vi.data = tx.get_header();	
 		// wait until there is space in the input buffer
 		@(negedge dut_vi.clock iff dut_vi.credit == 1'b1);	
 		@(posedge dut_vi.clock);
-		// send the size after some random number of clock cycles, from 0 to 15 cycles
-		wait_cycles(tx.cycle2flit);
+		
+		wait_cycles(cycle2flit);
 		dut_vi.data = tx.payload.size();
 		@(negedge dut_vi.clock iff dut_vi.credit == 1'b1);
 		// send payload after some random number of clock cycles, from 0 to 15 cycles
@@ -67,7 +64,7 @@ task run_phase(uvm_phase phase);
 		while (i<tx.payload.size())  // size() accounts only for the payload size
 		begin
 			@(posedge dut_vi.clock);
-			wait_cycles(tx.cycle2flit);
+			wait_cycles(cycle2flit);
 			dut_vi.data = tx.payload[i];
 			i++;
 			// wait until the buffer it not full again

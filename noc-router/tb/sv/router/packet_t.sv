@@ -20,7 +20,7 @@ rand bit [quarter_flit-1:0]  x, y;
 
 rand bit [7:0] header;
 
-
+/*
 // randomize the number of cycles the driver waits to start sending the packet. used by driver
 rand bit [3:0] cycle2send;
 // used to change the random distribution of  cycle2send
@@ -31,6 +31,7 @@ bit [3:0] cycle2send_dist[16] = {10,10,10,1,1,1,1,1,1,1,1,1,1,1,1,1};
 rand bit [3:0] cycle2flit;
 // used to change the random distribution of  cycle2flit
 bit [3:0] cycle2flit_dist[16] = {15,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1};
+*/
 
 // output port where the packet was captured
 bit [3:0] oport;
@@ -48,6 +49,7 @@ constraint c_p_size {
 	};
 }
 
+/*
 // choose random # of cycles to start sending this transaction
 constraint c_cycle2send {
 	// fixed distribution 
@@ -71,6 +73,7 @@ constraint c_cycle2flit {
 					  14 := cycle2flit_dist[14], 15 := cycle2flit_dist[15]
 	};	
 }
+*/
 
 // max packet size in flits
 constraint c_size { 

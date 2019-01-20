@@ -12,8 +12,29 @@ endfunction : new
 
 function void build_phase(uvm_phase phase);
   super.build_phase(phase);
+  // configure here the agent configuration randomization
+  // either one might randomize all agent configuration
+  
+  foreach(acfg[i]) begin
+    if( !acfg[i].randomize() )
+      `uvm_error("rand", "invalid agent cfg randomization"); 
+  end
+  
+  // or disable few of them
+  foreach(acfg[i]) begin
+    acfg[i].rand_mode(0);
+  end
+
+  acfg[router_pkg::NORTH].rand_mode(1);
+  if( !acfg[router_pkg::NORTH].randomize() with { 
+      cycle2send == 1;
+      cycle2flit == 0;
+    }
+  )
+    `uvm_error("rand", "invalid agent cfg randomization"); 
+
   // tests can set the same credit proability to all output drivers
-  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_*.driver", "cred_distrib",3);
+  //uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_*.driver", "cred_distrib",3);
 /*
   // or the credit proability can be set individually to each output drivers
   uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_0.driver", "cred_distrib",3);
@@ -22,21 +43,24 @@ function void build_phase(uvm_phase phase);
   uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_3.driver", "cred_distrib",6);
   uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_4.driver", "cred_distrib",7);
 */  
+
+  // last thing to do is to the agent configuration  with config_db
+  set_acfg_db();
 endfunction
 
 
 task run_phase(uvm_phase phase);
   basic_seq seq;
   seq_config cfg;
-
+  
+  // set the sequence configuration
+  //uvm_config_db#(seq_config)::set(this, "env.agent_in_*.sequencer.seq", "config",cfg);
   // configuring sequence parameters
   cfg = seq_config::type_id::create("seq_cfg");
   if( !cfg.randomize() with { 
       // number of packets to be simulated
       npackets == 10; 
       // set the timing behavior of the sequence
-      cycle2send == 1;
-      cycle2flit == 0;
       // this seq will inject packets into the NORTH port only
       port == router_pkg::NORTH;
       // all packets will be sent to the router 8'h11
