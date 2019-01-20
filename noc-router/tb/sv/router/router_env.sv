@@ -5,7 +5,6 @@ router_agent       agent_in_h [router_pkg::NPORT];
 router_agent       agent_out_h [router_pkg::NPORT];
 router_coverage    coverage_h;
 router_scoreboard  scoreboard_h;
-bit [3:0] cred_distrib = 2; // TODO allow different credit distribution for each agent. now, all agents have the same value  
 
 function new(string name, uvm_component parent);
   super.new(name,parent);
@@ -13,22 +12,18 @@ endfunction: new
 
 function void build_phase(uvm_phase phase);
   // build the agent and pass its parameters
-  print_config(); 
+  //print_config(); 
   foreach (agent_in_h[i]) begin
     agent_in_h[i] = router_agent::type_id::create($sformatf("agent_in_%0d",i), this);
-    // TODO factory overrride no driver
     uvm_config_db #(string)                 ::set(this, $sformatf("agent_in_%0d",i), "port_dir", "in");
     uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_in_%0d",i), "port", i);
     uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent_in_%0d",i), "is_active", UVM_ACTIVE);
-    `uvm_info("env", $sformatf("AGENT_IN %0d DOOOOONE !!!",i), UVM_HIGH)
   end
   foreach (agent_out_h[i]) begin
     agent_out_h[i] = router_agent::type_id::create($sformatf("agent_out_%0d",i), this);
     uvm_config_db #(string)                 ::set(this, $sformatf("agent_out_%0d",i), "port_dir", "out");
     uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_out_%0d",i), "port", i);
-    //uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_out_%0d",i), "cred_distrib", cred_distrib);
     uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent_out_%0d",i), "is_active", UVM_ACTIVE);
-    `uvm_info("env", $sformatf("AGENT_OUT %0d DOOOOONE !!!",i), UVM_HIGH)
   end
 
   coverage_h   = router_coverage::type_id::create("coverage", this);

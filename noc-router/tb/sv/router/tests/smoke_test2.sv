@@ -15,7 +15,7 @@ task run_phase(uvm_phase phase);
 
   // configuring sequence parameters
   cfg = seq_config::type_id::create("seq_cfg");
-  uvm_config_db#(bit [3:0])::set(this, "uvm_test_top.env.agent*.sequencer.seq", "cycle2send",1);
+  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_in_*.sequencer.seq", "cycle2send",1);
   if( !cfg.randomize() with { 
       // number of packets to be simulated
       npackets == 10; 

@@ -12,8 +12,10 @@ endfunction : new
 
 function void build_phase(uvm_phase phase);
   super.build_phase(phase);
+  // tests can set the same credit proability to all output drivers
   uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_*.driver", "cred_distrib",3);
 /*
+  // or the credit proability can be set individually to each output drivers
   uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_0.driver", "cred_distrib",3);
   uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_1.driver", "cred_distrib",4);
   uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_2.driver", "cred_distrib",5);

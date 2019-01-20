@@ -110,7 +110,7 @@ virtual function void extract_phase( uvm_phase phase );
 
   super.extract_phase( phase );
 
-  `uvm_info("msg", $sformatf("simulation summary:\n   sent packets: %0d\n   received packets: %0d\n   matches: %0d\n   mismatches: %0d"
+  `uvm_info("SCOREBOARD", $sformatf("simulation summary:\n   sent packets: %0d\n   received packets: %0d\n   matches: %0d\n   mismatches: %0d"
       ,packets_sent, packets_received, packet_matches, packet_mismatches), UVM_NONE);
 
   if (packets_sent == 0)

@@ -33,24 +33,8 @@ function void end_of_elaboration();
 endfunction
 */
 
-// generates random credit signal at the output port, simulating neighbor congested routers with full buffers
-task set_credit;
-  dut_vi.credit = 0;
-  @(negedge dut_vi.reset);
-  dut_vi.credit = 1;
-  /*
-  forever
-  begin
-    if( !credit.randomize() )
-      `uvm_error("monitor", "invalid credit randomization"); 
-    dut_vi.credit = credit.credit;
-    @(posedge dut_vi.clock);
-  end
-  */
-endtask
-
 // extract packets from the output interface and send them to the scoreboard
-task extract_packets;
+task run_phase(uvm_phase phase);
   packet_t tx;
   int i,size;
   @(negedge dut_vi.reset);
@@ -90,14 +74,5 @@ task extract_packets;
     aport.write(tx);
   end  
 endtask
-
-
-task run_phase(uvm_phase phase);
-  fork
-    extract_packets();
-    set_credit();
-  join_none
-
-endtask: run_phase
 
 endclass : router_monitor

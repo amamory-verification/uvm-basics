@@ -36,7 +36,7 @@ end
 router_if   in_if [router_pkg::NPORT](clock, reset);
 router_if   out_if[router_pkg::NPORT](clock, reset);
 
-// pass the interfaces to the drivers and monitors
+// pass the interfaces to the agents and they will pass it to their monitors and drivers
 genvar i;
 for(i=0; i< router_pkg::NPORT; i++) 
 begin : dut_inst

@@ -29,15 +29,11 @@ endclass
 // TODO setar range de 0.0 a 1.0
 /////////////////////
 // hermes driver for outgoing packets
-//class credit_i_driver extends uvm_component;
 class credit_i_driver extends router_driver;
 `uvm_component_utils(credit_i_driver);
 
-//virtual router_if dut_vi;
-
 // logic used to randomize credit at the output port
 credit_class credit;
-//bit [3:0] port;
 
 function new(string name, uvm_component parent);
   super.new(name, parent);
@@ -49,18 +45,13 @@ function void build_phase(uvm_phase phase);
 
   	// print config_db
 	//print_config();
-/*
-  	if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
-    	`uvm_fatal("driver", "No port");
-    `uvm_info("driver", $sformatf("PORT number: %0d",port), UVM_HIGH)
-	
-    if(!uvm_config_db#(virtual router_if)::get (this,"", "if", dut_vi))
-	    `uvm_fatal("driver", "No if"); 	
-*/
+
 	// this should be set by the test, for each output agent
 	if (!uvm_config_db #(bit [3:0])::get (this,"", "cred_distrib", distrib) )
 		`uvm_fatal("monitor", "No cred_distrib");
 	`uvm_info("driver", $sformatf("got cred_distrib %0d",distrib), UVM_HIGH)
+	if ( !(distrib >= 1 && distrib <= 10))
+		`uvm_fatal("monitor", "cred_distrib must be between 1 and 10");
 
 	// the random distribution is set only once per driver. does not seem necessary to change it during runtime
 	credit = new(distrib);
