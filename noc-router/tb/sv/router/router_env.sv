@@ -15,10 +15,9 @@ function void build_phase(uvm_phase phase);
   // build the agent and pass its parameters
   if (uvm_top.get_report_verbosity_level() >= UVM_HIGH)
     print_config(); 
-  `uvm_info("env", "ENVVVVV1 !!!!", UVM_HIGH)
+
   if (!uvm_config_db #(hermes_env_config)::get(this, "", "config", cfg))
     `uvm_fatal("env", "No cfg");
-  `uvm_info("env", "ENVVVVV2 !!!!", UVM_HIGH)
 
   foreach (agent_master_h[i]) begin
     uvm_config_db #(hermes_agent_config)::set(this, $sformatf("agent_master_%0d",i), "config", cfg.agent_cfg[i]);

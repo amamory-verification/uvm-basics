@@ -17,7 +17,7 @@ endfunction: new
 
 task body;
   basic_seq seq;
-  seq_config bs_cfg;
+  seq_config bs_cfg, cfg;
   int j = starting_port;
 
   // configuring sequence parameters
@@ -40,7 +40,7 @@ task body;
       `uvm_error("rand", "invalid cfg randomization"); 
     //$display("%s",bs_cfg.convert2string());
     // configure the sequence
-    seq.set_seq_config(bs_cfg); 
+    //seq.set_seq_config(bs_cfg); 
 
     if( !seq.randomize())
       `uvm_error("rand", "invalid seq randomization"); 

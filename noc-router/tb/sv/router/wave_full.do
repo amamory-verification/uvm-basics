@@ -8,11 +8,11 @@ add wave -noupdate /top/dut1/clock_rx
 add wave -noupdate -expand /top/dut1/rx
 add wave -noupdate -expand /top/dut1/data_in
 add wave -noupdate /top/dut1/credit_o
-add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent0/sequencer/seq
-add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent1/sequencer/seq
-add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent2/sequencer/seq
-add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent3/sequencer/seq
-add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent4/sequencer/seq
+add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent_master_0/sequencer/seq_0
+add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent_master_1/sequencer/seq_1
+add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent_master_2/sequencer/seq_2
+add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent_master_3/sequencer/seq_3
+add wave -noupdate -height 50 /uvm_root/uvm_test_top/env/agent_master_4/sequencer/seq_4
 add wave -noupdate -divider -height 50 OUTPUT
 add wave -noupdate /top/dut1/clock_tx
 add wave -noupdate -expand /top/dut1/tx
@@ -74,7 +74,8 @@ add wave -noupdate /top/dut1/CC/SwitchControl/auxfree
 add wave -noupdate /top/dut1/CC/SwitchControl/source
 add wave -noupdate /top/dut1/CC/SwitchControl/sender_ant
 add wave -noupdate /top/dut1/CC/SwitchControl/clock
-add wave -noupdate /uvm_root/uvm_test_top/env/scoreboard/mon_ap
+add wave -noupdate /uvm_root/uvm_test_top/env/scoreboard/in_mon_ap
+add wave -noupdate /uvm_root/uvm_test_top/env/scoreboard/out_mon_ap
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {51 ns} 0}
 quietly wave cursor active 1

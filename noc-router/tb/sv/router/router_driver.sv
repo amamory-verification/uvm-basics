@@ -54,7 +54,7 @@ task run_phase(uvm_phase phase);
 		if (!enabled)
 			`uvm_error("driver", "this driver is disabled and was not supposed to send any packet");
 		//dut_vi.send_packet(tx,port);
-		//`uvm_info("msg", tx.convert2string(), UVM_LOW)
+		`uvm_info("driver", tx.convert2string(), UVM_MEDIUM)
 		i=0;
 		
 		wait_cycles(cycle2send);

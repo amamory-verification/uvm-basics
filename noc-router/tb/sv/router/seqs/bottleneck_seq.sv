@@ -11,7 +11,7 @@ endfunction: new
 
 task body();
 	basic_seq seq[];
-	seq_config bs_cfg[];
+	seq_config bs_cfg[], cfg;
 	int j=0;
 	bit [3:0] val_ports[$]; 
 
@@ -37,7 +37,7 @@ task body();
 	    )
 	    	`uvm_error("rand", "invalid cfg randomization"); 
 	    //$display("BS_CFG\nI: %d\n\n%s",i,bs_cfg[i].convert2string());
-	    seq[i].set_seq_config(bs_cfg[i]); 	
+	    //seq[i].set_seq_config(bs_cfg[i]); 	
 	end 
 	// solution from https://verificationacademy.com/forums/systemverilog/fork-within-loop-join-all
 	// to wait all threads to finish

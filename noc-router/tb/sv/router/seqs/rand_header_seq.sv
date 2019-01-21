@@ -12,7 +12,7 @@ endfunction: new
 
 task body;
   basic_seq seq;
-  seq_config bs_cfg;
+  seq_config bs_cfg, cfg;
   seq = basic_seq::type_id::create("seq");
   bs_cfg = seq_config::type_id::create("seq_cfg");
   // copy the configuration to the basic_seq
@@ -30,7 +30,7 @@ task body;
     if(!bs_cfg.randomize())
       `uvm_error("rand", "invalid cfg randomization"); 
     //$display("%s",bs_cfg.convert2string());
-    seq.set_seq_config(bs_cfg); 
+    //seq.set_seq_config(bs_cfg); 
     if( !seq.randomize())
       `uvm_error("rand", "invalid seq randomization"); 
     seq.start (sequencer[bs_cfg.port]);

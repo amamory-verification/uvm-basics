@@ -1,16 +1,21 @@
 /*
  this flat sequence injects 'npackets' into a single port 'port'.
- the difference compared to basic_seq.sv is the use of config_db   
 */
 class basic_seq2 extends base_vseq; 
 `uvm_object_utils(basic_seq2)
 
+// sequence configuration 
+seq_config cfg;
 
-rand bit [3:0] cycle2send;
-
-function new(string name = "basic_seq");
+function new(string name = "basic_seq2");
   super.new(name);
 endfunction: new
+
+task pre_body();
+  super.pre_body();
+  if(!uvm_config_db #(seq_config)::get(get_sequencer(), "", "config", cfg))
+    `uvm_fatal(get_type_name(), "config config_db lookup failed")
+endtask
 
 
 task body;
@@ -18,7 +23,9 @@ task body;
   //$display("%s",get_full_name());
 
   // one example of another way to get individual config values
-  uvm_config_db#(bit [3:0]):: get(null, get_full_name(), "cycle2send", cycle2send);
+  //uvm_config_db#(bit [3:0]):: get(null, get_full_name(), "cycle2send", cycle2send);
+  //if( !uvm_config_db#( seq_config )::get(get_sequencer(), "", "config", cfg) )
+  //  `uvm_error( "basic_seq2", {"Configuration wasn't set for ", get_name(), ". Default config was used."} )
   repeat(cfg.npackets)
   begin
     tx = packet_t::type_id::create("tx");
@@ -31,12 +38,12 @@ task body;
         tx.p_size == cfg.p_size;
         tx.header == cfg.header;
         //tx.cycle2send == cfg.cycle2send;
-        tx.cycle2send == cycle2send;
-        tx.cycle2flit == cfg.cycle2flit;
+        //tx.cycle2send == cycle2send;
+        //tx.cycle2flit == cfg.cycle2flit;
       }
     )
       `uvm_error("rand", "invalid seq item randomization"); 
-    `uvm_info("basic_seq", cfg.convert2string(), UVM_HIGH)
+    `uvm_info("basic_seq2", cfg.convert2string(), UVM_HIGH)
 
     finish_item(tx);
   end

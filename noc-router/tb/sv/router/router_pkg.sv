@@ -38,13 +38,12 @@ function bitstream4_t valid_ports(input bit [7:0] h);
 		if (vaddrs.sum with (item==h))
 			valid_ports.push_back(i);
 	end
-	//$display("%H --- %p\n",h, valid_ports);
+	$display("%H --- %p\n",h, valid_ports);
 endfunction
 
 
 // create the list of valid target addresses following XY routing algorithm assuming the 'dport' incomming port
 function bitstream8_t valid_addrs(input bit [3:0] dport);
-//function automatic valid_addrs(ref bit [7:0] valid_addr[$], input bit [3:0] dport);
 	bit [3:0] i,j;
 	//$display("%p",valid_addrs);
 	valid_addrs = {}; // delete all
@@ -104,7 +103,7 @@ endfunction
 // #### sequences #####
 `include "./seqs/base_vseq.sv"
 `include "./seqs/basic_seq.sv"
-//`include "./seqs/basic_seq2.sv" // example using config_db
+`include "./seqs/basic_seq2.sv" // example using config_db
 `include "./seqs/rand_header_seq.sv"
 `include "./seqs/sequential_seq.sv"
 `include "./seqs/main_vseq.sv"
@@ -123,11 +122,11 @@ endfunction
 // ##### tests #####
 `include "./tests/base_test.sv"
 `include "./tests/smoke_test.sv"
-//`include "./tests/smoke_test2.sv" // example using config_db
+`include "./tests/smoke_test2.sv" // example using config_db
 //`include "./tests/rand_header_test.sv"
 //`include "./tests/random_test.sv"
 //`include "./tests/sequential_test.sv"
-//`include "./tests/main_test.sv"
+`include "./tests/main_test.sv"
 //`include "./tests/bottleneck_test.sv"
    
 endpackage : router_pkg

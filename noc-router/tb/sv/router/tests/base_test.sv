@@ -25,7 +25,7 @@ function void end_of_elaboration_phase(uvm_phase phase);
 	if (uvm_top.get_report_verbosity_level() >= UVM_HIGH) begin
 		this.print(); 
     uvm_top.print_topology();
-		factory.print(); 
+		//factory.print(); 
     uvm_config_db #(int)::dump(); 
 	end
 endfunction 

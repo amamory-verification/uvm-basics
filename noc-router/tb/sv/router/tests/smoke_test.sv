@@ -13,7 +13,6 @@ endfunction : new
 function void build_phase(uvm_phase phase);
   super.build_phase(phase);
 
-  `uvm_info("test", "SMOOOOOKE1 !!!!", UVM_HIGH)
   // randomize here the agent configuration 
   foreach(acfg[i]) begin
     if( !acfg[i].randomize() )
@@ -49,11 +48,8 @@ function void build_phase(uvm_phase phase);
   // change any env configuration here, before sending it to the config_db 
 
   // last thing to do is to the agent configuration  with config_db
-  `uvm_info("test", "SMOOOOOKE2 !!!!", UVM_HIGH)
   uvm_config_db#(hermes_env_config)::set(null, "uvm_test_top.env", "config", env_cfg);
-  `uvm_info("test", "SMOOOOOKE3 !!!!", UVM_HIGH)
   env_h = router_env::type_id::create("env", this);
-  `uvm_info("test", "SMOOOOOKE4 !!!!", UVM_HIGH)
   //set_acfg_db();
 endfunction
 

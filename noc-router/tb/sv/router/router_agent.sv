@@ -19,7 +19,6 @@ function void build_phase(uvm_phase phase);
   if (uvm_top.get_report_verbosity_level() >= UVM_HIGH)
     print_config();  
 
-  `uvm_info("agent", "AGEEENT1 !!!!", UVM_HIGH)
   if (!uvm_config_db #(hermes_agent_config)::get (this,"", "config", cfg) )
     `uvm_fatal("agent", "No cfg");    
 
@@ -45,7 +44,6 @@ function void build_phase(uvm_phase phase);
   //if (!uvm_config_db #(uvm_active_passive_enum)::get (this,"", "is_active", is_active) )
   //  `uvm_fatal("agent", "No is_active");
 
-  `uvm_info("agent", "AGEEENT2 !!!!", UVM_HIGH)
   // create and set drivers
   if (cfg.is_active) begin
     // select the driver behavior depending on the agent direction
@@ -67,7 +65,6 @@ function void build_phase(uvm_phase phase);
       driver_h = credit_i_driver::type_id::create("driver", this);
       uvm_config_db #(bit [3:0])::set (this,"driver", "cred_distrib", cfg.cred_distrib);
     end
-  `uvm_info("agent", "AGEEENT3 !!!!", UVM_HIGH)
   end
 
   // create and set monitors

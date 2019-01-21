@@ -4,10 +4,19 @@
 class basic_seq extends base_vseq; 
 `uvm_object_utils(basic_seq)
 
+// sequence configuration 
+seq_config cfg;
 
 function new(string name = "basic_seq");
   super.new(name);
 endfunction: new
+
+task pre_body();
+  super.pre_body();
+  //`uvm_info("basic_seq", get_sequencer(), UVM_HIGH)
+  if(!uvm_config_db #(seq_config)::get(get_sequencer(), "", "config", cfg))
+    `uvm_fatal(get_type_name(), "config config_db lookup failed")
+endtask
 
 
 task body;
@@ -25,7 +34,7 @@ task body;
     start_item(tx);
     if( ! tx.randomize() with {
         tx.p_size == cfg.p_size;
-        tx.header == cfg.header;
+        //tx.header == cfg.header;
         //tx.cycle2send == cfg.cycle2send;
         //tx.cycle2flit == cfg.cycle2flit;
       }
