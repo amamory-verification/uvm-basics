@@ -33,8 +33,8 @@ reset = 0;
 end
 
 // generate interfaces
-router_if   in_if [router_pkg::NPORT](clock, reset);
-router_if   out_if[router_pkg::NPORT](clock, reset);
+router_if   master_if[router_pkg::NPORT](clock, reset);
+router_if   slave_if [router_pkg::NPORT](clock, reset);
 
 // pass the interfaces to the agents and they will pass it to their monitors and drivers
 genvar i;
@@ -42,8 +42,8 @@ for(i=0; i< router_pkg::NPORT; i++)
 begin : dut_inst
 	initial 
 	begin
-	  uvm_config_db#(virtual router_if)::set(null,$sformatf("uvm_test_top.env.agent_in_%0d",i),"if",in_if[i]);
-	  uvm_config_db#(virtual router_if)::set(null,$sformatf("uvm_test_top.env.agent_out_%0d",i),"if",out_if[i]);
+	  uvm_config_db#(virtual router_if)::set(null,$sformatf("uvm_test_top.env.agent_master_%0d",i),"if",master_if[i]);
+	  uvm_config_db#(virtual router_if)::set(null,$sformatf("uvm_test_top.env.agent_slave_%0d",i),"if",slave_if[i]);
 	  // this is read by the base test
 	  //uvm_config_db#(virtual router_if)::set(null,"uvm_test_top",$sformatf("in_if[%0d]",i),in_if[i]);
 	  //uvm_config_db#(virtual router_if)::set(null,"uvm_test_top",$sformatf("out_if[%0d]",i),out_if[i]);
@@ -54,8 +54,8 @@ end
 // instantiate a central router 
 RouterCC_wrapper  dut1(.clock(clock), 
 	.reset(reset), 
-	.din(in_if), 
-	.dout(out_if)
+	.din(master_if), 
+	.dout(slave_if)
 	); 
 
 

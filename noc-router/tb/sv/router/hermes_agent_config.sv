@@ -1,11 +1,9 @@
+// these are the agent configuration parameters that can be changed at the test level
 class hermes_agent_config extends uvm_object;
 `uvm_object_utils(hermes_agent_config)
 
-
-//virtual router_if dut_if;
 uvm_active_passive_enum is_active = UVM_ACTIVE;
-bit [3:0] port;
-//string port_dir; // in or out --- TODO mudar para agent_mode = master / slave
+bit master_driver_enabled = 1;
 
 
 //==========================

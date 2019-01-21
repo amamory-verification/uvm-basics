@@ -16,7 +16,7 @@ endfunction : new
 // Initialise the virtual sequence handles
 function void init_vseq(base_vseq vseq);
   foreach (vseq.sequencer[i]) begin
-    vseq.sequencer[i] = env_h.agent_in_h[i].sequencer_h;
+    vseq.sequencer[i] = env_h.agent_master_h[i].sequencer_h;
   end
 endfunction: init_vseq
 

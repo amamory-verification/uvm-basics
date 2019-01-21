@@ -15,7 +15,8 @@ function void build_phase(uvm_phase phase);
   aport = new("aport", this); 
 
   // print config_db
-  //print_config();
+  if (uvm_top.get_report_verbosity_level() >= UVM_HIGH)
+    print_config();
 
   if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )
     `uvm_fatal("monitor", "No port");

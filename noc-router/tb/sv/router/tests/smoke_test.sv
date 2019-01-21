@@ -20,13 +20,15 @@ function void build_phase(uvm_phase phase);
       `uvm_error("test", "invalid agent cfg randomization"); 
   end
   
-  // or disable few of them
+  // or disable the master drivers 
   foreach(acfg[i]) begin
     acfg[i].rand_mode(0);
+    acfg[i].master_driver_enabled = 0;
   end
 
   // this test uses only the north port
   acfg[router_pkg::NORTH].rand_mode(1);
+  acfg[router_pkg::NORTH].master_driver_enabled = 1;
   if( !acfg[router_pkg::NORTH].randomize() with { 
       cycle2send == 1;
       cycle2flit == 0;

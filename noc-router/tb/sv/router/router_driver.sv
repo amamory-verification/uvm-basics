@@ -4,6 +4,7 @@ class router_driver extends router_base_driver;
 
 bit [3:0] cycle2send; // send header after some random number of clock cycles, from 0 to 15 cycles
 bit [3:0] cycle2flit; // send the size after some random number of clock cycles, from 0 to 15 cycles
+bit enabled;          // if off, this port is not supposed to send any packet. 
 
 function new(string name, uvm_component parent);
   super.new(name, parent);
@@ -13,13 +14,17 @@ function void build_phase(uvm_phase phase);
 	super.build_phase(phase);
 
   	// print config_db
-	//print_config();
+  	if (uvm_top.get_report_verbosity_level() >= UVM_HIGH)
+		print_config();
 
     if(!uvm_config_db#(bit [3:0])::get (this,"", "cycle2send", cycle2send))
 	    `uvm_fatal("driver", "No cycle2send"); 	
 
     if(!uvm_config_db#(bit [3:0])::get (this,"", "cycle2flit", cycle2flit))
-	    `uvm_fatal("driver", "No cycle2flit"); 	
+	    `uvm_fatal("driver", "No cycle2flit");
+
+    if(!uvm_config_db#(bit)      ::get (this,"", "enabled", enabled))
+	    `uvm_fatal("driver", "No enabled"); 	
 
 	`uvm_info("msg", "DRIVER Done!!!", UVM_HIGH)
 endfunction : build_phase
@@ -46,6 +51,8 @@ task run_phase(uvm_phase phase);
 	begin
 		tx = packet_t::type_id::create("tx");
 		seq_item_port.get_next_item(tx);
+		if (!enabled)
+			`uvm_error("driver", "this driver is disabled and was not supposed to send any packet");
 		//dut_vi.send_packet(tx,port);
 		//`uvm_info("msg", tx.convert2string(), UVM_LOW)
 		i=0;
