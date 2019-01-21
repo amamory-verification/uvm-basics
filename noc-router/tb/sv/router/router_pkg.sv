@@ -98,7 +98,8 @@ endfunction
 
 // #### configuration classes #####
 `include "seq_config.sv"
-`include "hermes_agent_cfg.sv"
+`include "hermes_agent_config.sv"
+`include "hermes_env_config.sv"
 
 // #### sequences #####
 `include "./seqs/base_vseq.sv"

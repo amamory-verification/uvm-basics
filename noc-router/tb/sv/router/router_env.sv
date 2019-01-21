@@ -5,6 +5,7 @@ router_agent       agent_in_h [router_pkg::NPORT];
 router_agent       agent_out_h [router_pkg::NPORT];
 router_coverage    coverage_h;
 router_scoreboard  scoreboard_h;
+hermes_env_config  cfg;
 
 function new(string name, uvm_component parent);
   super.new(name,parent);
@@ -12,18 +13,28 @@ endfunction: new
 
 function void build_phase(uvm_phase phase);
   // build the agent and pass its parameters
-  //print_config(); 
+  print_config(); 
+  `uvm_info("env", "ENVVVVV1 !!!!", UVM_HIGH)
+  if (!uvm_config_db #(hermes_env_config)::get(this, "", "config", cfg))
+    `uvm_fatal("env", "No cfg");
+  `uvm_info("env", "ENVVVVV2 !!!!", UVM_HIGH)
+
   foreach (agent_in_h[i]) begin
+    cfg.agent_cfg[i].port = i;
+    uvm_config_db #(hermes_agent_config)::set(this, $sformatf("agent_in_%0d",i), "config", cfg.agent_cfg[i]);
     agent_in_h[i] = router_agent::type_id::create($sformatf("agent_in_%0d",i), this);
+
     uvm_config_db #(string)                 ::set(this, $sformatf("agent_in_%0d",i), "port_dir", "in");
-    uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_in_%0d",i), "port", i);
-    uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent_in_%0d",i), "is_active", UVM_ACTIVE);
+    //uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_in_%0d",i), "port", i);
+    //uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent_in_%0d",i), "is_active", UVM_ACTIVE);
   end
   foreach (agent_out_h[i]) begin
+    //cfg.agent_cfg[i].port_dir = "out";
+    uvm_config_db #(hermes_agent_config)::set(this, $sformatf("agent_out_%0d",i), "config", cfg.agent_cfg[i]);
     agent_out_h[i] = router_agent::type_id::create($sformatf("agent_out_%0d",i), this);
     uvm_config_db #(string)                 ::set(this, $sformatf("agent_out_%0d",i), "port_dir", "out");
-    uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_out_%0d",i), "port", i);
-    uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent_out_%0d",i), "is_active", UVM_ACTIVE);
+    //uvm_config_db #(bit [3:0])              ::set(this, $sformatf("agent_out_%0d",i), "port", i);
+    //uvm_config_db #(uvm_active_passive_enum)::set(this, $sformatf("agent_out_%0d",i), "is_active", UVM_ACTIVE);
   end
 
   coverage_h   = router_coverage::type_id::create("coverage", this);

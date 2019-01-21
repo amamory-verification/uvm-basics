@@ -44,6 +44,9 @@ begin : dut_inst
 	begin
 	  uvm_config_db#(virtual router_if)::set(null,$sformatf("uvm_test_top.env.agent_in_%0d",i),"if",in_if[i]);
 	  uvm_config_db#(virtual router_if)::set(null,$sformatf("uvm_test_top.env.agent_out_%0d",i),"if",out_if[i]);
+	  // this is read by the base test
+	  //uvm_config_db#(virtual router_if)::set(null,"uvm_test_top",$sformatf("in_if[%0d]",i),in_if[i]);
+	  //uvm_config_db#(virtual router_if)::set(null,"uvm_test_top",$sformatf("out_if[%0d]",i),out_if[i]);
 	end
 end
 

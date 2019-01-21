@@ -12,12 +12,12 @@ endfunction : new
 
 function void build_phase(uvm_phase phase);
   super.build_phase(phase);
-  // configure here the agent configuration randomization
-  // either one might randomize all agent configuration
-  
+
+  `uvm_info("test", "SMOOOOOKE1 !!!!", UVM_HIGH)
+  // randomize here the agent configuration 
   foreach(acfg[i]) begin
     if( !acfg[i].randomize() )
-      `uvm_error("rand", "invalid agent cfg randomization"); 
+      `uvm_error("test", "invalid agent cfg randomization"); 
   end
   
   // or disable few of them
@@ -25,13 +25,14 @@ function void build_phase(uvm_phase phase);
     acfg[i].rand_mode(0);
   end
 
+  // this test uses only the north port
   acfg[router_pkg::NORTH].rand_mode(1);
   if( !acfg[router_pkg::NORTH].randomize() with { 
       cycle2send == 1;
       cycle2flit == 0;
     }
   )
-    `uvm_error("rand", "invalid agent cfg randomization"); 
+    `uvm_error("test", "invalid agent cfg randomization"); 
 
   // tests can set the same credit proability to all output drivers
   //uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_*.driver", "cred_distrib",3);
@@ -43,9 +44,15 @@ function void build_phase(uvm_phase phase);
   uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_3.driver", "cred_distrib",6);
   uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_4.driver", "cred_distrib",7);
 */  
+  // change any env configuration here, before sending it to the config_db 
 
   // last thing to do is to the agent configuration  with config_db
-  set_acfg_db();
+  `uvm_info("test", "SMOOOOOKE2 !!!!", UVM_HIGH)
+  uvm_config_db#(hermes_env_config)::set(null, "uvm_test_top.env", "config", env_cfg);
+  `uvm_info("test", "SMOOOOOKE3 !!!!", UVM_HIGH)
+  env_h = router_env::type_id::create("env", this);
+  `uvm_info("test", "SMOOOOOKE4 !!!!", UVM_HIGH)
+  //set_acfg_db();
 endfunction
 
 

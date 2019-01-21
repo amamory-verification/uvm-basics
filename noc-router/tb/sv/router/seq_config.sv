@@ -120,4 +120,8 @@ virtual function string convert2string();
   return s;
 endfunction: convert2string
 
+function new( string name = "" );
+  super.new( name );
+endfunction: new
+
 endclass

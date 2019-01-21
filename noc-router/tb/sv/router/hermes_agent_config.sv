@@ -1,5 +1,12 @@
-class hermes_agent_cfg extends uvm_object;
-`uvm_object_utils(hermes_agent_cfg)
+class hermes_agent_config extends uvm_object;
+`uvm_object_utils(hermes_agent_config)
+
+
+//virtual router_if dut_if;
+uvm_active_passive_enum is_active = UVM_ACTIVE;
+bit [3:0] port;
+//string port_dir; // in or out --- TODO mudar para agent_mode = master / slave
+
 
 //==========================
 // credit_i_driver timing knobs
@@ -70,7 +77,7 @@ constraint c_cycle2flit {
 
 
 function void do_copy( uvm_object rhs );
-  hermes_agent_cfg that;
+  hermes_agent_config that;
 
   if ( ! $cast( that, rhs ) ) begin
      `uvm_error( get_name(), "rhs is not a seq_config" )
@@ -95,4 +102,8 @@ virtual function string convert2string();
   return s;
 endfunction: convert2string
 
-endclass : hermes_agent_cfg
+function new( string name = "" );
+  super.new( name );
+endfunction: new
+
+endclass : hermes_agent_config
