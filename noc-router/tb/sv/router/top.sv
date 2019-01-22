@@ -12,6 +12,20 @@ UVM testbench for the router described in the follwoing paper
   publisher={Elsevier}
 }
 
+This TB simulates the middle router (addr 8'h11) in a 3x3 NoC
+
+ 02 12 22
+ 01 11 21
+ 00 10 20 
+
+The port's code number
+      N2
+   --------
+W1 |      | E0
+   |      |
+   /------- 
+ L4   S3
+
 */
 
 module top;
