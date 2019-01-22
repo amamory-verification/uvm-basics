@@ -19,11 +19,12 @@ function void build_phase(uvm_phase phase);
   end
 */
 
+  // in this test, all agents have the same behaviour
   foreach(acfg[i]) begin
     if( !acfg[i].randomize() with { 
-        cycle2send == 1;
-        cycle2flit == 0;
-        cred_distrib == 5;
+        cycle2send == 1;   // a new packet is sent 1 clock cycle after the last one
+        cycle2flit == 0;   // a new flit is sent every cycle after the transaction starts
+        cred_distrib == 5; // the slave ports have 50% availability
       }
     )
       `uvm_error("test", "invalid agent cfg randomization"); 
@@ -33,7 +34,6 @@ function void build_phase(uvm_phase phase);
   // last thing to do is to the agent configuration  with config_db
   uvm_config_db#(hermes_env_config)::set(null, "uvm_test_top.env", "config", env_cfg);
   env_h = router_env::type_id::create("env", this);
-  //set_acfg_db();
 endfunction
 
 task run_phase(uvm_phase phase);
@@ -43,7 +43,7 @@ task run_phase(uvm_phase phase);
   foreach(cfg[i]) begin
     cfg[i] = seq_config::type_id::create($sformatf("seq_cfg[%0d]",i));
     if( !cfg[i].randomize() with { 
-        // number of packets to be simulated
+        // number of packets to be simulated per sequencer
         npackets == 5; 
         port == i; 
         // only small packets
@@ -51,7 +51,7 @@ task run_phase(uvm_phase phase);
       }
     )
       `uvm_error("rand", "invalid cfg randomization"); 
-    // 
+    // send the sequence configuration to each sequencer
     uvm_config_db#(seq_config)::set(null, $sformatf("uvm_test_top.env.agent_master_%0d.sequencer",i), "config",cfg[i]);
 
   end

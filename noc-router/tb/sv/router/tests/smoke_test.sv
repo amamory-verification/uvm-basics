@@ -16,7 +16,7 @@ function void build_phase(uvm_phase phase);
   // randomize here the agent configuration 
   foreach(acfg[i]) begin
     if( !acfg[i].randomize() )
-      `uvm_error("test", "invalid agent cfg randomization"); 
+      `uvm_error("smoke_test", "invalid agent cfg randomization"); 
   end
   
   // or disable the master drivers 
@@ -33,39 +33,26 @@ function void build_phase(uvm_phase phase);
       cycle2flit == 0;
     }
   )
-    `uvm_error("test", "invalid agent cfg randomization"); 
+    `uvm_error("smoke_test", "invalid agent cfg randomization"); 
 
-  // tests can set the same credit proability to all output drivers
-  //uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_*.driver", "cred_distrib",3);
-/*
-  // or the credit proability can be set individually to each output drivers
-  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_0.driver", "cred_distrib",3);
-  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_1.driver", "cred_distrib",4);
-  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_2.driver", "cred_distrib",5);
-  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_3.driver", "cred_distrib",6);
-  uvm_config_db#(bit [3:0])::set(null, "uvm_test_top.env.agent_out_4.driver", "cred_distrib",7);
-*/  
-  // change any env configuration here, before sending it to the config_db 
+
+  // change any env and agent configuration here, before sending it to the config_db 
 
   // last thing to do is to the agent configuration  with config_db
   uvm_config_db#(hermes_env_config)::set(null, "uvm_test_top.env", "config", env_cfg);
   env_h = router_env::type_id::create("env", this);
-  //set_acfg_db();
 endfunction
 
 
 task run_phase(uvm_phase phase);
   basic_seq seq;
-  seq_config cfg;
+  seq_config seq_cfg;
   
-  // set the sequence configuration
-  //uvm_config_db#(seq_config)::set(this, "env.agent_in_*.sequencer.seq", "config",cfg);
-  // configuring sequence parameters
-  cfg = seq_config::type_id::create("seq_cfg");
-  if( !cfg.randomize() with { 
+  // set the sequence configuration, to be read by the sequencer
+  seq_cfg = seq_config::type_id::create("seq_cfg");
+  if( !seq_cfg.randomize() with { 
       // number of packets to be simulated
       npackets == 10; 
-      // set the timing behavior of the sequence
       // this seq will inject packets into the NORTH port only
       port == router_pkg::NORTH;
       // all packets will be sent to the router 8'h11
@@ -75,18 +62,18 @@ task run_phase(uvm_phase phase);
     }
   )
     `uvm_error("rand", "invalid cfg randomization"); 
+  uvm_config_db#(seq_config)::set(null, "", "config",seq_cfg);
 
   phase.raise_objection(this);
 
   // create the sequence and initialize it 
   seq = basic_seq::type_id::create("seq");
   init_vseq(seq); 
-  seq.set_seq_config(cfg);
 
   if( !seq.randomize())
     `uvm_error("rand", "invalid seq randomization"); 
 
-  seq.start(seq.sequencer[cfg.port]);  
+  seq.start(seq.sequencer[seq_cfg.port]);  
 
   // end the simulation a little bit latter
   phase.phase_done.set_drain_time(this, 100ns);
