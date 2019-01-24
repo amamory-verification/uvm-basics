@@ -28,6 +28,8 @@ W1 |      | E0
 
 */
 
+`timescale 1 ns / 1 ps
+
 module top;
 import uvm_pkg::*;
 import hermes_pkg::*;

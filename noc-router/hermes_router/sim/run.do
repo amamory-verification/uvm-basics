@@ -7,7 +7,7 @@ set VERBOSITY "UVM_HIGH"
 # set true to enable coverage
 set COVERAGE  "true"      
 # set true to simulate RTL, otherwise, simulates the netlist
-set RTL_SIM   "true"      
+set RTL_SIM   "true"
 # set true to simulate for debug, therwise simulate for speed/regression
 set DEBUG_SIM "true"      
 
@@ -21,8 +21,10 @@ if {[string equal $DEBUG_SIM "true"]} {
 # lsits of tests to be executed
 set TEST_NAMES {parallel_test repeat_test }
 
-set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
-set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_router
+#set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
+#set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_router
+set ::env(VIP_LIBRARY_HOME) /home/ale/repos/study/uvm-basics/noc-router/vips
+set ::env(PROJECT_DIR) /home/ale/repos/study/uvm-basics/noc-router/hermes_router
 
 file delete -force *~ *.ucdb vsim.dbg *.vstf *.log work *.mem *.transcript.txt certe_dump.xml *.wlf covhtmlreport VRMDATA
 file delete -force design.bin qwave.db dpiheader.h visualizer*.ses
@@ -46,7 +48,7 @@ if {[string equal $RTL_SIM "true"]} {
 	vcom -suppress 2223 -suppress 2286 -F $env(PROJECT_DIR)/rtl/hdl_vhd.f
 	vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/rtl -F $env(PROJECT_DIR)/rtl/hdl_v.f
 } else {
-	vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/syn -F $env(PROJECT_DIR)/syn/hdl.f
+	vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/syn -F $env(PROJECT_DIR)/syn/hdl_v.f
 }
 
 #testbench
