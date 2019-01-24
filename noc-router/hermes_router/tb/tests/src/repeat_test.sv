@@ -1,6 +1,5 @@
 /*
 simple test that injects 10 packets into the north port.
-the difference compared to repeat_test.sv is the use of config_db  
 */
 class repeat_test extends base_test;
 `uvm_component_utils(repeat_test)
@@ -76,8 +75,7 @@ task run_phase(uvm_phase phase);
   seq.start(seq.sequencer[seq_cfg.port]);  
 
   // end the simulation a little bit latter
-  phase.phase_done.set_drain_time(this, 100ns);
-  //`uvm_info("msg", "SEQ STARTED!!!", UVM_LOW)
+  //phase.phase_done.set_drain_time(this, 100ns);
   phase.drop_objection(this);
 endtask
 

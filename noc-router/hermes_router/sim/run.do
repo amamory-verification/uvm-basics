@@ -8,7 +8,7 @@ set VERBOSITY "UVM_HIGH"
 set COVERAGE  "true"      
 # set true to simulate RTL, otherwise, simulates the netlist
 set RTL_SIM   "true"
-# set true to simulate for debug, therwise simulate for speed/regression
+# set true to simulate for debug, otherwise simulate for speed/regression
 set DEBUG_SIM "true"      
 
 if {[string equal $DEBUG_SIM "true"]} {
@@ -18,7 +18,7 @@ if {[string equal $DEBUG_SIM "true"]} {
 	set DEBUG_ARGS ""
 }
 
-# lsits of tests to be executed
+# lists of tests to be executed
 set TEST_NAMES {parallel_test repeat_test }
 
 #set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips

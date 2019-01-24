@@ -2,8 +2,6 @@ class hermes_router_seq_config extends uvm_object;
 `uvm_object_utils(hermes_router_seq_config)
 
 
-
-
 //==========================
 // seq item knobs
 //==========================
@@ -38,7 +36,6 @@ constraint c_p_size {
   };
 }
 
-
 // target packet address
 rand bit [7:0] header;
 
@@ -48,23 +45,6 @@ constraint c_header {
   // the list of valid address depends on the input port
   solve port before header;
 }
-
-
-/*
-//==========================
-// seq item timing knobs
-//==========================
-// randomize the number of cycles the driver waits to start sending the packet. used by driver
-rand bit [3:0] cycle2send;
-// used to change the random distribution of  cycle2send
-bit [3:0] cycle2send_dist[16] = {10,10,10,1,1,1,1,1,1,1,1,1,1,1,1,1};
-
-
-// randomize the number of cycles between flits. used by driver
-rand bit [3:0] cycle2flit;
-// used to change the random distribution of  cycle2flit
-bit [3:0] cycle2flit_dist[16] = {15,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1};
-*/
 
 //==========================
 // seq knobs 
@@ -100,10 +80,6 @@ function void do_copy( uvm_object rhs );
   this.w_med           = that.w_med;
   this.w_large         = that.w_large;
   this.header          = that.header;
-  //this.cycle2send      = that.cycle2send;
-  //this.cycle2send_dist = that.cycle2send_dist;
-  //this.cycle2flit      = that.cycle2flit;
-  //this.cycle2flit_dist = that.cycle2flit_dist;
   this.npackets        = that.npackets;
 endfunction: do_copy
 
@@ -114,8 +90,6 @@ virtual function string convert2string();
   s = { s, $psprintf( "\n p_size     : %0d", p_size) };
   s = { s, $psprintf( "\n header     : %H" , header) };
   s = { s, $psprintf( "\n valid_addr : %p" , hermes_pkg::valid_addrs(port)) };
-  //s = { s, $psprintf( "\n cycle2send : %0d", cycle2send) };
-  //s = { s, $psprintf( "\n cycle2flit : %0d", cycle2flit) };
   s = { s, $psprintf( "\n npackets   : %0d", npackets) };
   return s;
 endfunction: convert2string
