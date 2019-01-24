@@ -7,8 +7,8 @@
 
 ## 1) load synthesis configuration, read description and elaborate design 
 include load.tcl
-read_hdl -vhdl busca_padrao.vhd
-elaborate busca_padrao
+read_hdl -vhdl HeMPS_defaults.vhd  Hermes_buffer.vhd  Hermes_crossbar.vhd  Hermes_switchcontrol.vhd  RouterCC.vhd  
+elaborate RouterCC
 
 ## 2) read constraints
 read_sdc constraints.sdc
@@ -20,5 +20,5 @@ synthesize -to_generic -eff high
 synthesize -to_mapped -eff high -no_incr
 
 ## 5) build physical synthesis environment
-write_design -innovus -base_name layout/busca_padrao
-#write_encounter design -basename encounter/busca_padrao
+write_design -innovus -base_name src/layout/RouterCC
+#write_encounter design -basename encounter/router

@@ -57,7 +57,7 @@ use work.HeMPS_defaults.all;
 --use work.HemPS_PKG.all;
 
 entity RouterCC is
-generic( address: regmetadeflit);
+generic( address: regmetadeflit := "00010001");
 port(
         clock:     in  std_logic;
         reset:     in  std_logic;

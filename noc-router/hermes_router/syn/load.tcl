@@ -8,7 +8,7 @@
 #===============================================================================
 
 set_db script_search_path ./ 
-set_db hdl_search_path ../rtl 
+set_db hdl_search_path ../rtl/src/
 set_db information_level 9 
 
 #===============================================================================
