@@ -72,7 +72,7 @@ However, when the buffer is full, the credit is low for few clock cycles, interr
 
 ![buffer full](master_buffer_full.png)
 
-Then, if we change the agent configuretion to:
+Then, if we change the agent configuration to:
 
 ```
   if( !acfg[hermes_pkg::NORTH].randomize() with { 
