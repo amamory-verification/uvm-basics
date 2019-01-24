@@ -3,7 +3,7 @@
 # these are the knobs you might want to change. 
 #------------------------------------------------
 set SEED      "random"
-set VERBOSITY "UVM_LOW"
+set VERBOSITY "UVM_HIGH"
 # set true to enable coverage
 set COVERAGE  "true"      
 # set true to simulate RTL, otherwise, simulates the netlist
@@ -63,9 +63,6 @@ if {[string equal $DEBUG_SIM "true"]} {
 # execute all the tests in TEST_NAME 
 for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
     set test [lindex $TEST_NAMES $i]
-    puts $test 
-    puts $i 
-    puts [llength $TEST_NAMES]
     if {[string equal $DEBUG_SIM "true"]} {
 		vsim -sv_seed $SEED +UVM_TESTNAME=$test +UVM_VERBOSITY=$VERBOSITY -permit_unmatched_virtual_intf +notimingchecks -suppress 8887   -uvmcontrol=all -msgmode both -classdebug -assertdebug  +uvm_set_config_int=*,enable_transaction_viewing,1  $top
 	} else {
