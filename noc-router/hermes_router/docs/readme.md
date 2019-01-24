@@ -2,9 +2,13 @@
 
 The DUT is the NoC router presented in the paper [HERMES: an infrastructure for low area overhead packet-switching networks on chip](https://www.sciencedirect.com/science/article/pii/S0167926004000185). The DUT is the central router illustrated in Fig below, with an 8-bit network address set in design time, 16-bit wide data channels, five master ports for incoming packets, five slave ports for outgoing packets. Although only the central router is simulated, it mimics the existence of a 3x3 NoC used just for routing address purposes. 
 
-![Hermes router TB in UVM!!!](router.png)
+![Hermes router DUT!!!](router.png)
 
-This UVM-based router TB is a more advanced TB, compared to the previous ones, with multiple agents, each one attached to a different router port. It has several different types of randomization and constraints to generate valid packet headers and to randomize the time the packets and the flits are injected into the router. It uses virtual and hierarchical sequences to coordinate various sequences in parallel. It has a scoreboard, and different coverage points/crosses. config_db is used to distribute parameters to the environment and to 10 agents (5 slaves and 5 master agents). The agent (slave or master) is configured with factory override, changing the behavior of the driver. config_db is also used to pass parameters from tests to sequences. 
+
+This UVM-based router TB is illustrated in the Fig below. It has one environment with 10 agents  (5 slaves and 5 master agents) each one attached to a different router port. It has several different types of randomization and constraints to generate valid packet headers and to randomize the time the packets and the flits are injected into the router. It uses virtual and hierarchical sequences to coordinate various sequences in parallel. It has a scoreboard and different coverage points/crosses. config_db, represented in the figure with dashed lines, distributes parameters to the environment and to its 10 agents. The agent (slave or master) is configured with factory override, changing the behavior of the driver. config_db is also used to pass parameters from tests to sequences. 
+
+![Hermes router TB in UVM!!!](tb.png)
+
 
 ## The Testbench Architecture
 
