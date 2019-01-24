@@ -19,6 +19,10 @@ synthesize -to_generic -eff high
 ## 4) synthesize to mapped
 synthesize -to_mapped -eff high -no_incr
 
+## 4.1) report area and timing
+report area
+report timing
+
 ## 5) build physical synthesis environment
 write_design -innovus -base_name src/layout/RouterCC
 #write_encounter design -basename encounter/router
