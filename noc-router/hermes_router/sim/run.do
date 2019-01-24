@@ -1,19 +1,25 @@
  
+#------------------------------------------------
 # these are the knobs you might want to change. 
-set SEED      random
-set VERBOSITY UVM_LOW
-set COVERAGE  1       # set 1 to enable coverage
-set RTL_SIM   1       # if 1, simulate RTL, otherwise, simulates the netlist
-set DEBUG_SIM 1       # if 1, simulate for debug, therwise simulate for speed/regression
+#------------------------------------------------
+set SEED      "random"
+set VERBOSITY "UVM_LOW"
+# set true to enable coverage
+set COVERAGE  "true"      
+# set true to simulate RTL, otherwise, simulates the netlist
+set RTL_SIM   "true"      
+# set true to simulate for debug, therwise simulate for speed/regression
+set DEBUG_SIM "true"      
 
-if {$DEBUG_SIM == 1} {
-	set DEBUG_ARGS "-permit_unmatched_virtual_intf +notimingchecks -suppress 8887   -i -uvmcontrol=all -msgmode both -classdebug -assertdebug +uvm_set_config_int=*,enable_transaction_viewing,1 "
+if {[string equal $DEBUG_SIM "true"]} {
+	set DEBUG_ARGS " "
+	#
 } else {
 	set DEBUG_ARGS ""
 }
 
 # lsits of tests to be executed
-set TEST_NAME {repeat_test parallel_test}
+set TEST_NAMES {parallel_test repeat_test }
 
 set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
 set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_router
@@ -36,7 +42,7 @@ vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/seqs $env(PR
 vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/tests $env(PROJECT_DIR)/tb/tests/hermes_router_test_pkg.sv
 
 #dut
-if {$RTL_SIM == 1} {
+if {[string equal $RTL_SIM "true"]} {
 	vcom -suppress 2223 -suppress 2286 -F $env(PROJECT_DIR)/rtl/hdl_vhd.f
 	vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/rtl -F $env(PROJECT_DIR)/rtl/hdl_v.f
 } else {
@@ -46,31 +52,38 @@ if {$RTL_SIM == 1} {
 #testbench
 vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/testbench $env(PROJECT_DIR)/tb/testbench/top.sv
 
-if {$DEBUG_SIM == 1} {
-vopt +acc top  -o optimized_debug_top_tb
-set top optimized_debug_top_tb
+if {[string equal $DEBUG_SIM "true"]} {
+	vopt +acc top  -o optimized_debug_top_tb
+	set top optimized_debug_top_tb
 } else {
-vopt      top  -o optimized_batch_top_tb
-set top optimized_batch_top_tb
+	vopt      top  -o optimized_batch_top_tb
+	set top optimized_batch_top_tb
 }
 
 # execute all the tests in TEST_NAME 
 for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
-    set test [lindex $list $i]
-    puts $test
-	vsim -sv_seed $(SEED) +UVM_TESTNAME=$(test) +UVM_VERBOSITY=$(VERBOSITY) $(DEBUG_ARGS) $top
+    set test [lindex $TEST_NAMES $i]
+    puts $test 
+    puts $i 
+    puts [llength $TEST_NAMES]
+    if {[string equal $DEBUG_SIM "true"]} {
+		vsim -sv_seed $SEED +UVM_TESTNAME=$test +UVM_VERBOSITY=$VERBOSITY -permit_unmatched_virtual_intf +notimingchecks -suppress 8887   -uvmcontrol=all -msgmode both -classdebug -assertdebug  +uvm_set_config_int=*,enable_transaction_viewing,1  $top
+	} else {
+		vsim -sv_seed $SEED +UVM_TESTNAME=$test +UVM_VERBOSITY=$VERBOSITY  $top
+	}
 	onbreak {resume}
 	log /* -r
 	#do wave_full.do
 	do shutup.do
 	run -all
-	if {$COVERAGE == 1} {
+	if {[string equal $COVERAGE "true"]} {
 		coverage attribute -name TESTNAME -value $(test)
 		coverage save $(test).ucdb	
 	}
+	puts "loop"
 }
 
-if {$COVERAGE == 1} {
+if {[string equal $COVERAGE "true"]} {
 	set list_tests ""
 	for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
 	    set test [lindex $list $i]
