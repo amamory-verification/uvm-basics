@@ -26,6 +26,7 @@ The agent uses the following configuration parameters.
 
 The interface consists of the following terminals, for the master and slave port respectively. 
 
+```SystemVerilog
     modport datain (
             input clk, avail, data,
             output credit
@@ -34,7 +35,7 @@ The interface consists of the following terminals, for the master and slave port
             output clk, avail, data,
             input credit
         );
-
+```
 
 ### hermes_packet_t
 
@@ -62,7 +63,7 @@ and one used by the *hermes_slave_driver*:
 
 The following piece of code of a test configures the NORTH agent different modes. 
 
-```
+```SystemVerilog
   if( !acfg[hermes_pkg::NORTH].randomize() with { 
       cycle2send == 1;
       cycle2flit == 0;
