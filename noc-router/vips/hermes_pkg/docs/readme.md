@@ -6,7 +6,12 @@ This doc describes the protocol dependent part of Hermes NoC, including interfac
 ## hermes_agent
 
 The agent has a sequencer, *hermes_monitor*, *hermes_agent_config*, and *hermes_base_driver*.  Depending on the agent mode (slave or master), 
-the *hermes_base_driver* is replaced by  *hermes_master_driver* or *hermes_slave_driver*.  The agent uses the following configuration parameters.
+the *hermes_base_driver* is replaced by  *hermes_master_driver* or *hermes_slave_driver*.  The image bellow show a hermes_agent with interface to a Hermes router.
+
+![agent](agent.png)
+
+
+The agent uses the following configuration parameters.
 
 | name / type                  | Description                    | GET/SET | From/To        | 
 | ---                          | ---                            | ---     | ---            |
@@ -40,7 +45,7 @@ A packet transaction consists of a set of 16-bits words where the first is the h
 - payload: the actual content of the packet
 
 The packet size can be small, medium, or large sized and  it is possible to change its random distribution.
-The header is constrained based on the valid path of the XY routing algoritm. The function [hermes_pkg::valid_addrs](../src/hermes_typedefs.sv) returns the set of valid network addresses according to the input port. 
+The header is constrained based on the valid path of the XY routing algorithm. The function [hermes_pkg::valid_addrs](../src/hermes_typedefs.sv) returns the set of valid network addresses according to the input port. 
 
 
 ### hermes_agent_config
@@ -68,13 +73,13 @@ When the NORTH input buffer is not full, the result is that credit is high and r
 
 ![buffer not full](master_buffer_not_full.png)
 
-However, when the buffer is full, the credit is low for few clock cycles, interrupting the transmission of the 3 flit packt 0011, 0001, cda7.
+However, when the buffer is full, the credit is low for few clock cycles, interrupting the transmission of the 3 flit packet 0011, 0001, cda7.
 
 ![buffer full](master_buffer_full.png)
 
 Then, if we change the agent configuration to:
 
-```
+```SystemVerilog
   if( !acfg[hermes_pkg::NORTH].randomize() with { 
       cycle2send == 1;
       cycle2flit == 1;
@@ -86,21 +91,21 @@ In the master port we are going to see a flit sent every 2 clock cycles.
 
 ![cycles2flit](master_cycles2flit.png)
 
-And in the slave port we see low credit most of the time, delay the packet transmission.
+And in the slave port we see low credit most of the time, delaying the packet transmission.
 
 ![low credit](slave_low_credit.png)
 
 ### hermes_monitor
 
-The monitor is always on, and has not distinc atribute or configuration other than the usual interface configuration.
+The monitor is always on, and has no distinct attribute or configuration other than the usual interface configuration.
 
 ### hermes_base_driver
 
-The the agent has a hermes_base_driver attribute. During build_pase, where the *mode* parameter is read, this driver is either converted to a *hermes_master_driver* or *hermes_slave_driver*.
+The agent has a hermes_base_driver attribute. During *build_phase*, where the *mode* parameter is read, this driver is either converted to a *hermes_master_driver* or *hermes_slave_driver*.
 
 ### hermes_master_driver
 
-It receives a transaction and send it to the router via a master port. Its behaviour is affected by the *cycle2send*, *cycle2flit*, and *enable* agent parameters.
+It receives a transaction and sends it to the DUT via a master port. Its behaviour is affected by the *cycle2send*, *cycle2flit*, and *enable* agent parameters.
 
 ### hermes_slave_driver
 

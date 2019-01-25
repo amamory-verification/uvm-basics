@@ -12,7 +12,7 @@ function new(string name, uvm_component parent);
 endfunction: new
 
 function void build_phase(uvm_phase phase);
-  // build the agent and pass its parameters
+  // build the agent and pass its parameters 
   if (uvm_top.get_report_verbosity_level() >= UVM_HIGH)
     print_config(); 
 
@@ -36,7 +36,8 @@ function void build_phase(uvm_phase phase);
     agent_slave_h[i] = hermes_agent::type_id::create($sformatf("agent_slave_%0d",i), this);
   end
 
-  coverage_h   = hermes_router_coverage::type_id::create("coverage", this);
+  if (cfg.enable_coverage == 1)
+    coverage_h   = hermes_router_coverage::type_id::create("coverage", this);
   scoreboard_h = hermes_router_scoreboard::type_id::create("scoreboard", this);
   `uvm_info("msg", "ENV Done !", UVM_HIGH)
 endfunction: build_phase
@@ -52,7 +53,8 @@ function void connect_phase(uvm_phase phase);
     agent_slave_h[i].monitor_h.aport.connect(scoreboard_h.out_mon_ap);
   end
   // conenct sb with coverage
-  scoreboard_h.cov_ap.connect(coverage_h.analysis_export);
+  if (cfg.enable_coverage == 1)
+    scoreboard_h.cov_ap.connect(coverage_h.analysis_export);
   `uvm_info("msg", "Connecting ENV Done !", UVM_HIGH)
 endfunction: connect_phase
 

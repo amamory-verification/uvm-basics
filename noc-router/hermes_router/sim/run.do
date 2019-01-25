@@ -3,7 +3,7 @@
 # these are the knobs you might want to change. 
 #------------------------------------------------
 set SEED      "random"
-set VERBOSITY "UVM_HIGH"
+set VERBOSITY "UVM_LOW"
 # set true to enable coverage
 set COVERAGE  "true"      
 # set true to simulate RTL, otherwise, simulates the netlist
@@ -19,12 +19,12 @@ if {[string equal $DEBUG_SIM "true"]} {
 }
 
 # lists of tests to be executed
-set TEST_NAMES {parallel_test repeat_test }
+set TEST_NAMES {repeat_test parallel_test  }
 
-#set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
-#set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_router
-set ::env(VIP_LIBRARY_HOME) /home/ale/repos/study/uvm-basics/noc-router/vips
-set ::env(PROJECT_DIR) /home/ale/repos/study/uvm-basics/noc-router/hermes_router
+set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
+set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_router
+#set ::env(VIP_LIBRARY_HOME) /home/ale/repos/study/uvm-basics/noc-router/vips
+#set ::env(PROJECT_DIR) /home/ale/repos/study/uvm-basics/noc-router/hermes_router
 
 file delete -force *~ *.ucdb vsim.dbg *.vstf *.log work *.mem *.transcript.txt certe_dump.xml *.wlf covhtmlreport VRMDATA
 file delete -force design.bin qwave.db dpiheader.h visualizer*.ses
@@ -72,9 +72,10 @@ for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
 	}
 	onbreak {resume}
 	log /* -r
-	#do wave_full.do
 	do shutup.do
+	do wave_full.do
 	run -all
+	exit
 	if {[string equal $COVERAGE "true"]} {
 		coverage attribute -name TESTNAME -value $(test)
 		coverage save $(test).ucdb	

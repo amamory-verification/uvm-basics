@@ -14,8 +14,8 @@ This UVM-based router TB is illustrated in the Fig below. It has one environment
 
 This router TB is organized in three main modules:
  - [**hermes_router**](../): the router design where the RTL, netlist, top, simulation scripts, tests and sequences are located;
- - [**hermes_pkg**](../../vips/hermes_pkg): contains the protocol dependent part of the testbench, i.e. the agent, both slave/master drivers, the monitor, interface, agent configuration class, and main design parameters;
- - [**hermes_router_env_pkg**](../../vips/hermes_router_env_pkg): contains the router environment, which instantiates 5 slave and 5 master agents. It also contains the coverage module, the scoreboard, and the environment configuration class.
+ - [**hermes_pkg**](../../vips/hermes_pkg/docs): contains the protocol dependent part of the testbench, i.e. the agent, both slave/master drivers, the monitor, interface, agent configuration class, and main design parameters;
+ - [**hermes_router_env_pkg**](../../vips/hermes_router_env_pkg/docs): contains the router environment, which instantiates 5 slave and 5 master agents. It also contains the coverage module, the scoreboard, and the environment configuration class.
 
 ## Running the Tests
 
