@@ -1,4 +1,3 @@
- 
 #------------------------------------------------
 # these are the knobs you might want to change. 
 #------------------------------------------------
@@ -70,27 +69,19 @@ for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
 	} else {
 		vsim -sv_seed $SEED +UVM_TESTNAME=$test +UVM_VERBOSITY=$VERBOSITY  $top
 	}
-	onbreak {resume}
+	#onbreak {resume}
+	onfinish stop;
 	log /* -r
 	do shutup.do
 	do wave_full.do
 	run -all
-	exit
 	if {[string equal $COVERAGE "true"]} {
-		coverage attribute -name TESTNAME -value $(test)
-		coverage save $(test).ucdb	
+		coverage attribute -name TESTNAME -value $test
+		coverage save ${test}.ucdb	
+		vcover merge  -out hermes_router.ucdb ${test}.ucdb
 	}
-	puts "loop"
 }
 
 if {[string equal $COVERAGE "true"]} {
-	set list_tests ""
-	for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
-	    set test [lindex $list $i]
-	    append list_tests ".ucdb " $test
-	}
-	puts $list_tests
-
-	vcover merge  -out hermes_router.ucdb $list_tests
 	vcover report hermes_router.ucdb -cvg -details
 }
