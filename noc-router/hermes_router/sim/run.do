@@ -4,19 +4,19 @@
 set SEED      "random"
 set VERBOSITY "UVM_LOW"
 # set true to enable coverage
-set COVERAGE  "false"
+set COVERAGE  "true"
 # set true to simulate RTL, otherwise, simulates the netlist
-set RTL_SIM   "false"
+set RTL_SIM   "true"
 # set true to simulate for debug, otherwise simulate for speed/regression
 set DEBUG_SIM "true"      
 
 # lists of tests to be executed
 set TEST_NAMES {repeat_test parallel_test  }
 
-#set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
-#set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_router
-set ::env(VIP_LIBRARY_HOME) /home/ale/repos/study/uvm-basics/noc-router/vips
-set ::env(PROJECT_DIR) /home/ale/repos/study/uvm-basics/noc-router/hermes_router
+set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
+set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_router
+#set ::env(VIP_LIBRARY_HOME) /home/ale/repos/study/uvm-basics/noc-router/vips
+#set ::env(PROJECT_DIR) /home/ale/repos/study/uvm-basics/noc-router/hermes_router
 
 file delete -force *~ *.ucdb vsim.dbg *.vstf *.log work *.mem *.transcript.txt certe_dump.xml *.wlf covhtmlreport VRMDATA
 file delete -force design.bin qwave.db dpiheader.h visualizer*.ses
