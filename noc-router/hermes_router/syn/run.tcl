@@ -19,7 +19,10 @@ synthesize -to_generic -eff high
 ## 4) synthesize to mapped
 synthesize -to_mapped -eff high -no_incr
 
-## 4.1) report area and timing
+## 4.1) wrtie sdf
+write_sdf -design RouterCC > src/layout/RouterCC.sdf
+
+## 4.2) report area and timing
 report area
 report timing
 
