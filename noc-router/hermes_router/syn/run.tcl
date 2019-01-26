@@ -19,13 +19,15 @@ synthesize -to_generic -eff high
 ## 4) synthesize to mapped
 synthesize -to_mapped -eff high -no_incr
 
-## 4.1) wrtie sdf
-write_sdf -no_escape -design RouterCC > src/layout/RouterCC.sdf
+## 4.1) write sdf and netlist
+write_sdf -timescale ps -design RouterCC > src/layout/RouterCC.sdf
+write_hdl RouterCC >  src/layout/RouterCC.v
 
 ## 4.2) report area and timing
-report area
-report timing
+report area > area.rep
+report timing > timing.rep
+report power > power.rep
 
 ## 5) build physical synthesis environment
-write_design -innovus -base_name src/layout/RouterCC
+#write_design -innovus -base_name src/layout/RouterCC
 #write_encounter design -basename encounter/router

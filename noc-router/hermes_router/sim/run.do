@@ -4,26 +4,19 @@
 set SEED      "random"
 set VERBOSITY "UVM_LOW"
 # set true to enable coverage
-set COVERAGE  "true"      
+set COVERAGE  "false"
 # set true to simulate RTL, otherwise, simulates the netlist
-set RTL_SIM   "true"
+set RTL_SIM   "false"
 # set true to simulate for debug, otherwise simulate for speed/regression
 set DEBUG_SIM "true"      
-
-if {[string equal $DEBUG_SIM "true"]} {
-	set DEBUG_ARGS " "
-	#
-} else {
-	set DEBUG_ARGS ""
-}
 
 # lists of tests to be executed
 set TEST_NAMES {repeat_test parallel_test  }
 
-set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
-set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_router
-#set ::env(VIP_LIBRARY_HOME) /home/ale/repos/study/uvm-basics/noc-router/vips
-#set ::env(PROJECT_DIR) /home/ale/repos/study/uvm-basics/noc-router/hermes_router
+#set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
+#set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_router
+set ::env(VIP_LIBRARY_HOME) /home/ale/repos/study/uvm-basics/noc-router/vips
+set ::env(PROJECT_DIR) /home/ale/repos/study/uvm-basics/noc-router/hermes_router
 
 file delete -force *~ *.ucdb vsim.dbg *.vstf *.log work *.mem *.transcript.txt certe_dump.xml *.wlf covhtmlreport VRMDATA
 file delete -force design.bin qwave.db dpiheader.h visualizer*.ses
@@ -64,11 +57,16 @@ if {[string equal $DEBUG_SIM "true"]} {
 # execute all the tests in TEST_NAME 
 for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
     set test [lindex $TEST_NAMES $i]
-    if {[string equal $DEBUG_SIM "true"]} {
+    if {[string equal $RTL_SIM "true"]} {
+    	if {[string equal $DEBUG_SIM "true"]} {
 		vsim -sv_seed $SEED +UVM_TESTNAME=$test +UVM_VERBOSITY=$VERBOSITY -permit_unmatched_virtual_intf +notimingchecks -suppress 8887   -uvmcontrol=all -msgmode both -classdebug -assertdebug  +uvm_set_config_int=*,enable_transaction_viewing,1  $top
 	} else {
 		vsim -sv_seed $SEED +UVM_TESTNAME=$test +UVM_VERBOSITY=$VERBOSITY  $top
 	}
+    } else {
+      # netlist simulation 
+	vsim -sdfmax /top/dut1/CC/=../syn/src/layout/RouterCC.sdf -sv_seed $SEED +UVM_TESTNAME=$test +UVM_VERBOSITY=$VERBOSITY  $top
+    }
 	#onbreak {resume}
 	onfinish stop;
 	log /* -r
