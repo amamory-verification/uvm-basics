@@ -10,8 +10,9 @@ package hermes_router_test_pkg;
    `include "src/base_test.sv"
    //`include "src/single_test.sv"
    `include "src/repeat_test.sv"
-   //`include "src/bottleneck_test.sv"
+   `include "src/random_test.sv"
+   `include "src/bottleneck_test.sv"
    `include "src/parallel_test.sv"
-   //`include "src/sequential_test.sv"
+   `include "src/sequential_test.sv"
 
 endpackage

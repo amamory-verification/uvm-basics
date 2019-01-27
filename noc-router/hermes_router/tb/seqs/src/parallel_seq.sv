@@ -1,12 +1,20 @@
 /*
- this virtual hierarchical sequence injects 5 'repeat_seq' in all input ports in parallel
+ this virtual hierarchical sequence injects 5 'repeat_seq' in all input ports in parallel 
 */
 class parallel_seq extends hermes_base_seq; 
 `uvm_object_utils(parallel_seq)
 
+// enable for each port
+bit [4:0] enable_port = '{1,1,1,1,1} ;// by default, they are all enabled
+
 function new(string name = "parallel_seq");
   super.new(name);
 endfunction: new
+
+task pre_body();
+  super.pre_body();
+  // get enable for each port
+endtask
 
 task body();
 	repeat_seq seq[hermes_pkg::NPORT];
@@ -24,9 +32,11 @@ task body();
 	      fork
 	      automatic int idx=index;
 	        begin
-	        	if( !seq[idx].randomize() )
-	        		`uvm_error("parallel_seq", "invalid cfg randomization"); 
-	            seq[idx].start (sequencer[idx]);
+	        	if (enable_port[idx] == 1) begin
+		        	if( !seq[idx].randomize() )
+		        		`uvm_error("parallel_seq", "invalid cfg randomization"); 
+		            seq[idx].start (sequencer[idx]);
+		        end
 	        end
 	      join_none;
 	    end : for_loop

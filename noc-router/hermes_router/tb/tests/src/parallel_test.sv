@@ -50,7 +50,7 @@ task run_phase(uvm_phase phase);
         p_size == hermes_packet_t::SMALL;
       }
     )
-      `uvm_error("rand", "invalid cfg randomization"); 
+      `uvm_error("test", "invalid cfg randomization"); 
     // send the sequence configuration to each sequencer
     uvm_config_db#(hermes_router_seq_config)::set(null, $sformatf("uvm_test_top.env.agent_master_%0d.sequencer",i), "config",cfg[i]);
 

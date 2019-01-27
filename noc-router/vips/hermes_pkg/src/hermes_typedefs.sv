@@ -35,7 +35,7 @@ function bitstream4_t valid_ports(input bit [7:0] h);
 		if (vaddrs.sum with (item==h))
 			valid_ports.push_back(i);
 	end
-	$display("%H --- %p\n",h, valid_ports);
+	//$display("%H --- %p\n",h, valid_ports);
 endfunction
 
 

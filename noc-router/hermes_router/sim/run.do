@@ -11,7 +11,8 @@ set RTL_SIM   "true"
 set DEBUG_SIM "true"      
 
 # lists of tests to be executed
-set TEST_NAMES {repeat_test parallel_test  }
+#set TEST_NAMES {parallel_test}
+set TEST_NAMES {repeat_test parallel_test sequential_test random_test bottleneck_test}
 
 set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
 set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_router

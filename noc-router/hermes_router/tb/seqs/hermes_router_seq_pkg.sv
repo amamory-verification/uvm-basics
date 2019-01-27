@@ -7,10 +7,7 @@ package hermes_router_seq_pkg;
 
    `include "src/hermes_router_seq_config.sv"
 
-   `include "src/single_seq.sv"
    `include "src/repeat_seq.sv"
-   //`include "src/bottleneck_seq.sv"
    `include "src/parallel_seq.sv"
-   //`include "src/sequential_seq.sv"
 
 endpackage
