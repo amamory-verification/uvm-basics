@@ -68,7 +68,7 @@ task run_phase(uvm_phase phase);
 		@(negedge dut_vi.clock iff dut_vi.credit == 1'b1);
 		// send payload after some random number of clock cycles, from 0 to 15 cycles
 		i=0;	
-		while (i<tx.payload.size())  // size() accounts only for the payload size
+		while (i<tx.payload.size())  // size() accounts only for the payload size 
 		begin
 			@(posedge dut_vi.clock);
 			wait_cycles(cycle2flit);
@@ -81,8 +81,8 @@ task run_phase(uvm_phase phase);
 		dut_vi.avail = 1'b0;
 		dut_vi.data = 0;
 
-		tx.dport = port; // set the output port for sb verification
-		aport.write(tx); // send it to the sb
+		//tx.dport = port; // set the output port for sb verification
+		//aport.write(tx); // send it to the sb
 		seq_item_port.item_done();			
 	end
 endtask: run_phase

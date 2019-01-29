@@ -33,7 +33,7 @@ W1 |      | E0
 module top;
 import uvm_pkg::*;
 import hermes_pkg::*;
-//import hermes_router_test_pkg::*;
+import hermes_noc_test_pkg::*;
 
 bit clock;
 always #10 clock = ~clock; // clock generator 

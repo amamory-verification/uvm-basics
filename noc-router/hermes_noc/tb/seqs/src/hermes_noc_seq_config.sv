@@ -6,18 +6,22 @@ class hermes_noc_seq_config extends uvm_object;
 // seq item knobs
 //==========================
 // set the input router port where the sequence will inject its packets. default is 0  
-rand bit [3:0] port;
+rand bit [4:0] source_router;
 // set the random distribution for port 
-bit [3:0] port_dist[hermes_pkg::NPORT] = {1,1,1,1,1};
+bit [4:0] router_dist[hermes_pkg::NROT] = {1,1,1,1,1,1,1,1,1};
 
-constraint c_port {
-  port inside { [0:hermes_pkg::NPORT-1] };
-  port dist { 
-  	0 := port_dist[0],
-  	1 := port_dist[1],
-  	2 := port_dist[2],
-  	3 := port_dist[3],
-  	4 := port_dist[4]
+constraint c_router {
+  source_router inside { [0:hermes_pkg::NROT-1] };
+  source_router dist { 
+  	0 := router_dist[0],
+  	1 := router_dist[1],
+  	2 := router_dist[2],
+  	3 := router_dist[3],
+  	4 := router_dist[4],
+    5 := router_dist[5],
+    6 := router_dist[6],
+    7 := router_dist[7],
+    8 := router_dist[8]
   };
 }
 
@@ -40,10 +44,8 @@ constraint c_p_size {
 rand bit [7:0] header;
 
 constraint c_header { 
-  // given the input port 'port', it returns the list of possible target address for the header
-  header inside {hermes_pkg::valid_addrs(this.port)};
-  // the list of valid address depends on the input port
-  solve port before header;
+  // the possible target address
+  header inside {8'h00,8'h01,8'h02,8'h10, 8'h11,8'h12,8'h20, 8'h21,8'h22};
 }
 
 //==========================
@@ -72,8 +74,8 @@ function void do_copy( uvm_object rhs );
   end
 
   super.do_copy( rhs );
-  this.port            = that.port;
-  this.port_dist       = that.port_dist;
+  this.source_router   = that.source_router;
+  this.router_dist     = that.router_dist;
   this.p_size          = that.p_size;
   this.w_zero          = that.w_zero;
   this.w_small         = that.w_small;
@@ -86,10 +88,10 @@ endfunction: do_copy
 
 virtual function string convert2string();
   string s = super.convert2string();      
-  s = { s, $psprintf( "\n port       : %0d", port) };
+  s = { s, $psprintf( "\n port       : %0d", source_router) };
   s = { s, $psprintf( "\n p_size     : %0d", p_size) };
   s = { s, $psprintf( "\n header     : %H" , header) };
-  s = { s, $psprintf( "\n valid_addr : %p" , hermes_pkg::valid_addrs(port)) };
+  //s = { s, $psprintf( "\n valid_addr : %p" , hermes_pkg::valid_addrs(port)) };
   s = { s, $psprintf( "\n npackets   : %0d", npackets) };
   return s;
 endfunction: convert2string

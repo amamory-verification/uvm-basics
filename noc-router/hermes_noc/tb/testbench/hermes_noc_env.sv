@@ -1,30 +1,61 @@
-//----------------
-// environment
-//----------------
 class hermes_noc_env extends uvm_env;
 `uvm_component_utils(hermes_noc_env);
 
-  virtual hermes_if m_if;
+hermes_agent       agent_master_h [hermes_pkg::NROT];
+hermes_agent       agent_slave_h [hermes_pkg::NROT];
+hermes_router_coverage    coverage_h;
+hermes_router_scoreboard  scoreboard_h;
+hermes_noc_env_config  cfg;
 
-  function new(string name, uvm_component parent = null);
-    super.new(name, parent);
-  endfunction
-  
-  function void connect_phase(uvm_phase phase);
-    `uvm_info("LABEL", "Started connect phase.", UVM_HIGH);
-    // Get the interface from the resource database.
-    //assert(uvm_resource_db#(virtual add_sub_if)::read_by_name(get_full_name(), "add_sub_if", m_if));
-    `uvm_info("LABEL", "Finished connect phase.", UVM_HIGH);
-  endfunction: connect_phase
+function new(string name, uvm_component parent);
+  super.new(name,parent);
+endfunction: new
 
-  task run_phase(uvm_phase phase);
-    phase.raise_objection(this);
-    `uvm_info("LABEL", "Started run phase.", UVM_HIGH);
-    begin
-      // do something here
-    end
-    `uvm_info("LABEL", "Finished run phase.", UVM_HIGH);
-    phase.drop_objection(this);
-  endtask: run_phase
-  
-endclass
+function void build_phase(uvm_phase phase);
+  // build the agent and pass its parameters 
+  if (uvm_top.get_report_verbosity_level() >= UVM_HIGH)
+    print_config(); 
+
+  if (!uvm_config_db #(hermes_noc_env_config)::get(this, "", "config", cfg))
+    `uvm_fatal("env", "No cfg");
+
+  foreach (agent_master_h[i]) begin
+    uvm_config_db #(hermes_agent_config)::set(this, $sformatf("agent_master_%0d",i), "config", cfg.agent_cfg[i]);
+    // the following configuration sent to the agent are not supposed to be changed in the tes level, so they were separated
+    uvm_config_db #(string)             ::set(this, $sformatf("agent_master_%0d",i), "mode", "master");
+    uvm_config_db #(bit [3:0])          ::set(this, $sformatf("agent_master_%0d",i), "port", i);
+
+    agent_master_h[i] = hermes_agent::type_id::create($sformatf("agent_master_%0d",i), this);
+  end
+  foreach (agent_slave_h[i]) begin
+    uvm_config_db #(hermes_agent_config)::set(this, $sformatf("agent_slave_%0d",i), "config", cfg.agent_cfg[i]);
+    // the following configuration sent to the agent are not supposed to be changed in the tes level, so they were separated
+    uvm_config_db #(string)             ::set(this, $sformatf("agent_slave_%0d",i), "mode", "slave");
+    uvm_config_db #(bit [3:0])          ::set(this, $sformatf("agent_slave_%0d",i), "port", i);
+
+    agent_slave_h[i] = hermes_agent::type_id::create($sformatf("agent_slave_%0d",i), this);
+  end
+
+  if (cfg.enable_coverage == 1)
+    coverage_h   = hermes_router_coverage::type_id::create("coverage", this);
+  scoreboard_h = hermes_router_scoreboard::type_id::create("scoreboard", this);
+  `uvm_info("msg", "ENV Done !", UVM_HIGH)
+endfunction: build_phase
+
+function void connect_phase(uvm_phase phase);
+  `uvm_info("msg", "Connecting ENV", UVM_HIGH)
+  foreach (agent_master_h[i]) begin
+    // connect in monitors with the sb
+    agent_master_h[i].monitor_h.aport.connect(scoreboard_h.in_mon_ap);
+  end
+  foreach (agent_slave_h[i]) begin
+    // connect out monitors with the sb
+    agent_slave_h[i].monitor_h.aport.connect(scoreboard_h.out_mon_ap);
+  end
+  // conenct sb with coverage
+  if (cfg.enable_coverage == 1)
+    scoreboard_h.cov_ap.connect(coverage_h.analysis_export);
+  `uvm_info("msg", "Connecting ENV Done !", UVM_HIGH)
+endfunction: connect_phase
+
+endclass: hermes_noc_env

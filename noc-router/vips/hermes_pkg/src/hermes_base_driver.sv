@@ -2,7 +2,7 @@
 class hermes_base_driver extends uvm_driver #(hermes_packet_t);
 `uvm_component_utils(hermes_base_driver);
 
-uvm_analysis_port #(hermes_packet_t) aport; // used to send the incomming packet to the sb 
+//uvm_analysis_port #(hermes_packet_t) aport; // used to send the incomming packet to the sb 
 
 virtual hermes_if dut_vi;
 bit [3:0] port;

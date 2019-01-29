@@ -4,9 +4,9 @@ base test. does not implement run_phase
 class base_test extends uvm_test;
 `uvm_component_utils(base_test)
 
-hermes_router_env        env_h;
-hermes_router_env_config env_cfg;
-hermes_agent_config      acfg[hermes_pkg::NPORT];
+hermes_noc_env        env_h;
+hermes_noc_env_config env_cfg;
+hermes_agent_config   acfg[hermes_pkg::NROT];
 
 function new (string name, uvm_component parent);
   super.new(name,parent);
@@ -33,7 +33,7 @@ endfunction
 // create the env and cfgs
 function void build_phase(uvm_phase phase);
   super.build_phase(phase);
-  env_cfg = hermes_router_env_config::type_id::create("env_cfg",this);
+  env_cfg = hermes_noc_env_config::type_id::create("env_cfg",this);
   foreach(acfg[i]) begin
     acfg[i] =  hermes_agent_config::type_id::create($sformatf("acfg[%0d]",i),this);
     // hook the env's config with the agent's config

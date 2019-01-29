@@ -4,7 +4,7 @@
 set SEED      "random"
 set VERBOSITY "UVM_LOW"
 # set true to enable coverage
-set COVERAGE  "true"
+set COVERAGE  "false"
 # set true to simulate RTL, otherwise, simulates the netlist
 set RTL_SIM   "true"
 # set true to simulate for debug, otherwise simulate for speed/regression
@@ -12,7 +12,7 @@ set DEBUG_SIM "true"
 
 # lists of tests to be executed
 #set TEST_NAMES {parallel_test}
-set TEST_NAMES {smoke_test}
+set TEST_NAMES {repeat_test}
 
 set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
 set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_noc
@@ -28,12 +28,16 @@ vlib work
 vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(VIP_LIBRARY_HOME)/hermes_pkg -F $env(VIP_LIBRARY_HOME)/hermes_pkg/hvl.f 
 vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(VIP_LIBRARY_HOME)/hermes_pkg -F $env(VIP_LIBRARY_HOME)/hermes_pkg/hdl.f 
 
-# environment
+# router env
+vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(VIP_LIBRARY_HOME)/hermes_router_env_pkg $env(VIP_LIBRARY_HOME)/hermes_router_env_pkg/hermes_router_env_pkg.sv
+
+# noc environment
+vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/testbench $env(PROJECT_DIR)/tb/testbench/hermes_noc_env_pkg.sv
 #vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(VIP_LIBRARY_HOME)/hermes_noc_env_pkg $env(VIP_LIBRARY_HOME)/hermes_noc_env_pkg/hermes_noc_env_pkg.sv
 
 # tests and seqs
-#vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/seqs $env(PROJECT_DIR)/tb/seqs/hermes_noc_seq_pkg.sv
-#vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/tests $env(PROJECT_DIR)/tb/tests/hermes_noc_test_pkg.sv
+vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/seqs $env(PROJECT_DIR)/tb/seqs/hermes_noc_seq_pkg.sv
+vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/tests $env(PROJECT_DIR)/tb/tests/hermes_noc_test_pkg.sv
 
 #dut
 if {[string equal $RTL_SIM "true"]} {
@@ -48,7 +52,6 @@ if {[string equal $RTL_SIM "true"]} {
 }
 
 #testbench
-vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/testbench $env(PROJECT_DIR)/tb/testbench/hermes_noc_env_pkg.sv
 vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/testbench $env(PROJECT_DIR)/tb/testbench/top.sv
 
 if {[string equal $DEBUG_SIM "true"]} {
@@ -59,9 +62,9 @@ if {[string equal $DEBUG_SIM "true"]} {
 	set top optimized_batch_top_tb
 }
 
+#vsim -sv_seed $SEED +UVM_VERBOSITY=$VERBOSITY  $top
+#vsim -sv_seed random "+UVM_TESTNAME=repeat_test" "+UVM_VERBOSITY=UVM_LOW" -permit_unmatched_virtual_intf "+notimingchecks" -suppress 8887 -uvmcontrol=all -msgmode both -classdebug -assertdebug "+uvm_set_config_int=*,enable_transaction_viewing,1" optimized_debug_top_tb
 
-vsim -sv_seed $SEED +UVM_VERBOSITY=$VERBOSITY  $top
-exit 
 # execute all the tests in TEST_NAME 
 for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
     set test [lindex $TEST_NAMES $i]
@@ -79,7 +82,7 @@ for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
 	onfinish stop;
 	log /* -r
 	do shutup.do
-	do wave_full.do
+	#do wave_full.do
 	run -all
 	if {[string equal $COVERAGE "true"]} {
 		coverage attribute -name TESTNAME -value $test
