@@ -7,10 +7,10 @@ hermes_if.datain din[hermes_pkg::NROT];
 hermes_if.dataout dout[hermes_pkg::NROT];
 
 logic [hermes_pkg::NROT-1:0] clock_rx, rx, credit_o;
-logic [hermes_pkg::FLIT_WIDTH-1:0] data_in[hermes_pkg::NROT:0];
+logic [hermes_pkg::FLIT_WIDTH-1:0] data_in[hermes_pkg::NROT-1:0];
 
 logic [hermes_pkg::NROT-1:0] clock_tx, tx, credit_i;
-logic [hermes_pkg::FLIT_WIDTH-1:0] data_out[hermes_pkg::NROT:0];
+logic [hermes_pkg::FLIT_WIDTH-1:0] data_out[hermes_pkg::NROT-1:0];
 
 generate
 	for (genvar i = 0; i < hermes_pkg::NROT; i++) begin
@@ -27,7 +27,7 @@ generate
 	end
 endgenerate
 
-NOC CC ( .clock(clock), .reset(reset),
+NOC CC ( .clock(clock_rx), .reset(reset),
 	//Local ports
 	.clock_rxLocal(clock_rx),
 	.rxLocal(rx),

@@ -33,7 +33,7 @@ W1 |      | E0
 module top;
 import uvm_pkg::*;
 import hermes_pkg::*;
-import hermes_router_test_pkg::*;
+//import hermes_router_test_pkg::*;
 
 bit clock;
 always #10 clock = ~clock; // clock generator 
@@ -50,12 +50,12 @@ reset = 0;
 end
 
 // generate interfaces
-hermes_if   master_if[hermes_pkg::NPORT](clock, reset);
-hermes_if   slave_if [hermes_pkg::NPORT](clock, reset);
+hermes_if   master_if[hermes_pkg::NROT](clock, reset);
+hermes_if   slave_if [hermes_pkg::NROT](clock, reset);
 
 // pass the interfaces to the agents and they will pass it to their monitors and drivers
 genvar i;
-for(i=0; i< hermes_pkg::NPORT; i++) 
+for(i=0; i< hermes_pkg::NROT; i++) 
 begin : dut_inst
 	initial 
 	begin
@@ -69,7 +69,7 @@ end
 
 
 // instantiate a central router 
-RouterCC_wrapper  dut1(.clock(clock), 
+NoC_wrapper  dut1(.clock(clock), 
 	.reset(reset), 
 	.din(master_if), 
 	.dout(slave_if)

@@ -12,7 +12,7 @@ set DEBUG_SIM "true"
 
 # lists of tests to be executed
 #set TEST_NAMES {parallel_test}
-set TEST_NAMES {repeat_test parallel_test sequential_test random_test bottleneck_test}
+set TEST_NAMES {smoke_test}
 
 set ::env(VIP_LIBRARY_HOME) /home/ale/repos/verif/uvm-basics/noc-router/vips
 set ::env(PROJECT_DIR) /home/ale/repos/verif/uvm-basics/noc-router/hermes_noc
@@ -48,6 +48,7 @@ if {[string equal $RTL_SIM "true"]} {
 }
 
 #testbench
+vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/testbench $env(PROJECT_DIR)/tb/testbench/hermes_noc_env_pkg.sv
 vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/testbench $env(PROJECT_DIR)/tb/testbench/top.sv
 
 if {[string equal $DEBUG_SIM "true"]} {
@@ -58,6 +59,9 @@ if {[string equal $DEBUG_SIM "true"]} {
 	set top optimized_batch_top_tb
 }
 
+
+vsim -sv_seed $SEED +UVM_VERBOSITY=$VERBOSITY  $top
+exit 
 # execute all the tests in TEST_NAME 
 for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
     set test [lindex $TEST_NAMES $i]
