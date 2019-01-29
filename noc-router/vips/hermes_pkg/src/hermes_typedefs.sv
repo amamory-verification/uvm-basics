@@ -9,7 +9,10 @@ parameter MAX_FLITS = 128;
 parameter X_ADDR = 1;
 parameter Y_ADDR = 1;
 
-// NoC size . used to set the target routers
+// it is a 3x3 noc with 9 routers
+parameter NROT  = 9;
+
+// NoC size . used to set the target routers 
 parameter X_MAX = 2;
 parameter Y_MAX = 2;
 

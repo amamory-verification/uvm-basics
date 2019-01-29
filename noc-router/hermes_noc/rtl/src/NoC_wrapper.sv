@@ -1,19 +1,19 @@
 import hermes_pkg::*;
-
-module RouterCC_wrapper (clock, reset, din, dout );
+ 
+module NoC_wrapper (clock, reset, din, dout );
 
 input logic clock, reset; 
-hermes_if.datain din[5];
-hermes_if.dataout dout[5];
+hermes_if.datain din[hermes_pkg::NROT];
+hermes_if.dataout dout[hermes_pkg::NROT];
 
-logic [4:0] clock_rx, rx, credit_o;
-logic [15:0] data_in[4:0];
+logic [hermes_pkg::NROT-1:0] clock_rx, rx, credit_o;
+logic [hermes_pkg::FLIT_WIDTH-1:0] data_in[hermes_pkg::NROT:0];
 
-logic [4:0] clock_tx, tx, credit_i;
-logic [15:0] data_out[4:0];
+logic [hermes_pkg::NROT-1:0] clock_tx, tx, credit_i;
+logic [hermes_pkg::FLIT_WIDTH-1:0] data_out[hermes_pkg::NROT:0];
 
 generate
-	for (genvar i = 0; i < 5; i++) begin
+	for (genvar i = 0; i < hermes_pkg::NROT; i++) begin
 		// input port
 		assign clock_rx[i]    = clock;
 		assign rx[i]          = din[i].avail;
@@ -27,18 +27,17 @@ generate
 	end
 endgenerate
 
-RouterCC #(.address(8'h11)) CC ( .clock(clock), .reset(reset),
-	//EAST port
-	.clock_rx(clock_rx),
-	.rx(rx),
-	.data_in(data_in),
-	.credit_o(credit_o),
+NOC CC ( .clock(clock), .reset(reset),
+	//Local ports
+	.clock_rxLocal(clock_rx),
+	.rxLocal(rx),
+	.data_inLocal(data_in),
+	.credit_oLocal(credit_o),
 
-	.clock_tx(clock_tx),
-	.tx(tx),
-	.data_out(data_out),
-	.credit_i(credit_i)
+	.clock_txLocal(clock_tx),
+	.txLocal(tx),
+	.data_outLocal(data_out),
+	.credit_iLocal(credit_i)
 	);
 
-endmodule // RouterCC_wrapper
-
+endmodule // NoC_wrapper

@@ -29,20 +29,19 @@ vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(VIP_LIBRARY_HOME)/hermes_pkg
 vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(VIP_LIBRARY_HOME)/hermes_pkg -F $env(VIP_LIBRARY_HOME)/hermes_pkg/hdl.f 
 
 # environment
-vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(VIP_LIBRARY_HOME)/hermes_noc_env_pkg $env(VIP_LIBRARY_HOME)/hermes_noc_env_pkg/hermes_noc_env_pkg.sv
+#vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(VIP_LIBRARY_HOME)/hermes_noc_env_pkg $env(VIP_LIBRARY_HOME)/hermes_noc_env_pkg/hermes_noc_env_pkg.sv
 
 # tests and seqs
-#vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/parameters $env(PROJECT_DIR)/tb/parameters/wb2spi_parameters_pkg.sv
-vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/seqs $env(PROJECT_DIR)/tb/seqs/hermes_noc_seq_pkg.sv
-vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/tests $env(PROJECT_DIR)/tb/tests/hermes_noc_test_pkg.sv
+#vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/seqs $env(PROJECT_DIR)/tb/seqs/hermes_noc_seq_pkg.sv
+#vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/tb/tests $env(PROJECT_DIR)/tb/tests/hermes_noc_test_pkg.sv
 
 #dut
 if {[string equal $RTL_SIM "true"]} {
-	// the part related to the central router, tested in hermes_router
+	# the part related to the central router, tested in hermes_router
 	vcom -suppress 2223 -suppress 2286 -F $env(PROJECT_DIR)/../hermes_router/rtl/hdl_vhd.f
-	// the rest of the design of the entire NOC
+	# the rest of the design of the entire NOC
 	vcom -suppress 2223 -suppress 2286 -F $env(PROJECT_DIR)/rtl/hdl_vhd.f
-	// the SV wrapper
+	# the SV wrapper
 	vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/rtl -F $env(PROJECT_DIR)/rtl/hdl_v.f
 } else {
 	vlog -sv -suppress 2223 -suppress 2286 +incdir+$env(PROJECT_DIR)/syn -F $env(PROJECT_DIR)/syn/hdl_v.f
