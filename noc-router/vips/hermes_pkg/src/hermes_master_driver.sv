@@ -81,8 +81,6 @@ task run_phase(uvm_phase phase);
 		dut_vi.avail = 1'b0;
 		dut_vi.data = 0;
 
-		//tx.dport = port; // set the output port for sb verification
-		//aport.write(tx); // send it to the sb
 		seq_item_port.item_done();			
 	end
 endtask: run_phase

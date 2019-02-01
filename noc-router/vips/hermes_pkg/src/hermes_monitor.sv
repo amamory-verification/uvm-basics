@@ -6,6 +6,7 @@ uvm_analysis_port #(hermes_packet_t) aport; // used to send the output packet to
 
 virtual hermes_if dut_vi;
 bit [3:0] port;
+string mode;
 
 function new(string name, uvm_component parent);
   super.new(name,parent);
@@ -24,6 +25,11 @@ function void build_phase(uvm_phase phase);
 
   if(!uvm_config_db#(virtual hermes_if)::get (this,"", "if", dut_vi))
       `uvm_fatal("monitor", "No if");
+
+  if (!uvm_config_db #(string)::get (this,"", "mode", mode) )
+    `uvm_fatal("monitor", "No mode");    
+  if (mode != "slave" && mode != "master") 
+    `uvm_fatal("monitor", "unexpected mode value");    
 
   `uvm_info("msg", "MONITOR Done !!!", UVM_HIGH)
 endfunction: build_phase
@@ -71,7 +77,10 @@ task run_phase(uvm_phase phase);
     end
     `uvm_info("monitor", $sformatf("%s got payload",get_full_name()), UVM_HIGH)
 
-    tx.oport = port; // set the sb output ap for verification
+    if (mode == "master")
+      tx.dport = port; // tell the sb that this packet came from an in port
+    else
+      tx.oport = port; // tell the sb that this packet came from an out port
     `uvm_info("monitor", tx.convert2string(), UVM_MEDIUM)
     aport.write(tx);
   end  

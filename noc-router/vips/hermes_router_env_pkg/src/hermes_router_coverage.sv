@@ -58,7 +58,7 @@ function void write(hermes_packet_t t);
   cg_ports.sample();
   cg_packet_sizes.sample();
   cg_noc_addr.sample();
-  `uvm_info("COVERAGE", "PACKET RECEIVED !!!!", UVM_HIGH);
+  `uvm_info("COVERAGE", $sformatf("PACKET RECEIVED !!!! %0d %0d %Hh %Hh",iport,oport,x,y), UVM_HIGH);
 endfunction: write 
 
 function new(string name, uvm_component parent);

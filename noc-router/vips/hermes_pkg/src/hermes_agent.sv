@@ -32,6 +32,7 @@ function void build_phase(uvm_phase phase);
     `uvm_fatal("agent", "No mode");    
   if (mode != "slave" && mode != "master") 
     `uvm_fatal("agent", "unexpected mode value");    
+  uvm_config_db #(string)::set (this,"monitor", "mode", mode);
 
   // port id
   if (!uvm_config_db #(bit [3:0])::get (this,"", "port", port) )

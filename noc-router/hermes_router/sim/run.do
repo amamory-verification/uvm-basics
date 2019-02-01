@@ -75,9 +75,12 @@ for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
 	do wave_full.do
 	run -all
 	if {[string equal $COVERAGE "true"]} {
+		puts "saving the testname '$test' into the ucdb file"
 		coverage attribute -name TESTNAME -value $test
+		puts "saving the seed '$Sv_Seed' into the ucdb file"
+		coverage attribute -seed $Sv_Seed
 		coverage save ${test}.ucdb	
-		vcover merge  -out hermes_router.ucdb ${test}.ucdb
+		vcover merge -verbose -append -out hermes_router.ucdb hermes_router.ucdb ${test}.ucdb
 	}
 }
 
