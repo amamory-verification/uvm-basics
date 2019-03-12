@@ -6,10 +6,11 @@ class hermes_noc_seq_config extends uvm_object;
 // seq item knobs
 //==========================
 // set the input router port where the sequence will inject its packets. default is 0  
-rand bit [4:0] source_router;
+//rand bit [4:0] source_router;
 // set the random distribution for port 
 bit [4:0] router_dist[hermes_pkg::NROT] = {1,1,1,1,1,1,1,1,1};
 
+/*
 constraint c_router {
   source_router inside { [0:hermes_pkg::NROT-1] };
   source_router dist { 
@@ -24,6 +25,7 @@ constraint c_router {
     8 := router_dist[8]
   };
 }
+*/
 
 // set the packet size
 rand hermes_packet_t::packet_size_t p_size;
@@ -74,7 +76,7 @@ function void do_copy( uvm_object rhs );
   end
 
   super.do_copy( rhs );
-  this.source_router   = that.source_router;
+  //this.source_router   = that.source_router;
   this.router_dist     = that.router_dist;
   this.p_size          = that.p_size;
   this.w_zero          = that.w_zero;
@@ -88,7 +90,7 @@ endfunction: do_copy
 
 virtual function string convert2string();
   string s = super.convert2string();      
-  s = { s, $psprintf( "\n port       : %0d", source_router) };
+  //s = { s, $psprintf( "\n port       : %0d", source_router) };
   s = { s, $psprintf( "\n p_size     : %0d", p_size) };
   s = { s, $psprintf( "\n header     : %H" , header) };
   //s = { s, $psprintf( "\n valid_addr : %p" , hermes_pkg::valid_addrs(port)) };

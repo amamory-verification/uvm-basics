@@ -3,8 +3,8 @@ class hermes_noc_env extends uvm_env;
 
 hermes_agent       agent_master_h [hermes_pkg::NROT];
 hermes_agent       agent_slave_h [hermes_pkg::NROT];
-hermes_router_coverage    coverage_h;
-hermes_router_scoreboard  scoreboard_h;
+hermes_router_coverage coverage_h;
+hermes_noc_scoreboard  scoreboard_h;
 hermes_noc_env_config  cfg;
 
 function new(string name, uvm_component parent);
@@ -38,7 +38,7 @@ function void build_phase(uvm_phase phase);
 
   if (cfg.enable_coverage == 1)
     coverage_h   = hermes_router_coverage::type_id::create("coverage", this);
-  scoreboard_h = hermes_router_scoreboard::type_id::create("scoreboard", this);
+  scoreboard_h = hermes_noc_scoreboard::type_id::create("scoreboard", this);
   `uvm_info("msg", "ENV Done !", UVM_HIGH)
 endfunction: build_phase
 

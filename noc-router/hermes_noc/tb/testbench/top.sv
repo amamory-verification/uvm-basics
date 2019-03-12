@@ -12,11 +12,34 @@ UVM testbench for the router described in the following paper
   publisher={Elsevier}
 }
 
-This TB simulates the middle router (addr 8'h11) in a 3x3 NoC
+This TB simulates a 3x3 NoC with these addresses:
 
  02 12 22
  01 11 21
  00 10 20 
+
+ 6 7 8
+ 3 4 5
+ 0 1 2
+
+	constant N0000: integer :=0;
+	constant ADDRESSN0000: std_logic_vector(7 downto 0) :="00000000";
+	constant N0100: integer :=1;
+	constant ADDRESSN0100: std_logic_vector(7 downto 0) :="00010000";
+	constant N0200: integer :=2;
+	constant ADDRESSN0200: std_logic_vector(7 downto 0) :="00100000";
+	constant N0001: integer :=3;
+	constant ADDRESSN0001: std_logic_vector(7 downto 0) :="00000001";
+	constant N0101: integer :=4;
+	constant ADDRESSN0101: std_logic_vector(7 downto 0) :="00010001";
+	constant N0201: integer :=5;
+	constant ADDRESSN0201: std_logic_vector(7 downto 0) :="00100001";
+	constant N0002: integer :=6;
+	constant ADDRESSN0002: std_logic_vector(7 downto 0) :="00000010";
+	constant N0102: integer :=7;
+	constant ADDRESSN0102: std_logic_vector(7 downto 0) :="00010010";
+	constant N0202: integer :=8;
+	constant ADDRESSN0202: std_logic_vector(7 downto 0) :="00100010";
 
 The port's code number
       N2
@@ -53,7 +76,7 @@ end
 hermes_if   master_if[hermes_pkg::NROT](clock, reset);
 hermes_if   slave_if [hermes_pkg::NROT](clock, reset);
 
-// pass the interfaces to the agents and they will pass it to their monitors and drivers
+// pass the interfaces to the agents and they will pass it to their monitors and drivers 
 genvar i;
 for(i=0; i< hermes_pkg::NROT; i++) 
 begin : dut_inst

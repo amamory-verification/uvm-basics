@@ -11,6 +11,6 @@ package hermes_noc_env_pkg;
 
 	// ##### env modules #####
 	//`include "src/hermes_router_coverage.sv"
-	//`include "src/hermes_router_scoreboard.sv"
+	`include "./hermes_noc_scoreboard.sv"
 	`include "hermes_noc_env.sv"
 endpackage
