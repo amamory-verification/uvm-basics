@@ -16,7 +16,7 @@ package hermes_pkg;
 	`include "src/hermes_agent_config.sv"
 
 	// #### sequences #####
-	`include "src/hermes_base_seq.sv"
+	//`include "src/hermes_base_seq.sv"
 
 	// ##### agent modules #####
 	`include "src/hermes_base_driver.sv"

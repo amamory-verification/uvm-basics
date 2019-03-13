@@ -25,15 +25,15 @@ function void build_phase(uvm_phase phase);
   end
 
   // and enables only the used drivers
-  acfg[3].rand_mode(1);
-  acfg[3].master_driver_enabled = 1;
-  if( !acfg[3].randomize() with { 
+  acfg[8].rand_mode(1);
+  acfg[8].master_driver_enabled = 1;
+  if( !acfg[8].randomize() with { 
       cycle2send == 1;
       cycle2flit == 0;
       cred_distrib == 10;
     }
   )
-
+/*
   acfg[4].rand_mode(1);
   acfg[4].master_driver_enabled = 1;
   if( !acfg[4].randomize() with { 
@@ -42,7 +42,7 @@ function void build_phase(uvm_phase phase);
       cred_distrib == 10;
     }
   )
-
+*/
     `uvm_error("repeat_test", "invalid agent cfg randomization"); 
 
 
@@ -66,7 +66,7 @@ task run_phase(uvm_phase phase);
       // this seq will inject packets into the NORTH port only
       //source_router == 8'h11;
       // all packets will to the router 8'h22
-      header == 8'h22;
+      header == 8'h11;
       // only small packets
       p_size == hermes_packet_t::SMALL;
     }
@@ -83,10 +83,10 @@ task run_phase(uvm_phase phase);
   if( !seq.randomize())
     `uvm_error("rand", "invalid seq randomization"); 
 
-  fork
-    seq.start(seq.sequencer[3]);  
-    seq.start(seq.sequencer[4]);  
-  join
+  //fork
+    seq.start(seq.sequencer[8]);  
+    //seq.start(seq.sequencer[4]);  
+  //join
 
   // end the simulation a little bit latter
   //phase.phase_done.set_drain_time(this, 100ns);

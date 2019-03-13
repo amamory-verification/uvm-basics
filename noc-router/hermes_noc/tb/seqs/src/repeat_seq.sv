@@ -1,8 +1,8 @@
 /*
  this flat sequence injects 'npackets' into a single port 'port'
- all packets will be sent to the same target address    
+ all packets will be sent to the same target address     
 */
-class repeat_seq extends hermes_base_seq; 
+class repeat_seq extends hermes_noc_base_seq; 
 `uvm_object_utils(repeat_seq)
 
 // sequence configuration 
