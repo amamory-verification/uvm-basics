@@ -28,15 +28,24 @@ task body;
     tx = hermes_packet_t::type_id::create("tx");
     // when testing the noc, the driver will always inject packets into a local port.
     tx.dport = hermes_pkg::LOCAL;
+    // disable the header randomization because it will always be defined by the seq_cfg
+    tx.header.rand_mode(0);
+    tx.x.rand_mode(0);
+    tx.y.rand_mode(0);
+    
 
     start_item(tx);
     if( ! tx.randomize() with {
         tx.p_size == cfg.p_size;
-        tx.header == cfg.header;
+        //tx.header == cfg.header;
       }
     )
       `uvm_error("repeat_seq", "invalid seq item randomization"); 
     `uvm_info("repeat_seq", cfg.convert2string(), UVM_HIGH)
+
+    tx.header = cfg.header;
+    tx.x = cfg.header[7:4];
+    tx.y = cfg.header[3:0];
 
     finish_item(tx);
   end

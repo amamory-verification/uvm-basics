@@ -68,6 +68,8 @@ task run_phase(uvm_phase phase);
 	begin
 		if( !credit.randomize() )
 			`uvm_error("monitor", "invalid credit randomization"); 
+		// TODO remove the credit_class --- https://verificationacademy.com/forums/systemverilog/exclude-data-urandomrange
+		// randomize(val) with {!(val inside {8'h2a, 8'h2b, 8'h2c}); };
 		dut_vi.credit = credit.credit;
 		@(posedge dut_vi.clock);
 	end

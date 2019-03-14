@@ -2,7 +2,7 @@
 # these are the knobs you might want to change. 
 #------------------------------------------------
 set SEED      "random"
-set VERBOSITY "UVM_LOW"
+set VERBOSITY "UVM_HIGH"
 # set true to enable coverage
 set COVERAGE  "false"
 # set true to simulate RTL, otherwise, simulates the netlist
@@ -66,14 +66,14 @@ if {[string equal $DEBUG_SIM "true"]} {
 if {[string equal $COMPILE_ONLY "false"]} {
 
 	#vsim -sv_seed $SEED +UVM_VERBOSITY=$VERBOSITY  $top
-	#vsim -sv_seed random "+UVM_TESTNAME=repeat_test" "+UVM_VERBOSITY=UVM_LOW" -permit_unmatched_virtual_intf "+notimingchecks" -suppress 8887 -uvmcontrol=all -msgmode both -classdebug -assertdebug "+uvm_set_config_int=*,enable_transaction_viewing,1" optimized_debug_top_tb
+	#vsim -sv_seed random "+UVM_TESTNAME=repeat_test" "+UVM_VERBOSITY=UVM_LOW" -permit_unmatched_virtual_intf "+notimingchecks" -suppress 8887 -uvmcontrol=all -msgmode both -solvefaildebug -classdebug -assertdebug "+uvm_set_config_int=*,enable_transaction_viewing,1" optimized_debug_top_tb
 
 	# execute all the tests in TEST_NAME 
 	for {set i 0} {$i<[llength $TEST_NAMES]} {incr i} {
 	    set test [lindex $TEST_NAMES $i]
 	    if {[string equal $RTL_SIM "true"]} {
 	    	if {[string equal $DEBUG_SIM "true"]} {
-			vsim -sv_seed $SEED +UVM_TESTNAME=$test +UVM_VERBOSITY=$VERBOSITY -permit_unmatched_virtual_intf +notimingchecks -suppress 8887   -uvmcontrol=all -msgmode both -classdebug -assertdebug  +uvm_set_config_int=*,enable_transaction_viewing,1  $top
+			vsim -sv_seed $SEED +UVM_TESTNAME=$test +UVM_VERBOSITY=$VERBOSITY -permit_unmatched_virtual_intf +notimingchecks -suppress 8887   -uvmcontrol=all -msgmode both -solvefaildebug -classdebug -assertdebug  +uvm_set_config_int=*,enable_transaction_viewing,1  $top
 		} else {
 			vsim -sv_seed $SEED +UVM_TESTNAME=$test +UVM_VERBOSITY=$VERBOSITY  $top
 		}

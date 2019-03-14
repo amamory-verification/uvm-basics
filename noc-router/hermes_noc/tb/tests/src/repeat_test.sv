@@ -10,29 +10,45 @@ endfunction : new
 
 
 function void build_phase(uvm_phase phase);
+  int i;
   super.build_phase(phase);
 
   // randomize the agent configuration 
-  foreach(acfg[i]) begin
-    if( !acfg[i].randomize() )
+  //foreach(acfg[i]) begin
+  for(i=0; i< hermes_pkg::NROT; i++)
+  begin
+    //if( !acfg[i].randomize() )
+    //  `uvm_error("repeat_test", "invalid agent cfg randomization"); 
+    if( !acfg[i].randomize() with { 
+        cycle2send == 1;
+        cycle2flit == 0;
+        cred_distrib == 10;
+      }
+    )
       `uvm_error("repeat_test", "invalid agent cfg randomization"); 
+    acfg[i].master_driver_enabled = 1;
   end
   
   // and disable the unused master drivers, the ones not supossed to send data  
-  foreach(acfg[i]) begin
-    acfg[i].rand_mode(0);
-    acfg[i].master_driver_enabled = 0;
+  //foreach(acfg[i]) begin
+  /*
+  for(i=0; i< hermes_pkg::NROT; i++)
+  begin
+    acfg[i].rand_mode(1);
+    acfg[i].master_driver_enabled = 1;
   end
-
+*/
+/*
   // and enables only the used drivers
-  acfg[8].rand_mode(1);
-  acfg[8].master_driver_enabled = 1;
-  if( !acfg[8].randomize() with { 
+  acfg[0].rand_mode(1);
+  acfg[0].master_driver_enabled = 1;
+  if( !acfg[0].randomize() with { 
       cycle2send == 1;
       cycle2flit == 0;
       cred_distrib == 10;
     }
   )
+  */
 /*
   acfg[4].rand_mode(1);
   acfg[4].master_driver_enabled = 1;
@@ -42,8 +58,8 @@ function void build_phase(uvm_phase phase);
       cred_distrib == 10;
     }
   )
-*/
     `uvm_error("repeat_test", "invalid agent cfg randomization"); 
+*/
 
 
   // change any env and agent configuration here, before sending it to the config_db 
@@ -57,6 +73,7 @@ endfunction
 task run_phase(uvm_phase phase);
   repeat_seq seq;
   hermes_noc_seq_config seq_cfg;
+  int i;
   
   // set the sequence configuration, to be read by the sequencer
   seq_cfg = hermes_noc_seq_config::type_id::create("seq_cfg");
@@ -83,8 +100,14 @@ task run_phase(uvm_phase phase);
   if( !seq.randomize())
     `uvm_error("rand", "invalid seq randomization"); 
 
+  for(i=0; i< hermes_pkg::NROT; i++)
+  begin
+    if (i != 4)
+      seq.start(seq.sequencer[i]);
+  end
+
   //fork
-    seq.start(seq.sequencer[8]);  
+    //seq.start(seq.sequencer[0]);  
     //seq.start(seq.sequencer[4]);  
   //join
 
